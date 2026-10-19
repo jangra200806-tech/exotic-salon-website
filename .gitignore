@@ -1,0 +1,29 @@
+# Secret environment variables — kabhi commit na karo
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Website ka hissa nahi — JustDial se bacha hua scraped page (11.7 MB)
+Photo Gallery of*
+
+# Galti se download hui extra copy (website isko use nahi karti)
+images (1).jpg

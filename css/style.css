@@ -1,0 +1,1138 @@
+/* =========================================================
+   Exotic Hair & Beauty Unisex Salon — css/style.css
+   Mobile-first, luxury pastel theme (rose pink / cream / gold)
+   ========================================================= */
+
+/* ---------- 1. VARIABLES ---------- */
+:root {
+  --rose: #d98a9c;
+  --rose-dark: #c06f83;
+  --rose-soft: #f7e3e8;
+  --cream: #fffaf5;
+  --cream-2: #fdf4ec;
+  --gold: #c9a24b;
+  --gold-light: #e3c98a;
+  /* --- ROYAL ADDITIONS --- */
+  --royal: #6b1f3f;          /* deep royal plum — accents */
+  --royal-deep: #380d22;     /* sabse gehra — footer / dark areas */
+  --gold-deep: #a8842f;      /* metallic gold ka dark end */
+  --gold-text: #8f6614;      /* gold jo light background par readable rahe */
+  --gold-line: rgba(201, 162, 75, 0.38);
+  --text: #3a2e2e;
+  --text-light: #7a6a6a;
+  --white: #ffffff;
+  --shadow: 0 10px 30px rgba(150, 95, 110, 0.16);
+  --shadow-lg: 0 22px 54px rgba(150, 95, 110, 0.28);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --font-head: "Playfair Display", Georgia, serif;
+  --font-body: "Poppins", "Segoe UI", sans-serif;
+}
+
+/* ---------- 2. RESET ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background-color: var(--cream);
+  /* Halka gold brocade dot texture — checkerboard nahi, bas halki chamak */
+  background-image: radial-gradient(rgba(201, 162, 75, 0.13) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  font-size: 15px;
+}
+
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 700; line-height: 1.25; color: var(--text); }
+
+/* ---------- 3. LAYOUT HELPERS ---------- */
+.container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 18px; }
+.section { padding: 56px 0; }
+.text-center { text-align: center; }
+
+.section-title { font-size: 1.9rem; margin-bottom: 8px; letter-spacing: 0.2px; }
+.section-title span { color: var(--rose-dark); }
+
+/* Accent word par rose → gold royal gradient (jahan browser support kare) */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .section-title span {
+    background: linear-gradient(118deg, var(--rose-dark) 15%, var(--gold-text) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Centered headings ke neeche gold ornament — line + beech mein heera */
+.section-head .section-title::after {
+  content: "";
+  display: block;
+  width: 88px;
+  height: 8px;
+  margin: 16px auto 0;
+  background-image:
+    linear-gradient(90deg, transparent, var(--gold) 24%, var(--gold) 76%, transparent),
+    radial-gradient(circle, var(--gold) 0 3px, transparent 3.4px);
+  background-size: 100% 1.5px, 100% 100%;
+  background-position: center, center;
+  background-repeat: no-repeat;
+}
+.section-sub { color: var(--text-light); max-width: 620px; margin: 0 auto 32px; font-size: 0.94rem; }
+.section-head { margin-bottom: 34px; }
+
+/* ---------- 4. BUTTONS ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-primary { background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: #fff; box-shadow: 0 8px 22px rgba(217, 138, 156, 0.4); }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(217, 138, 156, 0.55); }
+.btn-gold { background: linear-gradient(135deg, var(--gold-deep), var(--gold-light) 48%, var(--gold-deep)); color: #fff; box-shadow: 0 8px 22px rgba(201, 162, 75, 0.42); }
+.btn-gold:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(201, 162, 75, 0.55); }
+.btn-outline { border: 2px solid var(--rose); color: var(--rose-dark); background: transparent; }
+.btn-outline:hover { background: var(--rose); color: #fff; transform: translateY(-3px); }
+.btn-wa { background: #25d366; color: #fff; box-shadow: 0 8px 22px rgba(37, 211, 102, 0.4); }
+.btn-wa:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(37, 211, 102, 0.5); }
+.btn-sm { padding: 10px 20px; font-size: 0.82rem; }
+
+/* ---------- 5. PRELOADER ---------- */
+#preloader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--cream);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; }
+.loader-ring {
+  width: 60px; height: 60px; border-radius: 50%;
+  border: 3px solid var(--rose-soft);
+  border-top-color: var(--rose);
+  animation: spin 0.9s linear infinite;
+}
+.loader-text { font-family: var(--font-head); color: var(--rose-dark); letter-spacing: 3px; font-size: 0.85rem; text-transform: uppercase; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- 6. HEADER / NAVBAR ---------- */
+.header {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255, 250, 245, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gold-line);
+  transition: box-shadow 0.3s ease;
+}
+/* Sabse upar patli royal gold line */
+.header::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--rose-dark), var(--gold-light), var(--rose-dark));
+}
+.header.scrolled { box-shadow: var(--shadow); }
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px;
+}
+.logo { display: flex; flex-direction: column; line-height: 1.1; }
+.logo strong { font-family: var(--font-head); font-size: 1.15rem; color: var(--text); }
+.logo span { font-size: 0.6rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--rose); font-weight: 600; }
+
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-links { display: none; }
+.nav-links a {
+  padding: 8px 14px; font-size: 0.88rem; font-weight: 500; border-radius: 50px;
+  transition: all 0.25s ease; color: var(--text);
+}
+.nav-links a:hover, .nav-links a.active { color: var(--rose-dark); background: var(--rose-soft); }
+.nav-cta { display: none; }
+
+.hamburger { display: flex; flex-direction: column; gap: 5px; width: 30px; padding: 4px 0; }
+.hamburger span { height: 2.5px; width: 100%; background: var(--text); border-radius: 3px; transition: all 0.3s ease; }
+.hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+/* mobile menu */
+.mobile-menu {
+  position: fixed; top: 68px; left: 0; right: 0; bottom: 0; z-index: 999;
+  background: var(--cream); padding: 24px 20px;
+  transform: translateX(100%); transition: transform 0.35s ease;
+  overflow-y: auto;
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-menu a {
+  display: block; padding: 15px 12px; font-size: 1.05rem; font-weight: 500;
+  border-bottom: 1px solid var(--rose-soft); color: var(--text);
+}
+.mobile-menu a.active { color: var(--rose-dark); }
+.mobile-menu .btn { width: 100%; margin-top: 20px; }
+
+/* ---------- 7. HERO ---------- */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex; align-items: center;
+  /* Royal plum vignette — gehra neeche, taaki text ubhar kar aaye */
+  background:
+    radial-gradient(95% 85% at 50% 108%, rgba(56, 13, 34, 0.78), transparent 68%),
+    linear-gradient(rgba(46, 20, 34, 0.55), rgba(56, 13, 34, 0.72)),
+    url("../images/hero.jpg") center/cover no-repeat;
+  color: #fff; text-align: center; padding: 70px 0 50px;
+}
+.hero-inner { max-width: 780px; margin: 0 auto; }
+.badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(56, 13, 34, 0.35); border: 1px solid var(--gold-light);
+  color: #fff; padding: 7px 18px; border-radius: 50px; font-size: 0.78rem;
+  letter-spacing: 1px; margin-bottom: 20px; backdrop-filter: blur(6px);
+}
+.hero h1 { font-size: 2.2rem; color: #fff; margin-bottom: 14px; }
+.hero h1 em { font-style: italic; color: var(--gold-light); }
+.hero p { font-size: 0.98rem; margin-bottom: 28px; opacity: 0.95; }
+.hero-btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.hero-rating {
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 26px;
+  background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 20px; border-radius: 50px; font-size: 0.85rem; backdrop-filter: blur(6px);
+}
+.hero-rating .stars { color: var(--gold-light); letter-spacing: 2px; }
+
+/* ---------- 8. STATS STRIP ---------- */
+.stats {
+  background:
+    radial-gradient(85% 130% at 50% 0%, rgba(201, 162, 75, 0.18), transparent 70%),
+    var(--rose-soft);
+  border-bottom: 1px solid var(--gold-line);
+}
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 30px 0; }
+.stat { text-align: center; }
+.stat b { font-family: var(--font-head); font-size: 1.6rem; color: var(--rose-dark); display: block; }
+.stat span { font-size: 0.76rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ---------- 9. CARDS ---------- */
+.grid-2, .grid-3, .grid-4 { display: grid; gap: 20px; grid-template-columns: 1fr; }
+
+.card {
+  position: relative;
+  background: var(--white); border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  border: 1px solid var(--gold-line);
+}
+/* Har card ke upar patli gold rekhha (arch wale team-card par nahi) */
+.card:not(.team-card)::after {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+}
+.card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--gold); }
+
+/* feature card */
+.feature { padding: 28px 22px; text-align: center; }
+.feature .ic {
+  width: 62px; height: 62px; margin: 0 auto 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem; color: var(--rose-dark);
+  background: linear-gradient(135deg, var(--rose-soft), #fbf0e2);
+  border: 1px solid var(--gold-line);
+  box-shadow: 0 6px 16px rgba(201, 162, 75, 0.18);
+}
+.feature h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.feature p { font-size: 0.85rem; color: var(--text-light); }
+
+/* about preview — royal arch (mehraab) frame */
+.about-img {
+  border-radius: 200px 200px 24px 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 3px solid var(--gold-light);
+  outline: 1px solid var(--gold-line);
+  outline-offset: 7px;
+}
+.about-img img { width: 100%; height: 100%; object-fit: cover; }
+.about-text h2 { font-size: 1.7rem; margin-bottom: 14px; }
+.about-text h2 span { color: var(--rose); }
+.about-text p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 14px; }
+.about-points { margin: 18px 0 24px; }
+.about-points li { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 0.88rem; }
+.about-points li::before { content: "✓"; color: var(--rose); font-weight: 700; }
+
+/* offer card */
+.offer { padding: 26px 22px; position: relative; background: linear-gradient(160deg, var(--cream), var(--rose-soft)); }
+.offer .tag {
+  position: absolute; top: 16px; right: 16px; background: var(--gold); color: #fff;
+  font-size: 0.66rem; padding: 4px 12px; border-radius: 50px; letter-spacing: 1px; text-transform: uppercase;
+}
+.offer .emoji { font-size: 2rem; margin-bottom: 12px; }
+.offer h3 { font-size: 1.15rem; margin-bottom: 8px; }
+.offer p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 14px; }
+.offer .highlight { font-family: var(--font-head); font-size: 1.15rem; color: var(--rose-dark); font-weight: 700; }
+
+/* service card */
+.svc { padding: 22px; display: flex; flex-direction: column; }
+.svc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+.svc h3 { font-size: 1.05rem; }
+.svc .price { font-family: var(--font-head); font-size: 1.15rem; color: var(--rose-dark); font-weight: 700; white-space: nowrap; }
+.svc .desc { font-size: 0.82rem; color: var(--text-light); flex: 1; margin-bottom: 12px; }
+.svc .meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--text-light); }
+.svc .cat-pill { background: var(--rose-soft); color: var(--rose-dark); padding: 3px 12px; border-radius: 50px; text-transform: capitalize; font-size: 0.68rem; letter-spacing: 1px; }
+.svc .pop { color: var(--gold); font-weight: 600; }
+/* "Book this" link — service pehle se chuni hui contact form kholta hai */
+.svc .svc-book {
+  align-self: flex-start; margin-top: 14px;
+  font-size: 0.8rem; font-weight: 600; color: var(--rose-dark);
+  border-bottom: 1px solid transparent; transition: all 0.25s ease;
+}
+.svc .svc-book:hover { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* filter tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 32px; }
+.tab {
+  padding: 9px 22px; border-radius: 50px; background: var(--white);
+  border: 1px solid rgba(217, 138, 156, 0.3); font-size: 0.85rem; font-weight: 500;
+  color: var(--text-light); transition: all 0.25s ease;
+}
+.tab:hover { border-color: var(--rose); color: var(--rose-dark); }
+.tab.active { background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: #fff; border-color: transparent; }
+
+/* team card — photo ke bina, mehraab (arch) banner */
+.team-card {
+  text-align: center; padding: 44px 24px 36px;
+  border-radius: 130px 130px var(--radius) var(--radius);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 235px;
+}
+.team-card h3 { font-size: 1.5rem; margin: 0 0 8px; }
+.team-card .role { color: var(--rose-dark); font-size: 0.82rem; font-weight: 500; }
+.team-card .spec { font-size: 0.78rem; color: var(--text-light); margin-top: 4px; }
+
+/* testimonials */
+.testi-viewport { overflow: hidden; }
+.testi-track { display: flex; transition: transform 0.5s ease; }
+.testi-slide { flex: 0 0 100%; padding: 0 8px; box-sizing: border-box; }
+.testi-controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 26px; }
+.testi-controls button {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--white); color: var(--rose-dark);
+  box-shadow: var(--shadow); font-size: 1.4rem; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s ease; line-height: 1;
+}
+.testi-controls button:hover { background: var(--rose); color: #fff; }
+.testi-dots { display: flex; gap: 8px; }
+.testi-dots .dot { width: 9px; height: 9px; border-radius: 50%; background: #dcc6cc; transition: all 0.3s ease; }
+.testi-dots .dot.active { background: var(--rose-dark); width: 26px; border-radius: 5px; }
+
+.testimonial { padding: 28px 24px; background: var(--white); }
+.testimonial .stars { color: var(--gold); margin-bottom: 12px; letter-spacing: 2px; }
+.testimonial p { font-style: italic; color: var(--text-light); font-size: 0.9rem; margin-bottom: 16px; }
+.testimonial .who { display: flex; align-items: center; gap: 12px; }
+.testimonial .avatar {
+  width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: #fff; font-weight: 600;
+}
+.testimonial .who b { font-size: 0.9rem; display: block; }
+.testimonial .who span { font-size: 0.74rem; color: var(--text-light); }
+
+/* reviews strip */
+.reviews-strip {
+  background:
+    radial-gradient(80% 130% at 50% 0%, rgba(227, 201, 138, 0.22), transparent 62%),
+    linear-gradient(135deg, var(--rose-dark), var(--royal));
+  color: #fff; text-align: center; padding: 52px 0;
+  border-top: 1px solid var(--gold-line);
+  border-bottom: 1px solid var(--gold-line);
+}
+.reviews-strip .big { font-family: var(--font-head); font-size: 2.4rem; }
+.reviews-strip .stars { color: var(--gold-light); letter-spacing: 4px; font-size: 1.2rem; margin: 6px 0; }
+.reviews-strip p { opacity: 0.95; font-size: 0.9rem; }
+
+/* instagram */
+.insta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 26px; }
+.insta-grid a { position: relative; overflow: hidden; border-radius: var(--radius-sm); aspect-ratio: 1; }
+.insta-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.insta-grid a::after {
+  content: "◉"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(192, 111, 131, 0.55); color: #fff; font-size: 1.5rem;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.insta-grid a:hover::after { opacity: 1; }
+.insta-grid a:hover img { transform: scale(1.1); }
+
+/* ---------- 10. PAGE BANNER ---------- */
+.page-banner {
+  background:
+    radial-gradient(90% 150% at 50% 0%, rgba(201, 162, 75, 0.16), transparent 65%),
+    linear-gradient(135deg, var(--rose-soft), var(--cream-2));
+  padding: 46px 0; text-align: center;
+  border-bottom: 1px solid var(--gold-line);
+}
+.page-banner h1 { font-size: 2rem; }
+/* Banner heading ke neeche chhota gold flourish */
+.page-banner h1::after {
+  content: "";
+  display: block; width: 72px; height: 2px; margin: 14px auto 0;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.page-banner p { color: var(--text-light); font-size: 0.9rem; margin-top: 6px; }
+.breadcrumb { font-size: 0.78rem; color: var(--text-light); margin-top: 10px; }
+.breadcrumb a { color: var(--rose-dark); }
+
+/* ---------- 11. GALLERY ---------- */
+.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.gallery-item { position: relative; overflow: hidden; border-radius: var(--radius-sm); cursor: pointer; aspect-ratio: 1; }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gallery-item:hover img { transform: scale(1.12); }
+.gallery-item .cap {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 24px 12px 10px;
+  background: linear-gradient(transparent, rgba(58, 46, 46, 0.8)); color: #fff;
+  font-size: 0.8rem; opacity: 0; transform: translateY(10px); transition: all 0.35s ease;
+}
+.gallery-item:hover .cap { opacity: 1; transform: translateY(0); }
+
+/* lightbox */
+.lightbox {
+  position: fixed; inset: 0; z-index: 2000; background: rgba(30, 22, 22, 0.92);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 82vh; border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); }
+.lightbox .close { position: absolute; top: 18px; right: 24px; color: #fff; font-size: 2.2rem; line-height: 1; }
+.lightbox .nav-btn {
+  position: absolute; top: 50%; transform: translateY(-50%); color: #fff;
+  font-size: 2.2rem; padding: 10px 18px; user-select: none;
+}
+.lightbox .prev { left: 8px; }
+.lightbox .next { right: 8px; }
+.lightbox .lb-caption { position: absolute; bottom: 24px; left: 0; right: 0; text-align: center; color: #fff; font-size: 0.85rem; opacity: 0.85; }
+
+/* before / after slider */
+.ba-wrap { position: relative; max-width: 640px; margin: 0 auto; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); aspect-ratio: 4/3; user-select: none; }
+.ba-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ba-after { clip-path: inset(0 0 0 50%); }
+.ba-handle {
+  position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; background: #fff;
+  transform: translateX(-50%); pointer-events: none;
+}
+.ba-handle::after {
+  content: "⇆"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 42px; height: 42px; border-radius: 50%; background: #fff; color: var(--rose-dark);
+  display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); font-size: 1.1rem;
+}
+.ba-label { position: absolute; top: 12px; padding: 4px 14px; background: rgba(58, 46, 46, 0.7); color: #fff; font-size: 0.7rem; border-radius: 50px; letter-spacing: 1px; }
+.ba-label.before { left: 12px; }
+.ba-label.after { right: 12px; }
+.ba-range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+
+/* ---------- 12. CONTACT ---------- */
+.contact-grid { display: grid; gap: 26px; grid-template-columns: 1fr; }
+.info-list li { display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start; }
+.info-list .ic {
+  flex: 0 0 auto; width: 46px; height: 46px; border-radius: 50%;
+  background: var(--rose-soft); color: var(--rose-dark);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.info-list b { display: block; font-size: 0.9rem; }
+.info-list span, .info-list a { font-size: 0.85rem; color: var(--text-light); }
+.info-list a:hover { color: var(--rose-dark); }
+
+.form-card { padding: 26px 22px; }
+/* "Book this" link yahan scroll karta hai — sticky header ke neeche na chhupe */
+#book { scroll-margin-top: 90px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 0.82rem; font-weight: 500; margin-bottom: 6px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 12px 14px; border: 1px solid rgba(217, 138, 156, 0.35);
+  border-radius: var(--radius-sm); font-family: inherit; font-size: 0.88rem;
+  background: var(--cream); color: var(--text); transition: border 0.25s ease;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--rose); background: #fff;
+}
+.form-note { font-size: 0.74rem; color: var(--text-light); margin-top: 10px; text-align: center; }
+
+.map-embed { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); line-height: 0; }
+.map-embed iframe { width: 100%; height: 320px; border: 0; }
+
+/* FAQ accordion */
+.faq-item { background: var(--white); border-radius: var(--radius-sm); margin-bottom: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.faq-q {
+  width: 100%; text-align: left; padding: 18px 20px; font-size: 0.92rem; font-weight: 600;
+  display: flex; justify-content: space-between; align-items: center; gap: 14px; color: var(--text);
+}
+.faq-q .ico { flex: 0 0 auto; color: var(--rose-dark); font-size: 1.3rem; transition: transform 0.3s ease; }
+.faq-item.open .faq-q .ico { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-a p { padding: 0 20px 20px; font-size: 0.85rem; color: var(--text-light); }
+
+/* ---------- 13. FOOTER ---------- */
+.footer {
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(201, 162, 75, 0.13), transparent 60%),
+    linear-gradient(160deg, #43142b, var(--royal-deep));
+  color: #d9cdcd; padding: 46px 0 0;
+  border-top: 3px solid var(--gold);
+}
+.footer-grid { display: grid; gap: 30px; grid-template-columns: 1fr; }
+.footer h4 { color: #fff; font-size: 1.05rem; margin-bottom: 16px; }
+/* Heading ke neeche chhoti gold underline */
+.footer h4::after {
+  content: "";
+  display: block; width: 34px; height: 2px; margin-top: 8px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+.footer p, .footer a, .footer li { font-size: 0.85rem; color: #c9bcbc; }
+.footer a:hover { color: var(--gold-light); }
+.footer-links li { margin-bottom: 9px; }
+.footer-links a::before { content: "› "; color: var(--gold); }
+.footer .brand { font-family: var(--font-head); font-size: 1.3rem; color: #fff; margin-bottom: 10px; }
+.footer .brand span { color: var(--gold-light); }
+.socials { display: flex; gap: 12px; margin-top: 16px; }
+.socials a {
+  width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.08);
+  display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+  transition: all 0.3s ease; color: #fff;
+}
+.socials a:hover { background: var(--rose); transform: translateY(-3px); }
+.footer-bottom {
+  border-top: 1px solid rgba(201, 162, 75, 0.28); margin-top: 32px; padding: 18px 0;
+  text-align: center; font-size: 0.78rem; color: #b3a3a3;
+}
+
+/* ---------- 14. FLOATING BUTTONS ---------- */
+.float-wa {
+  position: fixed; right: 16px; bottom: 78px; z-index: 900;
+  width: 54px; height: 54px; border-radius: 50%; background: #25d366; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  box-shadow: 0 10px 26px rgba(37, 211, 102, 0.5); transition: transform 0.3s ease;
+  animation: pulse 2s infinite;
+}
+.float-wa:hover { transform: scale(1.1); }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+  70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+.float-call {
+  position: fixed; right: 16px; bottom: 18px; z-index: 900;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+  box-shadow: 0 10px 26px rgba(217, 138, 156, 0.5); transition: transform 0.3s ease;
+}
+.float-call:hover { transform: scale(1.1); }
+
+#backTop {
+  position: fixed; left: 16px; bottom: 20px; z-index: 900;
+  width: 46px; height: 46px; border-radius: 50%; background: var(--white); color: var(--rose-dark);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  box-shadow: var(--shadow); opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+#backTop.show { opacity: 1; visibility: visible; }
+#backTop:hover { background: var(--rose); color: #fff; }
+
+/* ---------- 15. SCROLL ANIMATIONS ---------- */
+.reveal { opacity: 0; transform: translateY(34px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal.d1 { transition-delay: 0.1s; }
+.reveal.d2 { transition-delay: 0.2s; }
+.reveal.d3 { transition-delay: 0.3s; }
+
+/* ---------- 16. TABLET (>= 640px) ---------- */
+@media (min-width: 640px) {
+  body { font-size: 15.5px; }
+  .section { padding: 70px 0; }
+  .hero h1 { font-size: 2.8rem; }
+  .section-title { font-size: 2.3rem; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+  .insta-grid { grid-template-columns: repeat(6, 1fr); }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---------- 17. DESKTOP (>= 900px) ---------- */
+@media (min-width: 900px) {
+  .section { padding: 84px 0; }
+  .hero h1 { font-size: 3.4rem; }
+  .hero p { font-size: 1.08rem; }
+  .section-title { font-size: 2.6rem; }
+
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-cta { display: inline-flex; }
+  .hamburger { display: none; }
+  .mobile-menu { display: none; }
+
+  .grid-2 { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+  .about-flex { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+  .testi-slide { flex: 0 0 33.3333%; }
+  .contact-grid { grid-template-columns: 1fr 1.1fr; gap: 46px; }
+  .gallery-grid { grid-template-columns: repeat(4, 1fr); }
+  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1.2fr; }
+}
+
+/* ---------- 18. UTILITY ---------- */
+.mt-2 { margin-top: 20px; }
+.mb-2 { margin-bottom: 20px; }
+.no-scroll { overflow: hidden; }
+
+/* =========================================================
+   19. CONTACT PAGE EXTRAS  (sirf naye blocks)
+   ---------------------------------------------------------
+   Highlights row, Quick Information card, Home-services notice
+   aur "Ask Us Anything" box. Purane colours, fonts aur classes
+   reuse kiye hain — koi existing rule badla nahi gaya.
+   Mobile-first.
+   ========================================================= */
+
+/* ---------- 19a. HIGHLIGHTS ROW (banner ke neeche) ---------- */
+.highlights-wrap { padding: 20px 0 0; }
+.highlights { display: grid; gap: 12px; grid-template-columns: 1fr; }
+
+.hl-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  background: var(--white); border: 1px solid var(--gold-line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  font-size: 0.88rem; font-weight: 500; color: var(--text);
+  text-decoration: none;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.hl-item:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: var(--shadow-lg); }
+.hl-ic {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--rose-soft); color: var(--rose-dark);
+}
+.hl-label { flex: 1 1 auto; }
+.hl-arrow { flex: 0 0 auto; color: var(--gold-deep); }
+
+/* ---------- 19b. QUICK INFORMATION CARD ---------- */
+.quick-info { padding: 22px 20px; margin-bottom: 24px; }
+.qi-title {
+  font-family: var(--font-head); font-size: 1.15rem;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--gold-line);
+}
+.qi-row { padding: 12px 0; border-bottom: 1px dashed var(--gold-line); }
+.qi-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.qi-label {
+  font-size: 0.66rem; letter-spacing: 1.4px; text-transform: uppercase;
+  font-weight: 600; color: var(--gold-deep); margin-bottom: 6px;
+}
+.qi-val { font-size: 0.85rem; color: var(--text-light); margin-bottom: 10px; }
+.qi-sub { font-size: 0.75rem; color: var(--text-light); margin-top: 6px; }
+.qi-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 18px; border-radius: 50px; cursor: pointer;
+  font: inherit; font-size: 0.8rem; font-weight: 600; text-decoration: none;
+  border: 1px solid var(--rose); background: transparent; color: var(--rose-dark);
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.qi-btn:hover { background: var(--rose); color: #fff; transform: translateY(-2px); }
+.qi-status { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+.qi-status.is-open { color: #1E8E4E; }
+.qi-status.is-closed { color: var(--text-light); }
+
+/* ---------- 19c. HOME SERVICES NOTICE ---------- */
+.home-service-note {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 12px 16px; margin: 0 0 24px;
+  background: var(--cream-2);
+  border: 1px dashed var(--gold-line); border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  font-size: 0.84rem; color: var(--text);
+}
+/* Services page: banner ke turant neeche poori chaurai ki patti */
+.page-banner + .home-service-note {
+  margin: 0; padding: 14px 0;
+  border: 0; border-radius: 0;
+  border-top: 1px solid var(--gold-line);
+  border-bottom: 1px solid var(--gold-line);
+  background: var(--cream);
+}
+.page-banner + .home-service-note .container {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px;
+}
+.hs-ic {
+  flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--rose-soft); color: var(--rose-dark);
+}
+.hs-text { flex: 1 1 auto; min-width: 0; }
+.hs-link { font-weight: 600; color: var(--rose-dark); text-decoration: none; white-space: nowrap; }
+.hs-link:hover { color: var(--gold-deep); }
+
+/* ---------- 19d. ASK US ANYTHING ---------- */
+.ask-box { margin-top: 26px; padding-top: 22px; border-top: 1px dashed var(--gold-line); }
+.ask-title { font-family: var(--font-head); font-size: 1.25rem; margin-bottom: 6px; }
+.ask-title span { color: var(--rose-dark); }
+.ask-sub { font-size: 0.84rem; color: var(--text-light); margin-bottom: 14px; }
+.ask-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.ask-row input {
+  flex: 1 1 160px; min-width: 0;
+  padding: 12px 16px; border-radius: 50px;
+  border: 1px solid var(--gold-line); background: var(--cream);
+  font: inherit; font-size: 0.86rem; color: var(--text);
+}
+.ask-row input:focus { outline: none; border-color: var(--rose); background: var(--white); }
+.ask-row .btn { flex: 0 0 auto; }
+.ask-msg { font-size: 0.78rem; font-weight: 500; color: var(--rose-dark); margin-top: 8px; min-height: 1em; }
+.ask-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip {
+  font: inherit; font-size: 0.76rem; line-height: 1.3; text-align: left;
+  padding: 8px 14px; border-radius: 50px; cursor: pointer;
+  background: var(--rose-soft); color: var(--rose-dark);
+  border: 1px solid transparent;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.chip:hover { background: var(--white); border-color: var(--rose); transform: translateY(-2px); }
+
+/* ---------- 19e. KEYBOARD FOCUS (saaf dikhne wala) ---------- */
+.hl-item:focus-visible,
+.qi-btn:focus-visible,
+.chip:focus-visible,
+.ask-box input:focus-visible,
+.ask-box .btn:focus-visible,
+.hs-link:focus-visible {
+  outline: 2px solid var(--rose-dark);
+  outline-offset: 2px;
+}
+
+/* ---------- 19f. TABLET (>= 640px) ---------- */
+@media (min-width: 640px) {
+  .highlights { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .highlights-wrap { padding: 24px 0 0; }
+}
+
+/* =========================================================
+   20. CONTACT FORM — EMAIL SUBMIT (js/main.js)
+   ---------------------------------------------------------
+   Submit par /api/contact ko email jaati hai. Success / error
+   message isi block se style hota hai. Koi alert popup nahi.
+   Mobile-first; existing colours reuse kiye hain.
+   ========================================================= */
+.form-msg {
+  margin: 0; padding: 0; border: 0;
+  font-size: 0.84rem; font-weight: 500; line-height: 1.5;
+  border-radius: var(--radius-sm);
+}
+/* Message khaali hone par box dikhta hi nahi, lekin live region
+   DOM mein rehta hai — isliye screen reader ise announce kar pata hai. */
+.form-msg.is-info,
+.form-msg.is-success,
+.form-msg.is-error {
+  margin-top: 14px; padding: 12px 16px;
+  border: 1px solid var(--gold-line);
+}
+.form-msg.is-info { background: var(--cream); color: var(--text-light); }
+.form-msg.is-success { background: #eefaf1; border-color: #b6e0c4; color: #1E8E4E; }
+.form-msg.is-error { background: #fdf0f2; border-color: #f0c2c9; color: #b3261e; }
+
+/* "Send Enquiry" button bhejte waqt disabled ho jaata hai */
+.form-card .btn[disabled] { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Form ke buttons par saaf focus ring */
+.form-card .btn:focus-visible { outline: 2px solid var(--rose-dark); outline-offset: 2px; }
+
+/* =========================================================
+   21. HERO SLIDESHOW (front page banner)
+   ---------------------------------------------------------
+   Banner mein salon ki photos apne aap cross-fade hoti hain.
+   Photos data/info.js ke heroSlides se aati hain aur .hero-slides
+   ko js/script.js inject karta hai. JS na chale to .hero ka
+   purana background (images/hero.jpg) waise hi dikhta rahega.
+   ========================================================= */
+.hero-slides {
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden; pointer-events: none;
+}
+.hero-slide {
+  position: absolute; inset: 0;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  will-change: opacity;
+}
+.hero-slide.is-active { opacity: 1; }
+
+/* Text saaf padhne ke liye gehra vignette — slides ke UPAR.
+   Storefront ki photos din ki aur bright hoti hain, isliye ek
+   halka uniform layer bhi — headings white board par bhi saaf. */
+.hero-slides::after {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(rgba(40, 12, 28, 0.26), rgba(40, 12, 28, 0.26)),
+    radial-gradient(95% 85% at 50% 108%, rgba(56, 13, 34, 0.78), transparent 68%),
+    linear-gradient(rgba(46, 20, 34, 0.55), rgba(56, 13, 34, 0.72));
+}
+
+/* Hero ka text / buttons slides ke upar rahein */
+.hero .hero-inner { position: relative; z-index: 2; }
+
+/* "Reduce motion" walon ke liye cross-fade halka */
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide { transition: opacity 0.35s ease; }
+}
+
+/* =========================================================
+   22. MOBILE BOTTOM ACTION BAR (sab pages)
+   ---------------------------------------------------------
+   Sirf 768px ya usse chhoti screen par. Desktop par poori tarah
+   chhupi rehti hai (display: none). HTML js/script.js banata hai
+   (info.js ke mobileBar se), isliye enabled false karne par bar
+   page par aati hi nahi.
+
+   --mb-bar-h = bar ki asli height. JS ise naap kar set karta hai,
+   default 62px sirf fallback hai (JS band ho to bhi layout theek).
+   ========================================================= */
+.mobile-bar { display: none; }
+
+@media (max-width: 768px) {
+  :root { --mb-bar-h: 62px; }
+
+  .mobile-bar {
+    display: block;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 950;
+    background: rgba(255, 250, 245, 0.97);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--gold-line);
+    box-shadow: 0 -8px 26px rgba(150, 95, 110, 0.18);
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  /* Header jaisi hi patli gold-rose line */
+  .mobile-bar::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--rose-dark), var(--gold-light), var(--rose-dark));
+  }
+
+  .mb-inner { display: flex; gap: 10px; }
+
+  /* .btn / .btn-primary / .btn-wa hi reuse kiye hain — look match karta hai */
+  .mobile-bar .mb-btn {
+    flex: 1 1 0; min-width: 0; min-height: 46px;
+    padding: 11px 12px; font-size: 0.86rem; gap: 7px;
+    transform: none; /* mobile par hover-lift ki zaroorat nahi */
+  }
+  .mobile-bar .mb-btn:active { transform: scale(0.97); }
+  .mobile-bar .mb-btn span { overflow: hidden; text-overflow: ellipsis; }
+
+  /* Bar ke peeche content na chhupe (footer ka copyright bhi) */
+  body { padding-bottom: calc(var(--mb-bar-h) + env(safe-area-inset-bottom, 0px)); }
+
+  /* Mobile par bar ne purane floating buttons ki jagah le li — warna
+     dono ek hi jagah aa jate */
+  .float-wa, .float-call { display: none; }
+
+  /* Back-to-top bar ke upar */
+  #backTop { bottom: calc(var(--mb-bar-h) + env(safe-area-inset-bottom, 0px) + 14px); }
+}
+
+/* =========================================================
+   23. FESTIVE OFFER STRIP (sab pages)
+   ---------------------------------------------------------
+   Navbar ke upar ek patli gold-rose strip. HTML js/script.js
+   banata hai — info.js ka announcement.enabled false ho to page
+   mein strip bilkul nahi aati.
+   ========================================================= */
+.ann-strip {
+  position: relative; /* normal flow mein — sticky header se overlap nahi */
+  background: linear-gradient(90deg, var(--royal), var(--rose-dark) 46%, var(--gold-deep));
+  color: #fff;
+}
+/* Neeche patli gold line */
+.ann-strip::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+}
+.ann-inner {
+  display: flex; align-items: center; gap: 10px;
+  padding-top: 9px; padding-bottom: 9px;
+}
+.ann-text {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 0.8rem; line-height: 1.45; font-weight: 500;
+}
+.ann-link {
+  flex: 0 0 auto; white-space: nowrap;
+  padding: 5px 14px; border-radius: 50px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(227, 201, 138, 0.65);
+  font-size: 0.74rem; font-weight: 600; letter-spacing: 0.3px;
+  transition: background 0.25s ease;
+}
+.ann-link:hover { background: rgba(255, 255, 255, 0.3); }
+.ann-close {
+  flex: 0 0 auto;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.14); color: #fff;
+  transition: background 0.25s ease;
+}
+.ann-close:hover { background: rgba(255, 255, 255, 0.32); }
+.ann-link:focus-visible,
+.ann-close:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+
+/* Bahut chhoti screen — text poori row le, link + x neeche */
+@media (max-width: 460px) {
+  .ann-inner { flex-wrap: wrap; gap: 7px 8px; }
+  .ann-text { flex: 1 1 100%; }
+}
+
+/* =========================================================
+   24. VIDEOS  (home page ka video block + gallery ka video grid)
+   Clips portrait hain (480x854), isliye 9:16 frame rakha hai.
+   ========================================================= */
+.video-card {
+  margin: 0;
+  background: var(--white);
+  border: 1px solid var(--gold-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.video-card video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;      /* landscape clip ho to kat na jaye */
+  background: #000;
+}
+.video-cap {
+  font-family: var(--font-head);
+  font-size: 0.88rem;
+  line-height: 1.25;
+  color: var(--royal);
+  text-align: center;
+  padding: 9px 8px 11px;
+  border-top: 1px solid var(--gold-line);
+}
+.video-card:focus-within { outline: 2px solid var(--rose-dark); outline-offset: 3px; }
+
+/* gallery page ka video grid */
+.video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+/* home page ka akela video */
+.video-wrap { display: flex; flex-direction: column; align-items: center; }
+.video-card-home { width: 100%; max-width: 340px; }
+.video-note {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .video-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .video-cap { font-size: 0.98rem; }
+  .video-card-home { max-width: 380px; }
+}
+@media (min-width: 900px) {
+  .video-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* =========================================================
+   25. TEXT SLIDE-IN  (hero + page banner)
+   ---------------------------------------------------------
+   JS preloader hatne ke baad body par "hero-in" class lagata hai,
+   tab ye animation chalti hai. JS band ho ya user ne
+   "reduce motion" on kiya ho to text seedha normal dikhta hai —
+   kabhi chhupa hua nahi rehta.
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes heroUp {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heroDown {
+    from { opacity: 0; transform: translateY(-22px) scale(0.94); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes heroSide {
+    from { opacity: 0; transform: translateX(-36px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  body.hero-in .hero-inner > *,
+  body.hero-in .page-banner .container > * {
+    animation: heroUp 0.85s cubic-bezier(0.22, 0.68, 0.2, 1) both;
+  }
+  body.hero-in .hero-inner > .badge       { animation-name: heroDown; }
+  body.hero-in .hero-inner > .hero-btns   { animation-name: heroSide; }
+  body.hero-in .page-banner .container > h1 { animation-name: heroDown; }
+
+  /* ek ke baad ek — staggered */
+  body.hero-in .hero-inner > *:nth-child(1) { animation-delay: 0.55s; }
+  body.hero-in .hero-inner > *:nth-child(2) { animation-delay: 0.66s; }
+  body.hero-in .hero-inner > *:nth-child(3) { animation-delay: 0.77s; }
+  body.hero-in .hero-inner > *:nth-child(4) { animation-delay: 0.85s; }
+  body.hero-in .hero-inner > *:nth-child(5) { animation-delay: 0.94s; }
+  body.hero-in .hero-inner > *:nth-child(6) { animation-delay: 1.03s; }
+
+  body.hero-in .page-banner .container > *:nth-child(1) { animation-delay: 0.5s; }
+  body.hero-in .page-banner .container > *:nth-child(2) { animation-delay: 0.62s; }
+  body.hero-in .page-banner .container > *:nth-child(3) { animation-delay: 0.74s; }
+}
+
+/* =========================================================
+   26. GALLERY — bade stylish (mehrab) tiles
+   ---------------------------------------------------------
+   Pehle 4-column chhote SQUARE tiles the (photo ka beech kata
+   jata tha). Ab 3:4 portrait tiles + arch (mehrab) shape —
+   photo bada, poora, aur caption hamesha dikhta hai
+   (mobile par hover nahi hota, isliye caption neeche rakha).
+   ========================================================= */
+.gallery-grid { grid-template-columns: 1fr; gap: 14px; }
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: auto;            /* section 11 ka square ratio hata diya */
+  border-radius: 150px 150px 14px 14px;
+  background: var(--white);
+  border: 1px solid var(--gold-line);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.gallery-item:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+
+.gallery-item img {
+  display: block;
+  width: 100%; height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: center 12%;   /* lambe photo mein chehra upar rehna chahiye */
+  transition: transform 0.6s ease;
+}
+.gallery-item:hover img { transform: scale(1.06); }
+
+/* caption ab photo ke neeche — hamesha visible */
+.gallery-item .cap {
+  position: static; opacity: 1; transform: none;
+  background: none; color: var(--royal);
+  font-family: var(--font-head);
+  font-size: 0.95rem; text-align: center;
+  padding: 11px 12px 13px;
+  border-top: 1px solid var(--gold-line);
+}
+
+@media (min-width: 640px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+}
+@media (min-width: 900px) {
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+}
+
+/* =========================================================
+   27. BANNER PHOTOS  (top banner / hero ka background photo)
+   ---------------------------------------------------------
+   Har page ke top banner par ek photo:
+     Home     -> images/home-banner.jpg      (hero slideshow me,
+                 data/info.js ke `heroSlides` se aati hai)
+     Services -> images/services-banner.jpg
+     Gallery  -> images/gallery-banner.jpg
+     Contact  -> images/contact-banner.jpg
+
+   Baaki 3 pages par photo ka rasta <section> ke inline style se
+   diya gaya hai — badalna ho to sirf wahi ek line badlo:
+     style="--banner-photo: url('/images/services-banner.jpg')"
+
+   ZAROORI: raaste ke aage `/` lagana mat bhoolna. CSS ke andar
+   `var()` wala url() stylesheet (css/style.css) ke hisaab se
+   resolve hota hai, isliye `/` ke bina browser galti se
+   `css/images/...` dhoondhta hai aur photo nahi lagti.
+   (file ka naam badalna ho to bas file rename karo, CSS chhedne
+    ki zaroorat nahi — bas naam yahi rakho.)
+
+   AGAR KOI PHOTO FILE NA HO:
+   us page par photo layer chup-chaap hat jati hai aur PURANE
+   GRADIENT (radial gold + rose-cream) waise hi dikhte hain —
+   kuch bhi toota hua nahi dikhega. Sirf kuch photos hone par
+   bhi har page theek chalta hai.
+
+   Photo kabhi stretch nahi hoti: background-size: cover.
+   ========================================================= */
+
+/* ---- 27a. services / gallery / contact ka page banner ----
+   Heading, gold underline, subtitle aur breadcrumb waise hi
+   hain — sirf background (aur mobile ki padding) badli hai. */
+.page-banner--photo {
+  background-image:
+    /* 1. rose-cream overlay — text saaf padhne ke liye */
+    linear-gradient(rgba(251, 233, 236, 0.92), rgba(255, 248, 241, 0.85)),
+    /* 2. aapki photo (file na mile to ye layer kuch nahi banati) */
+    var(--banner-photo, none),
+    /* 3 + 4. purane gradient — fallback */
+    radial-gradient(90% 150% at 50% 0%, rgba(201, 162, 75, 0.16), transparent 65%),
+    linear-gradient(135deg, var(--rose-soft), var(--cream-2));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 26px 0;                 /* 390px phone par compact */
+}
+@media (min-width: 640px) {
+  .page-banner--photo { padding: 46px 0; }   /* bari screen par purani padding */
+}
+
+/* ---- 27b. HOME HERO (home page ka banner) ----
+   Yahan heading aur buttons SAFED hain, isliye 0.92 wala halka
+   rose-cream overlay safed text ko gayab kar deta. Isliye yahan:
+     - rose-cream wash SABSE NEECHE hai (photo par brand tone),
+     - uske upar halka gehra layer — baaen/centre me zyada (jahan
+       text hai) aur daaen taraf kam, taaki arch wali photo daaen
+       taraf khuli dikhe.
+   Net asar: safed heading/buttons saaf padhte hain + photo
+   saamne aati rehti hai. Hero ki layout/height waise hi hai. */
+.hero--photo .hero-slides::after {
+  background:
+    /* 1. text ke peeche gehra — baaen zyada, daaen kam */
+    linear-gradient(90deg,
+      rgba(46, 20, 34, 0.68) 0%,
+      rgba(46, 20, 34, 0.58) 42%,
+      rgba(46, 20, 34, 0.30) 74%,
+      rgba(46, 20, 34, 0.05) 100%),
+    /* 2. halka uniform gehra — purana tha, halka kar diya */
+    linear-gradient(rgba(40, 12, 28, 0.20), rgba(40, 12, 28, 0.20)),
+    /* 3. neeche ka vignette (purana) */
+    radial-gradient(95% 85% at 50% 108%, rgba(56, 13, 34, 0.60), transparent 68%),
+    /* 4. rose-cream brand wash — sabse neeche */
+    linear-gradient(rgba(251, 233, 236, 0.26), rgba(255, 248, 241, 0.20));
+}
+
+/* Hero ki padding: mobile par thoda compact, bari screen par purani */
+@media (max-width: 639px) {
+  .hero--photo { padding: 54px 0 40px; }
+}
+@media (min-width: 640px) {
+  .hero--photo { padding: 70px 0 50px; }
+}
