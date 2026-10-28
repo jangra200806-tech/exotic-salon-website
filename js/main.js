@@ -34,6 +34,16 @@
       return v === null || v === undefined ? "" : String(v).trim();
     }
 
+    /* Native HTML5 validation submit ko rok deta hai — us waqt bhi
+       page par saaf inline error dikhe (browser tooltip ke saath). */
+    form.addEventListener(
+      "invalid",
+      function () {
+        setMsg("Kripya apna naam aur phone number bharein.", "error");
+      },
+      true
+    );
+
     form.addEventListener("submit", function (event) {
       event.preventDefault();
 

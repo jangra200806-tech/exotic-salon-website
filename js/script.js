@@ -20,6 +20,93 @@
   const D = SALON_INFO;
 
   /* =========================================================
+     0. THIN GOLD LINE-ART ICONS (emoji icons ki jagah)
+     ---------------------------------------------------------
+     Sab icons 24x24, ek hi stroke-width — isliye size aur
+     look poore site par same rehta hai. Rang `currentColor`
+     se aata hai (CSS me gold).
+     ========================================================= */
+  const svgIc = (paths) =>
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    paths +
+    "</svg>";
+
+  const ICON_PATHS = {
+    unisex:
+      '<circle cx="6.4" cy="6.4" r="2.6"/><circle cx="6.4" cy="17.6" r="2.6"/>' +
+      '<path d="M8.5 8.2 20 18.4M8.5 15.8 20 5.6"/>',
+    award:
+      '<circle cx="12" cy="9" r="5.2"/>' +
+      '<path d="m12 6.2 1 2 2.2.3-1.6 1.6.4 2.2-2-1.1-2 1.1.4-2.2-1.6-1.6 2.2-.3z"/>' +
+      '<path d="m9.2 13.6-1.7 7 4.5-2.4 4.5 2.4-1.7-7"/>',
+    droplet:
+      '<path d="M12 3.2s5.4 6.1 5.4 9.9a5.4 5.4 0 0 1-10.8 0C6.6 9.3 12 3.2 12 3.2Z"/>' +
+      '<path d="M9.6 13.8a2.6 2.6 0 0 0 2.4 2.3"/>',
+    shield:
+      '<path d="M12 3.2 19 6v5.4c0 4.3-2.9 7.7-7 9.4-4.1-1.7-7-5.1-7-9.4V6Z"/>' +
+      '<path d="m9.1 12 2.2 2.2 3.8-4.1"/>',
+    ring:
+      '<path d="M12 3.6 15.4 7 12 10.4 8.6 7Z"/><circle cx="12" cy="15.5" r="4.4"/>',
+    cap:
+      '<path d="M2.6 8.6 12 4l9.4 4.6L12 13.2Z"/>' +
+      '<path d="M6.2 10.6V16c0 1.7 2.6 3 5.8 3s5.8-1.3 5.8-3v-5.4"/>',
+    sparkle:
+      '<path d="M12 3.4c.7 4.1 2 5.4 6.1 6.1-4.1.7-5.4 2-6.1 6.1-.7-4.1-2-5.4-6.1-6.1 4.1-.7 5.4-2 6.1-6.1Z"/>' +
+      '<path d="M18.3 15.2c.3 1.6.9 2.2 2.5 2.5-1.6.3-2.2.9-2.5 2.5-.3-1.6-.9-2.2-2.5-2.5 1.6-.3 2.2-.9 2.5-2.5Z"/>'
+  };
+
+  /* Image ke asli pixel size — width/height attributes se page load par
+     layout jump (CLS) nahi hota. Values images/ se generate ki gayi hain. */
+  const IMG_DIMS = {
+    "images/about.jpg": [675, 900],
+    "images/gallery1.jpg": [720, 900],
+    "images/gallery2.jpg": [778, 900],
+    "images/gallery3.jpg": [678, 900],
+    "images/gallery4.jpg": [637, 900],
+    "images/gallery5.jpg": [322, 900],
+    "images/gallery6.jpg": [475, 900],
+    "images/hero.jpg": [1600, 900],
+    "images/poster-bridal-blue.jpg": [480, 854],
+    "images/poster-bridal-pink.jpg": [480, 854],
+    "images/poster-client-chair.jpg": [480, 854],
+    "images/poster-client-look.jpg": [480, 854],
+    "images/poster-client-reel.jpg": [480, 854],
+    "images/poster-hair-styling.jpg": [480, 854],
+    "images/poster-hair-wash.jpg": [480, 854],
+    "images/poster-kids-cut.jpg": [480, 854],
+    "images/poster-long-hair.jpg": [480, 854],
+    "images/poster-makeup-application.jpg": [480, 854],
+    "images/poster-mens-fade.jpg": [480, 854],
+    "images/poster-mens-haircut.jpg": [480, 854],
+    "images/poster-mirror-closeup.jpg": [480, 854],
+    "images/poster-salon-front.jpg": [480, 854],
+    "images/poster-salon-interior.jpg": [480, 854],
+    "images/slide2.jpg": [1600, 900],
+    "images/slide3.jpg": [1600, 900],
+    "images/slide4.jpg": [1600, 900],
+    "images/slide5.jpg": [1600, 900]
+  };
+  const dimAttrs = (src) => {
+    const d = IMG_DIMS[src];
+    return d ? ' width="' + d[0] + '" height="' + d[1] + '"' : "";
+  };
+
+  /* data/info.js ke icon keys → hamare line-art icons.
+     (info.js ko chheda nahi gaya — mapping yahan hai.) */
+  const FEATURE_ICON_MAP = {
+    "bi-gender-ambiguous": "unisex",
+    "bi-award": "award",
+    "bi-droplet-half": "droplet",
+    "bi-shield-check": "shield"
+  };
+  const OFFER_ICON_MAP = { "\uD83D\uDC70": "ring", "\uD83C\uDF93": "cap", "\uD83D\uDCAB": "sparkle" };
+  const FEATURE_FALLBACK = ["unisex", "award", "droplet", "shield"];
+  const OFFER_FALLBACK = ["ring", "cap", "sparkle"];
+
+  const icon = (name) => svgIc(ICON_PATHS[name] || ICON_PATHS.sparkle);
+
+  /* =========================================================
      1. COMMON / GLOBAL FILLERS
      ========================================================= */
   function fillCommon() {
@@ -44,6 +131,9 @@
     $$(".js-address").forEach((el) => (el.textContent = D.address.full));
     $$(".js-landmark").forEach((el) => (el.textContent = D.address.landmark));
     $$(".js-map-link").forEach((el) => el.setAttribute("href", D.address.mapLink));
+    $$(".js-review-link").forEach((el) =>
+      el.setAttribute("href", D.reviewUrl || D.address.googleListing)
+    );
 
     /* Google Map embed */
     $$(".js-map-embed").forEach((el) => el.setAttribute("src", D.address.mapEmbed));
@@ -94,11 +184,22 @@
      ========================================================= */
   function renderHeroSlides() {
     const hero = $(".hero");
-    const slides = D.heroSlides || [];
+    /* `images/home-banner.jpg` abhi repo me nahi hai (data/info.js ka
+       comment bhi yahi kehta hai). Us slide ko yahin skip karte hain,
+       warna har page load par 404 console error aata hai. Photo file
+       add karne ke baad neeche wali filter line hata dena. */
+    const slides = (D.heroSlides || []).filter(
+      (s) => s.src !== "images/home-banner.jpg"
+    );
     if (!hero || !slides.length) return;
 
-    /* Slides hero ke andar sabse pehle — background ki tarah,
-       content ke peeche. aria-hidden kyunki ye sirf sajawat hai. */
+    /* Naye design mein photos rounded gradient frame ke andar chalti
+       hain. Agar frame maujood hai to slides usme daalo, warna hero
+       ke background mein (purana behaviour). */
+    const frame = $(".hero-frame", hero) || hero;
+
+    /* Slides frame ke andar sabse pehle — content ke peeche.
+       aria-hidden kyunki ye sirf sajawat hai. */
     const box = document.createElement("div");
     box.className = "hero-slides";
     box.setAttribute("aria-hidden", "true");
@@ -110,9 +211,25 @@
           `></div>`
       )
       .join("");
-    hero.insertBefore(box, hero.firstChild);
+    frame.insertBefore(box, frame.firstChild);
 
     const layers = $$(".hero-slide", box);
+
+    /* Agar kisi slide ki photo file maujood nahi (404), to us layer ko
+       hata do — warna slideshow me ek khaali (kaali) frame aata hai. */
+    slides.forEach((s, idx) => {
+      const probe = new Image();
+      probe.onerror = () => {
+        const el = layers[idx];
+        if (!el) return;
+        const wasActive = el.classList.contains("is-active");
+        const pos = layers.indexOf(el);
+        if (pos > -1) layers.splice(pos, 1);
+        el.remove();
+        if (wasActive && layers[0]) layers[0].classList.add("is-active");
+      };
+      probe.src = s.src;
+    });
 
     /* Baaki photos page load hone ke baad load karo, taaki pehli
        screen jaldi dikhe. */
@@ -136,6 +253,8 @@
     let timer = null;
 
     function go(n) {
+      if (!layers.length) return;
+      if (i >= layers.length) i = 0;
       layers[i].classList.remove("is-active");
       i = (n + layers.length) % layers.length;
       layers[i].classList.add("is-active");
@@ -161,11 +280,62 @@
     const box = $("#stats");
     if (!box) return;
     box.innerHTML = D.stats
-      .map(
-        (s) => `<div class="stat reveal">
-            <b>${s.value}</b><span>${s.label}</span></div>`
-      )
+      .map((s) => {
+        const raw = String(s.value);
+        const match = raw.match(/^([\d.]+)(.*)$/);
+        const number = match ? match[1] : "";
+        const suffix = match ? match[2] : raw;
+        const value = number
+          ? `<b><span class="stat-num" data-count="${number}">0</span><span class="stat-suffix">${suffix}</span></b>`
+          : `<b>${raw}</b>`;
+        return `<div class="stat reveal">${value}<span>${s.label}</span></div>`;
+      })
       .join("");
+  }
+
+  /* Counters — 0 se final value tak, sirf ek baar. Reduced motion
+     ya IntersectionObserver na ho to seedha final value. */
+  function initCounters() {
+    const nums = $$(".stat-num");
+    if (!nums.length) return;
+
+    const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finish = (el) => {
+      const target = Number(el.dataset.count || 0);
+      const decimal = String(el.dataset.count || "").indexOf(".") !== -1;
+      el.textContent = decimal ? target.toFixed(1) : String(Math.round(target));
+    };
+
+    if (calm || !("IntersectionObserver" in window)) {
+      nums.forEach(finish);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const target = Number(el.dataset.count || 0);
+          const decimal = String(el.dataset.count || "").indexOf(".") !== -1;
+          const start = performance.now();
+          const duration = 1200;
+          const tick = (now) => {
+            const p = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - p, 3);
+            const value = target * eased;
+            el.textContent = decimal ? value.toFixed(1) : String(Math.round(value));
+            if (p < 1) requestAnimationFrame(tick);
+            else finish(el);
+          };
+          requestAnimationFrame(tick);
+          io.unobserve(el);
+        });
+      },
+      { threshold: 0.4 }
+    );
+
+    nums.forEach((el) => io.observe(el));
   }
 
   function renderFeatures() {
@@ -174,7 +344,7 @@
     box.innerHTML = D.features
       .map(
         (f, i) => `<div class="card feature reveal d${(i % 3) + 1}">
-            <div class="ic">${f.emoji}</div>
+            <div class="ic">${icon(FEATURE_ICON_MAP[f.icon] || FEATURE_FALLBACK[i % 4])}</div>
             <h3>${f.title}</h3>
             <p>${f.text}</p>
           </div>`
@@ -189,7 +359,7 @@
       .map(
         (o, i) => `<div class="card offer reveal d${(i % 3) + 1}">
             <span class="tag">${o.tag}</span>
-            <div class="emoji">${o.icon}</div>
+            <div class="emoji">${icon(OFFER_ICON_MAP[o.icon] || OFFER_FALLBACK[i % 3])}</div>
             <h3>${o.title}</h3>
             <p>${o.desc}</p>
             <div class="highlight">${o.highlight}</div>
@@ -198,9 +368,14 @@
       .join("");
   }
 
-  /* Service card HTML (shared by home + services page)
+  /* Price-menu row (shared by home + services page)
      categories ek ARRAY hai, isliye data-category mein space se juda
-     hua string jaata hai: data-category="men women" */
+     hua string jaata hai: data-category="men women"
+     ---------------------------------------------------------
+     Luxury look: naam baayein, dotted leader line, price daayein
+     gold me. Price na ho to "Ask for price". Description neeche
+     muted text me. "Book this" chhota gold link — desktop par
+     hover se dikhta hai, phones par hamesha. */
   function serviceCard(s) {
     const cats = s.categories || [];
     /* Men + women dono ho to pill mein "Unisex" dikhate hain */
@@ -210,18 +385,25 @@
         : cats.map((c) => c.charAt(0).toUpperCase() + c.slice(1)).join(" & ");
     /* "Book this" → contact page, service pehle se chuni hui */
     const bookHref = "contact.html?service=" + encodeURIComponent(s.name) + "#book";
+    const price = s.price
+      ? `<span class="pm-price">${s.price}</span>`
+      : `<span class="pm-price is-ask">Ask for price</span>`;
 
-    return `<div class="card svc reveal" data-category="${cats.join(" ")}">
-        <div class="svc-top">
-          <h3>${s.name}</h3>
-          ${s.price ? `<span class="price">${s.price}</span>` : ""}
+    return `<div class="pm-row svc reveal" data-category="${cats.join(" ")}">
+        <div class="pm-body">
+          <div class="pm-line">
+            <h3 class="pm-name">${s.name}</h3>
+            <span class="pm-dots" aria-hidden="true"></span>
+            ${price}
+          </div>
+          <p class="pm-desc">${s.desc}</p>
+          <div class="pm-meta">
+            <span class="cat-pill">${pill}</span>
+            ${s.popular ? '<span class="pop">\u2605 Popular</span>' : ""}
+            <span>${s.duration}</span>
+          </div>
         </div>
-        <p class="desc">${s.desc}</p>
-        <div class="meta">
-          <span class="cat-pill">${pill}</span>
-          <span>${s.popular ? '<span class="pop">★ Popular</span> &nbsp;·&nbsp; ' : ""}${s.duration}</span>
-        </div>
-        <a class="svc-book" href="${bookHref}">Book this →</a>
+        <a class="svc-book" href="${bookHref}">Book this <span aria-hidden="true">\u2192</span></a>
       </div>`;
   }
 
@@ -229,7 +411,22 @@
     const box = $("#topServices");
     if (!box) return;
     const top = D.services.filter((s) => s.popular).slice(0, 6);
-    box.innerHTML = top.map(serviceCard).join("");
+    /* Home par bhi group ke hisaab se gold heading + rows */
+    const order = [];
+    top.forEach((s) => {
+      const g = s.group || "Salon Services";
+      if (order.indexOf(g) === -1) order.push(g);
+    });
+    box.innerHTML = order
+      .map(
+        (g) =>
+          `<h3 class="pm-group">${g}</h3>` +
+          top
+            .filter((s) => (s.group || "Salon Services") === g)
+            .map(serviceCard)
+            .join("")
+      )
+      .join("");
   }
 
   /* Services page: cards ko group headings ke neeche dikhate hain.
@@ -247,7 +444,7 @@
   }
 
   function groupHeading(g) {
-    return `<h3 class="svc-group" style="grid-column: 1 / -1">${g}</h3>`;
+    return `<h3 class="pm-group svc-group">${g}</h3>`;
   }
 
   function renderServicesPage() {
@@ -260,6 +457,71 @@
         if (!items.length) return "";
         return groupHeading(g) + items.map(serviceCard).join("");
       })
+      .join("");
+  }
+
+  /* =========================================================
+     2d. MARQUEE — service names ka patla, dheema strip
+     ---------------------------------------------------------
+     Top Services section ke turant baad lagta hai. Names do baar
+     repeat hote hain taaki scroll seamless lage. Decorative hai,
+     isliye aria-hidden. Reduced-motion par CSS animation band.
+     ========================================================= */
+  function renderMarquee() {
+    if ($("#marquee")) return;
+    const box = $("#topServices");
+    if (!box) return;
+    const sec = box.closest("section");
+    if (!sec) return;
+
+    const names = D.services.map((s) => s.name);
+    const items = names.concat(names);
+    const strip = document.createElement("div");
+    strip.className = "marquee";
+    strip.id = "marquee";
+    strip.setAttribute("aria-hidden", "true");
+    strip.innerHTML =
+      '<div class="marquee-track">' +
+      items.map((n) => `<span class="mq-item">${n}</span>`).join("") +
+      "</div>";
+    sec.insertAdjacentElement("afterend", strip);
+  }
+
+  /* =========================================================
+     2e. CARD SPOTLIGHT — sirf mouse wale devices par
+     Reduced-motion users ke liye band rehta hai.
+     ========================================================= */
+  function initSpotlight() {
+    const fine = window.matchMedia("(pointer: fine)").matches;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!fine || calm) return;
+
+    $$(".card, .faq-item, .pm-row, .stat, .cat-tile, .step-card, .gallery-item").forEach((card) => {
+      card.addEventListener("pointermove", (e) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", e.clientX - r.left + "px");
+        card.style.setProperty("--my", e.clientY - r.top + "px");
+      });
+    });
+  }
+
+  function renderBookingSteps() {
+    const box = $("#bookingSteps");
+    if (!box) return;
+    const steps = D.bookingSteps || [];
+    if (!steps.length) {
+      const sec = box.closest("section");
+      if (sec) sec.remove();
+      return;
+    }
+    box.innerHTML = steps
+      .map(
+        (s, i) => `<article class="step-card reveal d${(i % 3) + 1}">
+            <span class="step-num">${s.num || String(i + 1).padStart(2, "0")}</span>
+            <h3>${s.title}</h3>
+            <p>${s.text}</p>
+          </article>`
+      )
       .join("");
   }
 
@@ -357,7 +619,7 @@
       .slice(0, 6)
       .map(
         (g) => `<a href="${D.instagram.url}" target="_blank" rel="noopener" aria-label="${g.caption}">
-            <img src="${g.src}" alt="${g.alt}" loading="lazy">
+            <img src="${g.src}"${dimAttrs(g.src)} alt="${g.alt}" loading="lazy" decoding="async">
           </a>`
       )
       .join("");
@@ -463,7 +725,11 @@
        isliye data-category ko space par todkar check karte hain —
        "men women" mein "women" bhi match karega. */
     function applyFilter(cat) {
-      tabs.forEach((t) => t.classList.toggle("active", t.dataset.filter === cat));
+      tabs.forEach((t) => {
+        const on = t.dataset.filter === cat;
+        t.classList.toggle("active", on);
+        t.setAttribute("aria-pressed", on ? "true" : "false");
+      });
       cards().forEach((c) => {
         const cats = (c.dataset.category || "").split(" ");
         const show = cat === "all" || cats.indexOf(cat) > -1;
@@ -500,8 +766,9 @@
     if (!box) return;
     box.innerHTML = D.gallery
       .map(
-        (g, i) => `<div class="gallery-item reveal" data-i="${i}">
-            <img src="${g.src}" alt="${g.alt}" loading="lazy">
+        (g, i) => `<div class="gallery-item reveal" data-i="${i}" tabindex="0" role="button"
+            aria-label="View ${esc(g.caption)} image larger" aria-haspopup="dialog">
+            <img src="${g.src}"${dimAttrs(g.src)} alt="${g.alt}" loading="lazy" decoding="async">
             <div class="cap">${g.caption}</div>
           </div>`
       )
@@ -515,21 +782,34 @@
     const img = $("#lbImg", lb);
     const cap = $("#lbCap", lb);
     const items = $$(".gallery-item");
+    let lastFocus = null;
 
     const open = (i) => {
+      if (!lb.classList.contains("open")) lastFocus = document.activeElement;
       lbIndex = (i + D.gallery.length) % D.gallery.length;
       img.src = D.gallery[lbIndex].src;
       img.alt = D.gallery[lbIndex].alt;
       cap.textContent = D.gallery[lbIndex].caption;
       lb.classList.add("open");
       document.body.classList.add("no-scroll");
+      const closeBtn = $("#lbClose", lb);
+      if (closeBtn) closeBtn.focus();
     };
     const close = () => {
       lb.classList.remove("open");
       document.body.classList.remove("no-scroll");
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
     };
 
-    items.forEach((it) => it.addEventListener("click", () => open(Number(it.dataset.i))));
+    items.forEach((it) => {
+      it.addEventListener("click", () => open(Number(it.dataset.i)));
+      it.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open(Number(it.dataset.i));
+        }
+      });
+    });
     $("#lbClose", lb).addEventListener("click", close);
     $("#lbPrev", lb).addEventListener("click", () => open(lbIndex - 1));
     $("#lbNext", lb).addEventListener("click", () => open(lbIndex + 1));
@@ -1017,15 +1297,20 @@
     st.id = "svcGroupStyles";
     st.textContent =
       ".svc-group {" +
-      "  font-family: var(--font-head, 'Playfair Display', serif);" +
-      "  font-size: 1.45rem; font-weight: 700; color: var(--text, #3a2230);" +
-      "  text-align: center; position: relative;" +
-      "  margin: 14px 0 0; padding-bottom: 12px;" +
+      "  font-family: var(--font-head, 'Syne', sans-serif);" +
+      "  font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 700; color: var(--text, #eaf0ff);" +
+      "  text-align: left; display: flex; align-items: center; gap: 14px;" +
+      "  margin: 38px 0 8px; padding-bottom: 12px;" +
+      "  border-bottom: 1px solid rgba(234, 240, 255, 0.12);" +
+      "}" +
+      ".svc-group::before {" +
+      "  content: ''; width: 8px; height: 8px; border-radius: 50%;" +
+      "  background: var(--grad, linear-gradient(120deg, #2f6bff, #7c5cff 48%, #22d3ee));" +
+      "  box-shadow: 0 0 18px rgba(34, 211, 238, 0.6); flex: 0 0 auto;" +
       "}" +
       ".svc-group::after {" +
-      "  content: ''; position: absolute; left: 50%; bottom: 0;" +
-      "  transform: translateX(-50%); width: 62px; height: 3px; border-radius: 3px;" +
-      "  background: linear-gradient(90deg, var(--gold-deep, #c9a24b), var(--gold-light, #e6cf94));" +
+      "  content: ''; flex: 1 1 auto; width: auto; height: 1px;" +
+      "  background: linear-gradient(90deg, rgba(34, 211, 238, 0.3), rgba(34, 211, 238, 0));" +
       "}";
     document.head.appendChild(st);
   }
@@ -1190,24 +1475,46 @@
     const burger = $("#hamburger");
     const menu = $("#mobileMenu");
     if (burger && menu) {
+      const setOpen = (open) => {
+        burger.classList.toggle("open", open);
+        menu.classList.toggle("open", open);
+        document.body.classList.toggle("no-scroll", open);
+        burger.setAttribute("aria-expanded", open ? "true" : "false");
+        burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      };
       burger.addEventListener("click", () => {
-        burger.classList.toggle("open");
-        menu.classList.toggle("open");
-        document.body.classList.toggle("no-scroll");
+        const open = !menu.classList.contains("open");
+        setOpen(open);
+        /* Keyboard user ka focus seedha menu ke pehle link par */
+        if (open) {
+          const first = menu.querySelector("a");
+          if (first) setTimeout(() => first.focus(), 60);
+        }
+      });
+      /* Esc se menu band ho aur focus hamburger par wapas aaye */
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && menu.classList.contains("open")) {
+          setOpen(false);
+          burger.focus();
+        }
       });
       $$("a", menu).forEach((a) =>
-        a.addEventListener("click", () => {
-          burger.classList.remove("open");
-          menu.classList.remove("open");
-          document.body.classList.remove("no-scroll");
-        })
+        a.addEventListener("click", () => setOpen(false))
       );
     }
   }
 
   function initReveal() {
     const els = $$(".reveal");
-    if (!els.length || !("IntersectionObserver" in window)) {
+    if (!els.length) return;
+
+    /* Safety net: agar observer late/fail ho jaye to 2 second baad
+       sab content visible ho jaye — page khaali nahi dikhna chahiye. */
+    window.setTimeout(() => {
+      els.forEach((e) => e.classList.add("visible"));
+    }, 2000);
+
+    if (!("IntersectionObserver" in window)) {
       els.forEach((e) => e.classList.add("visible"));
       return;
     }
@@ -1247,8 +1554,10 @@
     renderStats();
     renderFeatures();
     renderOffers();
+    renderBookingSteps();
     renderTopServices();
     renderServicesPage();
+    renderMarquee();
     renderHomeServiceNotice();
     initTabs();
     renderTeam();
@@ -1268,6 +1577,8 @@
     initHeader();
     initBackTop();
     initReveal();
+    initSpotlight();
+    initCounters();
 
     window.addEventListener("resize", updateTesti);
   });

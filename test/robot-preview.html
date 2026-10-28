@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robot preview</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #070409; }
+  body { display: grid; place-items: center; }
+  #stage { width: 560px; height: 560px; position: relative; }
+  canvas { width: 100%; height: 100%; display: block; }
+</style>
+</head>
+<body>
+  <div id="stage"><canvas id="robot"></canvas></div>
+  <script type="module">
+    import { mountRobot3D } from "../js/robot3d.js";
+    const robot = mountRobot3D(document.querySelector("#robot"));
+    window.__robot = robot;
+  </script>
+</body>
+</html>

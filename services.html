@@ -3,129 +3,183 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#05070d">
 
   <!-- ============ SEO META ============ -->
-  <title>Services &amp; Price List | Exotic Hair &amp; Beauty Unisex Salon, Kaithal</title>
-  <meta name="description" content="Salon services in Kaithal — men's haircut, beard styling, hair colour, hair spa, facial, keratin, women's haircut, nail art, threading, waxing, manicure &amp; pedicure and bridal makeup at Exotic Hair &amp; Beauty, Huda Sector 20.">
+  <title>Salon Services &amp; Price List | Exotic, Kaithal</title>
+  <meta name="description" content="Salon services in Kaithal — men's haircut, beard styling, hair colour, hair spa, facial, keratin, nail art, waxing and bridal makeup at Huda Sector 20.">
   <meta name="keywords" content="salon services Kaithal, unisex salon Huda Sector 20, bridal makeup Kaithal, hair spa Kaithal, keratin treatment Kaithal, nail art Kaithal, waxing Kaithal, men's haircut Kaithal, beauty parlour in Kaithal, hair keratin Kaithal, hair smoothening Kaithal, hair rebonding Kaithal, hair straightening Kaithal, airbrush makeup Kaithal, pre bridal services Kaithal, bridal makeup at home Kaithal, eyebrow threading Kaithal, nail extension Kaithal, eyelash extension Kaithal, beard shaving Kaithal, beauty salon for men, beauty salon for women, beauty salon for kids">
   <meta name="robots" content="index, follow">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://exoticsalonkaithal.com/services.html">
 
-  <!-- Fonts -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Salon Services & Price List | Exotic, Kaithal">
+  <meta property="og:description" content="Haircut, bridal makeup, facial, keratin, nail art and grooming — see the full menu.">
+  <meta property="og:image" content="images/hero.jpg">
+  <meta property="og:locale" content="en_IN">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- PRELOADER -->
-  <div id="preloader">
+  <div id="preloader" aria-hidden="true">
     <div class="loader-ring"></div>
     <div class="loader-text">Exotic Salon</div>
   </div>
 
-  <!-- HEADER -->
   <header class="header">
-    <div class="container nav">
-      <!-- Home shortcut — chhota icon, header ke baayein kone me -->
-      <a href="index.html" class="nav-home" aria-label="Home" title="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.6 12 3l9 6.6V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6.5h5V21"/></svg>
+    <div class="nav-shell">
+      <a class="brand" href="index.html" aria-label="Exotic Salon home">
+        <span class="brand-mark" aria-hidden="true">E</span>
+        <span class="brand-text">
+          <strong class="js-short-name">Exotic Salon</strong>
+          <small>Hair &amp; Beauty · Kaithal</small>
+        </span>
       </a>
-      <a href="index.html" class="logo">
-        <strong class="js-short-name">Exotic Salon</strong>
-        <span>Hair &amp; Beauty</span>
-      </a>
-      <div class="nav-right">
-        <nav class="nav-links">
-          <a href="index.html">Home</a>
-          <a href="services.html" class="active">Services</a>
-          <a href="gallery.html">Gallery</a>
-          <a href="contact.html">Contact</a>
-        </nav>
-        <a href="#" class="btn btn-primary btn-sm nav-cta js-wa" target="_blank" rel="noopener">Book Now</a>
-        <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+      <nav class="nav-links" aria-label="Primary">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link active" href="services.html" aria-current="page">Services</a>
+        <a class="nav-link" href="gallery.html">Gallery</a>
+        <a class="nav-link" href="contact.html">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="nav-book" href="contact.html#book">
+          Book now
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- MOBILE MENU -->
-  <nav class="mobile-menu" id="mobileMenu">
-    <a href="index.html">Home</a>
-    <a href="services.html" class="active">Services</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="contact.html">Contact</a>
-    <a href="#" class="btn btn-primary js-wa" target="_blank" rel="noopener">Book on WhatsApp</a>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile menu">
+    <div class="mobile-menu-inner">
+      <p class="mobile-menu-label">Menu</p>
+      <a href="index.html">Home</a>
+      <a href="services.html" class="active">Services</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+      <a href="contact.html#book" class="btn btn-primary">Book an appointment</a>
+      <div class="mobile-menu-meta">
+        <a href="#" class="js-phone">09000997800</a><br>
+        <span class="js-address">DSS 266, Huda Sector 20, Kaithal</span>
+      </div>
+    </div>
   </nav>
 
-  <!-- PAGE BANNER -->
-  <section class="page-banner page-banner--photo" style="--banner-photo: url('/images/services-banner.jpg')">
-    <div class="container">
-      <h1>Our Services</h1>
-      <p>Men · Women · Bridal — sab kuch ek hi chhat ke neeche</p>
-      <div class="breadcrumb"><a href="index.html">Home</a> / Services</div>
-    </div>
-  </section>
+  <main id="main">
 
-  <!-- SERVICES -->
-  <section class="section">
-    <div class="container">
-      <div class="section-head text-center">
-        <h2 class="section-title">Choose Your <span>Service</span></h2>
-        <p class="section-sub">Category chunein aur apni pasand ki service dekhein.</p>
+    <!-- ============ PAGE BANNER ============ -->
+    <section class="page-banner">
+      <div class="container">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>Services · Kaithal</span>
+        <h1>Every look,<br><span>under one roof.</span></h1>
+        <p>Hair, skin, bridal makeup and grooming — a full unisex menu with clear prices and durations. Filter by who it’s for, then book on WhatsApp or the form.</p>
+        <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Services</span></div>
       </div>
+    </section>
 
-      <!-- FILTER TABS -->
-      <div class="tabs">
-        <button class="tab active" data-filter="all">All</button>
-        <button class="tab" data-filter="men">Men</button>
-        <button class="tab" data-filter="women">Women</button>
-        <button class="tab" data-filter="bridal">Bridal</button>
+    <!-- ============ CATEGORY FILTER TILES ============ -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="category-tiles category-tiles--filters" aria-label="Filter services">
+          <a class="cat-tile cat-tile--hair tab active" data-filter="all" href="#all" aria-pressed="true" aria-controls="servicesGrid">
+            <span class="cat-kicker">Everything</span>
+            <strong>All services</strong>
+            <small>Full menu</small>
+            <span class="cat-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="cat-tile cat-tile--groom tab" data-filter="men" href="#men" aria-pressed="false" aria-controls="servicesGrid">
+            <span class="cat-kicker">For him</span>
+            <strong>Men’s menu</strong>
+            <small>Cut, beard &amp; grooming</small>
+            <span class="cat-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="cat-tile cat-tile--skin tab" data-filter="women" href="#women" aria-pressed="false" aria-controls="servicesGrid">
+            <span class="cat-kicker">For her</span>
+            <strong>Women’s menu</strong>
+            <small>Hair, skin &amp; nails</small>
+            <span class="cat-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="cat-tile cat-tile--makeup tab" data-filter="bridal" href="#bridal" aria-pressed="false" aria-controls="servicesGrid">
+            <span class="cat-kicker">Big day</span>
+            <strong>Bridal &amp; party</strong>
+            <small>Makeup, packages &amp; prep</small>
+            <span class="cat-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
       </div>
+    </section>
 
-      <!-- SERVICE GRID (JS se bhar jaayega) -->
-      <div class="grid-3" id="servicesGrid"></div>
-
-      <div class="text-center mt-2">
-        <a href="#" class="btn btn-wa js-wa" target="_blank" rel="noopener">Book on WhatsApp</a>
+    <!-- ============ FULL MENU ============ -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-index">01 · The menu</span>
+          <h2 class="section-title">Services &amp; <span>prices.</span></h2>
+          <p class="section-sub">Prices are starting points and can vary with hair length, product and time. The salon team confirms the final price before the service.</p>
+        </div>
+        <div class="service-list" id="servicesGrid"></div>
+        <div class="section-cta">
+          <a href="contact.html#book" class="btn btn-primary">Book an appointment <span class="btn-arrow" aria-hidden="true">↗</span></a>
+          <a href="#" class="btn btn-outline js-wa" target="_blank" rel="noopener">Ask on WhatsApp</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CTA STRIP -->
-  <section class="reviews-strip">
-    <div class="container">
-      <div class="big">Ready to Glow?</div>
-      <p class="mt-2">Aaj hi apna slot book karein — <span class="js-timings-note">Open all 7 days</span>, <span class="js-timings">9:00 AM – 10:00 PM</span></p>
-      <div class="hero-btns mt-2">
-        <a href="#" class="btn btn-gold js-phone">Call <span class="js-phone-text">09000997800</span></a>
-        <a href="contact.html" class="btn btn-outline" style="border-color:#fff;color:#fff;">Book Appointment</a>
+    <!-- ============ BOOKING STEPS ============ -->
+    <section class="section booking-strip">
+      <div class="container">
+        <div class="booking-panel">
+          <div class="section-head">
+            <span class="section-index">02 · Booking</span>
+            <h2 class="section-title">From “I want” <span>to “I’m booked.”</span></h2>
+            <p class="section-sub">We never auto-confirm a slot. Send your details, and the salon team will confirm availability with you.</p>
+          </div>
+          <div class="booking-steps" id="bookingSteps"></div>
+          <div class="booking-actions">
+            <a href="contact.html#book" class="btn btn-primary">Start booking <span class="btn-arrow" aria-hidden="true">↗</span></a>
+            <a href="#" class="btn btn-outline js-wa" target="_blank" rel="noopener">WhatsApp us</a>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FOOTER -->
+  </main>
+
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
-        <div>
-          <div class="brand">Exotic <span>Hair &amp; Beauty</span></div>
-          <p>Kaithal ka premium unisex salon — hair, skin, bridal makeup aur grooming ke liye.</p>
+        <div class="footer-brand">
+          <a class="brand" href="index.html" aria-label="Exotic Salon home">
+            <span class="brand-mark" aria-hidden="true">E</span>
+            <span class="brand-text">
+              <strong class="js-short-name">Exotic Salon</strong>
+              <small>Hair &amp; Beauty · Kaithal</small>
+            </span>
+          </a>
+          <p>Kaithal ka premium unisex salon — hair, skin, bridal makeup aur grooming ke liye. Walk in, or book your slot on WhatsApp.</p>
           <div class="socials">
             <a href="#" class="js-insta" target="_blank" rel="noopener" aria-label="Instagram">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
             </a>
             <a href="#" class="js-wa" target="_blank" rel="noopener" aria-label="WhatsApp">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.2-.9-2.7-1.2-4.4-4-4.5-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.8.9c.3.1.4.2.5.3 0 .2 0 .9-.2 1.5Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.2-.9-2.7-1.2-4.4-4-4.5-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.8.9c.3.1.4.2.5.3 0 .2 0 .9-.2 1.5Z"/></svg>
             </a>
             <a href="#" class="js-phone" aria-label="Call">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
             </a>
           </div>
         </div>
         <div>
-          <h4>Quick Links</h4>
+          <h4>Explore</h4>
           <ul class="footer-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="services.html">Services</a></li>
@@ -134,37 +188,39 @@
           </ul>
         </div>
         <div>
-          <h4>Services</h4>
+          <h4>Popular</h4>
           <ul class="footer-links">
-            <li><a href="services.html">Haircut &amp; Styling</a></li>
-            <li><a href="services.html">Bridal Makeup</a></li>
-            <li><a href="services.html">Facial &amp; Skin Care</a></li>
-            <li><a href="services.html">Nail Art</a></li>
+            <li><a href="services.html#men">Haircut &amp; styling</a></li>
+            <li><a href="services.html#bridal">Bridal makeup</a></li>
+            <li><a href="services.html#women">Facial &amp; skin care</a></li>
+            <li><a href="services.html#women">Nail art &amp; waxing</a></li>
           </ul>
         </div>
         <div>
-          <h4>Contact</h4>
+          <h4>Visit</h4>
           <p class="js-address">DSS 266, Huda Sector 20, Huda, Kaithal, Haryana 136027</p>
-          <p class="mt-2">📞 <a href="#" class="js-phone"><span class="js-phone-text">09000997800</span></a></p>
-          <p>🕘 <span class="js-timings">Monday – Sunday, 9:00 AM – 10:00 PM</span></p>
+          <p><a class="js-phone" href="#"><span class="js-phone-text">09000997800</span></a></p>
+          <p><span class="js-timings">Monday – Sunday, 9:00 AM – 10:00 PM</span></p>
+          <a class="footer-map js-map-link" href="#" target="_blank" rel="noopener">Get directions ↗</a>
         </div>
       </div>
       <div class="footer-bottom">
-        © <span id="year">2026</span> Exotic Hair &amp; Beauty Unisex Salon · Kaithal, Haryana · All rights reserved.
+        <span>© <span id="year">2026</span> Exotic Hair &amp; Beauty Unisex Salon · Kaithal, Haryana · All rights reserved.</span>
+        <span>Prices and availability are confirmed by the salon team.</span>
       </div>
     </div>
   </footer>
 
-  <!-- FLOATING BUTTONS -->
   <a href="#" class="float-wa js-wa" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.2-.9-2.7-1.2-4.4-4-4.5-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.8.9c.3.1.4.2.5.3 0 .2 0 .9-.2 1.5Z"/></svg>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.2-.9-2.7-1.2-4.4-4-4.5-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.8.9c.3.1.4.2.5.3 0 .2 0 .9-.2 1.5Z"/></svg>
   </a>
   <a href="#" class="float-call js-phone" aria-label="Call salon">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
   </a>
-  <button id="backTop" aria-label="Back to top">↑</button>
+  <button id="backTop" type="button" aria-label="Back to top">↑</button>
 
   <script src="data/info.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/chatbot.js"></script>
 </body>
 </html>

@@ -182,6 +182,25 @@ const SALON_INFO = {
     { value: "7", label: "Days Open" }
   ],
 
+  /* ---------- 7b. BOOKING STEPS (home + contact) ---------- */
+  bookingSteps: [
+    {
+      num: "01",
+      title: "Pick your ritual",
+      text: "Browse hair, skin, bridal and grooming services — prices and durations are right on the menu."
+    },
+    {
+      num: "02",
+      title: "Send your details",
+      text: "Share your name, service, preferred date and time on WhatsApp or through the booking form."
+    },
+    {
+      num: "03",
+      title: "Confirm your slot",
+      text: "The salon team checks availability and confirms the final slot with you. Chat never auto-confirms a booking."
+    }
+  ],
+
   /* ---------- 8. WHY CHOOSE US ---------- */
   features: [
     {
@@ -318,9 +337,9 @@ const SALON_INFO = {
      Team cards par sirf naam/role/speciality dikhti hai (photo nahi).
      ---------------------------------------------------------- */
   team: [
-    { name: "Riya",  role: "Bridal & Party Makeup Artist", speciality: "HD & bridal makeup" },
-    { name: "Aman",  role: "Senior Hair Stylist",           speciality: "Haircut & beard styling" },
-    { name: "Neha",  role: "Skin & Nail Specialist",        speciality: "Facial, waxing & nails" }
+    { name: "Riya",  role: "Bridal & Party Makeup Artist", speciality: "HD & bridal makeup",       gender: "female" },
+    { name: "Aman",  role: "Senior Hair Stylist",           speciality: "Haircut & beard styling", gender: "male" },
+    { name: "Neha",  role: "Skin & Nail Specialist",        speciality: "Facial, waxing & nails",  gender: "female" }
   ],
 
   /* ---------- 13. GALLERY ---------- */
