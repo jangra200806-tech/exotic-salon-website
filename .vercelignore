@@ -1,0 +1,11 @@
+.env
+.env.*
+node_modules
+.git
+.vercel
+tests
+test
+serve.js
+start-server.bat
+Photo Gallery of*
+images (1).jpg

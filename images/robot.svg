@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -16 240 296" width="240" height="296" role="img" aria-label="Exotic Salon assistant robot">
+  <defs>
+    <radialGradient id="shell" cx="32%" cy="22%" r="95%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#f1f5fc"/>
+      <stop offset="1" stop-color="#c3d0e8"/>
+    </radialGradient>
+    <radialGradient id="rim" cx="30%" cy="28%" r="85%">
+      <stop offset="0.62" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="1" stop-color="#3b8bff" stop-opacity="0.42"/>
+    </radialGradient>
+    <linearGradient id="ao" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.55" stop-color="#5a6fa3" stop-opacity="0"/>
+      <stop offset="1" stop-color="#4a5f96" stop-opacity="0.35"/>
+    </linearGradient>
+    <linearGradient id="visor" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#1b2c58"/>
+      <stop offset="0.55" stop-color="#0a1330"/>
+      <stop offset="1" stop-color="#050a1c"/>
+    </linearGradient>
+    <linearGradient id="visorEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7cc4ff" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#2f6bff" stop-opacity=".5"/>
+    </linearGradient>
+    <linearGradient id="ear" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a9ceff"/>
+      <stop offset="0.5" stop-color="#5b92f0"/>
+      <stop offset="1" stop-color="#2f5fd0"/>
+    </linearGradient>
+    <radialGradient id="groundGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="eye" cx="50%" cy="40%" r="65%">
+      <stop offset="0" stop-color="#d9fbff"/>
+      <stop offset="0.45" stop-color="#3fe0f5"/>
+      <stop offset="1" stop-color="#12a8d8"/>
+    </radialGradient>
+    <radialGradient id="blush" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ff7a9c" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#ff7a9c" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="visorClip"><rect x="62" y="58" width="116" height="82" rx="36"/></clipPath>
+    <filter id="glow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="3.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter>
+  </defs>
+
+  <style>
+    .float  { animation: float 3.4s ease-in-out infinite; }
+    .shadow { animation: shadow 3.4s ease-in-out infinite; transform-origin: 120px 268px; }
+    .wave   { animation: wave 1.5s ease-in-out infinite; transform-origin: 166px 172px; }
+    .tilt   { animation: tilt 5.5s ease-in-out infinite; transform-origin: 120px 156px; }
+    .look   { animation: look 7s ease-in-out infinite; }
+    .blink  { animation: blink 4.8s infinite; transform-origin: 120px 98px; }
+    .pulse  { animation: pulse 1.8s ease-in-out infinite; }
+    .beat   { animation: beat 1.6s ease-in-out infinite; transform-origin: 120px 206px; }
+    .tw1    { animation: tw 2.6s ease-in-out infinite; transform-origin: 34px 70px; }
+    .tw2    { animation: tw 3.1s ease-in-out .8s infinite; transform-origin: 212px 44px; }
+    @keyframes float  { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes shadow { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.86); opacity: .65; } }
+    @keyframes wave   { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(9deg); } }
+    @keyframes tilt   { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(2.6deg); } }
+    @keyframes look   { 0%,38%,100% { transform: translateX(0); } 46%,60% { transform: translateX(-3px); } 72%,88% { transform: translateX(3px); } }
+    @keyframes blink  { 0%,92%,100% { transform: scaleY(1); } 95% { transform: scaleY(.08); } }
+    @keyframes pulse  { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
+    @keyframes beat   { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+    @keyframes tw     { 0%,100% { transform: scale(.4); opacity: .3; } 50% { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .float,.shadow,.wave,.tilt,.look,.blink,.pulse,.beat,.tw1,.tw2 { animation: none; } }
+  </style>
+
+  <!-- ground glow + shadow -->
+  <ellipse cx="120" cy="268" rx="62" ry="10" fill="url(#groundGlow)"/>
+  <g class="shadow"><ellipse cx="120" cy="268" rx="44" ry="6.5" fill="#02040a" opacity=".42"/></g>
+
+  <!-- sparkles -->
+  <path class="tw1" d="M34 58 L37 67 L46 70 L37 73 L34 82 L31 73 L22 70 L31 67 Z" fill="#7cc4ff"/>
+  <path class="tw2" d="M212 34 L214 40 L220 42 L214 44 L212 50 L210 44 L204 42 L210 40 Z" fill="#22d3ee"/>
+
+  <g class="float">
+    <!-- left arm (down) -->
+    <path d="M76 176 C 60 190 56 206 60 218" fill="none" stroke="#b3c2dc" stroke-width="21" stroke-linecap="round"/>
+    <path d="M76 176 C 60 190 56 206 60 218" fill="none" stroke="#eef3fb" stroke-width="17" stroke-linecap="round"/>
+    <path d="M72 180 C 63 190 60 200 61 208" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+    <circle cx="60" cy="222" r="11.5" fill="url(#shell)" stroke="#b3c2dc" stroke-width="1"/>
+
+    <!-- feet -->
+    <ellipse cx="98" cy="258" rx="19" ry="9" fill="url(#shell)" stroke="#b3c2dc" stroke-width="1"/>
+    <ellipse cx="142" cy="258" rx="19" ry="9" fill="url(#shell)" stroke="#b3c2dc" stroke-width="1"/>
+    <path d="M82 261 Q98 266 114 261" fill="none" stroke="#3b8bff" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M126 261 Q142 266 158 261" fill="none" stroke="#3b8bff" stroke-width="2.4" stroke-linecap="round"/>
+
+    <!-- body -->
+    <path id="bodyp" d="M120 150 C 160 150 177 182 173 214 C 170 241 149 256 120 256 C 91 256 70 241 67 214 C 63 182 80 150 120 150 Z" fill="url(#shell)" stroke="#b3c2dc" stroke-width="1"/>
+    <path d="M120 150 C 160 150 177 182 173 214 C 170 241 149 256 120 256 C 91 256 70 241 67 214 C 63 182 80 150 120 150 Z" fill="url(#ao)"/>
+    <path d="M120 150 C 160 150 177 182 173 214 C 170 241 149 256 120 256 C 91 256 70 241 67 214 C 63 182 80 150 120 150 Z" fill="url(#rim)"/>
+    <ellipse cx="97" cy="188" rx="12" ry="26" fill="#fff" opacity=".7" transform="rotate(14 97 188)" filter="url(#soft)"/>
+    <!-- chest panel with heart -->
+    <rect x="102" y="192" width="36" height="28" rx="12" fill="#0a1330" stroke="#2f6bff" stroke-opacity=".6"/>
+    <g class="beat"><path d="M120 214 C 108 206 110 198 116 198 C 118.5 198 120 200 120 201.5 C 120 200 121.5 198 124 198 C 130 198 132 206 120 214 Z" fill="#22d3ee" filter="url(#glow)"/></g>
+    <!-- neck + shoulders -->
+    <rect x="104" y="142" width="32" height="14" rx="7" fill="#9fb2d3"/>
+    <circle cx="76" cy="174" r="7" fill="#9fb2d3"/>
+    <circle cx="166" cy="172" r="7" fill="#9fb2d3"/>
+
+    <!-- waving arm -->
+    <g class="wave">
+      <path d="M166 172 C 190 176 208 164 210 142" fill="none" stroke="#b3c2dc" stroke-width="21" stroke-linecap="round"/>
+      <path d="M166 172 C 190 176 208 164 210 142" fill="none" stroke="#eef3fb" stroke-width="17" stroke-linecap="round"/>
+      <path d="M174 168 C 190 170 202 162 205 148" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+      <circle cx="210" cy="126" r="12.5" fill="url(#shell)" stroke="#b3c2dc" stroke-width="1"/>
+      <ellipse cx="200" cy="124" rx="4.5" ry="7" fill="url(#shell)" stroke="#b3c2dc" stroke-width="1" transform="rotate(-25 200 124)"/>
+    </g>
+
+    <!-- head -->
+    <g class="tilt">
+      <!-- antenna -->
+      <rect x="117" y="14" width="6" height="26" rx="3" fill="#9fb2d3"/>
+      <circle class="pulse" cx="120" cy="12" r="10" fill="#22d3ee" opacity=".35" filter="url(#soft)"/>
+      <circle cx="120" cy="12" r="5.5" fill="#22d3ee" filter="url(#glow)"/>
+      <circle cx="118.5" cy="10" r="1.8" fill="#fff" opacity=".9"/>
+      <!-- ear pieces -->
+      <rect x="30" y="76" width="28" height="56" rx="14" fill="url(#ear)" stroke="#2f5fd0" stroke-width="1"/>
+      <rect x="182" y="76" width="28" height="56" rx="14" fill="url(#ear)" stroke="#2f5fd0" stroke-width="1"/>
+      <circle cx="44" cy="104" r="7" fill="#0a1330"/><circle cx="44" cy="104" r="4" fill="#22d3ee" class="pulse"/>
+      <circle cx="196" cy="104" r="7" fill="#0a1330"/><circle cx="196" cy="104" r="4" fill="#22d3ee" class="pulse"/>
+      <path d="M36 84 Q44 79 52 84" stroke="#fff" stroke-opacity=".6" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M188 84 Q196 79 204 84" stroke="#fff" stroke-opacity=".6" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <!-- shell -->
+      <rect x="46" y="34" width="148" height="122" rx="58" fill="url(#shell)" stroke="#b3c2dc" stroke-width="1"/>
+      <rect x="46" y="34" width="148" height="122" rx="58" fill="url(#ao)"/>
+      <rect x="46" y="34" width="148" height="122" rx="58" fill="url(#rim)"/>
+      <ellipse cx="78" cy="52" rx="20" ry="8" fill="#fff" opacity=".9" transform="rotate(-24 78 52)" filter="url(#soft)"/>
+      <!-- visor -->
+      <rect x="62" y="58" width="116" height="82" rx="36" fill="url(#visor)"/>
+      <rect x="62" y="58" width="116" height="82" rx="36" fill="none" stroke="url(#visorEdge)" stroke-width="1.6"/>
+      <g clip-path="url(#visorClip)">
+        <path d="M60 60 L108 60 L78 140 L60 140 Z" fill="#fff" opacity=".07"/>
+        <path d="M122 58 L134 58 L108 140 L96 140 Z" fill="#fff" opacity=".05"/>
+        <ellipse cx="120" cy="138" rx="46" ry="10" fill="#22d3ee" opacity=".12"/>
+      </g>
+      <!-- cheeks -->
+      <ellipse cx="82" cy="120" rx="12" ry="7" fill="url(#blush)"/>
+      <ellipse cx="158" cy="120" rx="12" ry="7" fill="url(#blush)"/>
+      <!-- eyes -->
+      <g class="look"><g class="blink">
+        <ellipse cx="96" cy="97" rx="11.5" ry="15" fill="url(#eye)" filter="url(#glow)"/>
+        <ellipse cx="144" cy="97" rx="11.5" ry="15" fill="url(#eye)" filter="url(#glow)"/>
+        <ellipse cx="99.5" cy="90" rx="3.6" ry="4.6" fill="#fff"/>
+        <ellipse cx="147.5" cy="90" rx="3.6" ry="4.6" fill="#fff"/>
+        <ellipse cx="92" cy="104" rx="1.8" ry="2.2" fill="#fff" opacity=".7"/>
+        <ellipse cx="140" cy="104" rx="1.8" ry="2.2" fill="#fff" opacity=".7"/>
+      </g></g>
+      <!-- smile -->
+      <path d="M108 120 Q120 133 132 120" fill="none" stroke="#3fe0f5" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/>
+    </g>
+  </g>
+</svg>

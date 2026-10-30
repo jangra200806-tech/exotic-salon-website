@@ -46,6 +46,10 @@
   var lastFocus = null;
   var robot = null;
 
+  /* Public hook: window.RobotUI.setTalking(true) / setTalking(false) */
+  window.RobotUI = window.RobotUI || {};
+  window.RobotUI.setTalking = setTalking;
+
   /* ---------------------------------------------------------
      Small helpers
      --------------------------------------------------------- */
@@ -1355,54 +1359,10 @@
   }
 
   function checkBackendStatus() {
-    if (typeof fetch !== "function") {
-      setBackendStatus("Online · Salon assistant", "data");
-      return;
-    }
-
-    var controller =
-      typeof AbortController === "function" ? new AbortController() : null;
-    var timer = controller
-      ? window.setTimeout(function () { controller.abort(); }, 5000)
-      : null;
-
-    fetch("/api/chat?health=1", {
-      method: "GET",
-      headers: { Accept: "application/json" },
-      signal: controller ? controller.signal : undefined
-    })
-      .then(function (response) {
-        if (!response.ok) throw new Error("Health check HTTP " + response.status);
-        return response.json();
-      })
-      .then(function (data) {
-        if (!data || typeof data !== "object") {
-          setBackendStatus("Online · Salon AI", "ai");
-          return;
-        }
-
-        if (data.hasKey) {
-          setBackendStatus(
-            data.groqReachable ? "Online · Salon AI" : "Online · AI connecting",
-            "ai"
-          );
-          console.info("Chat backend health:", data);
-        } else {
-          setBackendStatus("Online · Salon assistant", "data");
-          console.info(
-            "Chat backend is in salon-data mode. Add GROQ_API_KEY on the server to enable AI replies.",
-            data
-          );
-        }
-      })
-      .catch(function () {
-        /* Health is intentionally disabled on some production hosts. The
-           chat itself still works through /api/chat + local salon data. */
-        setBackendStatus("Online · Salon AI", "ai");
-      })
-      .finally(function () {
-        if (timer) window.clearTimeout(timer);
-      });
+    /* Health endpoint alag se call nahi karte (woh 404 deta tha aur
+       console mein error aata tha). Default salon-data mode dikhao;
+       AI reply milne par sendMessage() status ko "Salon AI" kar deta hai. */
+    setBackendStatus("Online · Salon assistant", "data");
   }
 
   /* ---------------------------------------------------------
@@ -1477,6 +1437,9 @@
 
       if (apiUsable) {
         replyText = apiReply;
+        if (!(data && data.local === true)) {
+          setBackendStatus("Online · Salon AI", "ai");
+        }
       } else {
         if (!response.ok) {
           console.error(
@@ -1515,21 +1478,131 @@
   }
 
   /* ---------------------------------------------------------
+     Robot talking state (window.RobotUI)
+     --------------------------------------------------------- */
+  function setTalking(on) {
+    var target = els.launcher || document.getElementById("chatLauncher");
+    if (!target) return;
+    target.classList.toggle("robot-talking", !!on);
+  }
+
+  /* ---------------------------------------------------------
+     Robot menu + speech bubble
+     --------------------------------------------------------- */
+  var BUBBLE_KEY = "exotic-robot-bubble-v1";
+  var menuOpen = false;
+  var bubbleShowTimer = null;
+  var bubbleHideTimer = null;
+
+  function bubbleSeen() {
+    try {
+      return window.sessionStorage.getItem(BUBBLE_KEY) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function markBubbleSeen() {
+    try {
+      window.sessionStorage.setItem(BUBBLE_KEY, "1");
+    } catch (e) {}
+  }
+
+  function menuButtons() {
+    if (!els.menu) return [];
+    return Array.prototype.slice.call(els.menu.querySelectorAll(".robot-menu-btn"));
+  }
+
+  function openMenu() {
+    if (!els.menu || menuOpen) return;
+    cancelBubble();
+    hideBubble();
+    menuOpen = true;
+    els.menu.hidden = false;
+    els.launcher.setAttribute("aria-expanded", "true");
+    var items = menuButtons();
+    if (items[0]) items[0].focus();
+  }
+
+  function closeMenu(returnFocus) {
+    if (!els.menu || !menuOpen) return;
+    menuOpen = false;
+    els.menu.hidden = true;
+    els.launcher.setAttribute("aria-expanded", "false");
+    if (returnFocus) els.launcher.focus();
+  }
+
+  function toggleMenu() {
+    if (menuOpen) closeMenu(true);
+    else openMenu();
+  }
+
+  function cancelBubble() {
+    window.clearTimeout(bubbleShowTimer);
+    window.clearTimeout(bubbleHideTimer);
+  }
+
+  function showBubble() {
+    if (!els.bubble || bubbleSeen() || menuOpen) return;
+    if (els.panel && els.panel.classList.contains("open")) return;
+    els.bubble.hidden = false;
+    bubbleHideTimer = window.setTimeout(hideBubble, 5000); /* 4s + 5s = 9s */
+  }
+
+  function hideBubble() {
+    window.clearTimeout(bubbleHideTimer);
+    if (!els.bubble || els.bubble.hidden) return;
+    els.bubble.hidden = true;
+    markBubbleSeen();
+  }
+
+  function scheduleBubble() {
+    if (!els.bubble || bubbleSeen()) return;
+    bubbleShowTimer = window.setTimeout(showBubble, 4000);
+  }
+
+  function startTour() {
+    closeMenu(false);
+    cancelBubble();
+    hideBubble();
+    if (els.panel && els.panel.classList.contains("open")) closeChat();
+
+    if (window.SalonTour && typeof window.SalonTour.start === "function") {
+      window.SalonTour.start();
+      return;
+    }
+
+    document.dispatchEvent(new window.CustomEvent("robot:tour-start", { bubbles: true }));
+
+    var file = (window.location.pathname.split("/").pop() || "").toLowerCase();
+    if (file && file !== "index.html") {
+      window.location.href = "index.html#tour";
+    }
+  }
+
+  /* ---------------------------------------------------------
      Open / close
      --------------------------------------------------------- */
   function openChat() {
     lastFocus = document.activeElement;
+    closeMenu(false);
+    cancelBubble();
+    hideBubble();
 
     els.panel.classList.add("open");
     els.panel.setAttribute("aria-hidden", "false");
-    els.launcher.setAttribute("aria-expanded", "true");
     document.body.classList.add("chat-open");
 
     window.setTimeout(function () {
       els.input.focus();
+      if (document.activeElement !== els.input) {
+        window.setTimeout(function () {
+          els.input.focus();
+        }, 260);
+      }
       resizeInput();
       scrollBottom();
-    }, 60);
+    }, 320);
   }
 
   function closeChat() {
@@ -1537,13 +1610,13 @@
 
     els.panel.classList.remove("open");
     els.panel.setAttribute("aria-hidden", "true");
-    els.launcher.setAttribute("aria-expanded", "false");
     document.body.classList.remove("chat-open");
     if (robot) robot.wave();
 
     var target =
       lastFocus &&
       lastFocus !== document.body &&
+      lastFocus.offsetParent !== null &&
       typeof lastFocus.focus === "function"
         ? lastFocus
         : els.launcher;
@@ -1560,30 +1633,35 @@
     root.innerHTML =
       '<button class="chat-launcher" id="chatLauncher" type="button" ' +
       'title="Exo · Salon AI assistant" ' +
-      'aria-label="Salon AI assistant Exo se chat karein" aria-expanded="false" aria-controls="chatPanel">' +
+      'aria-label="Exo robot menu kholein" aria-haspopup="menu" aria-expanded="false" aria-controls="robotMenu">' +
       '<span class="robot-stage" aria-hidden="true">' +
       '<canvas class="robot-canvas" id="robotCanvas"></canvas>' +
       '<span class="robot-css">' +
-      '<span class="robot-shadow"></span>' +
-      '<span class="robot-body"><span class="robot-core"></span></span>' +
-      '<span class="robot-arm left"></span><span class="robot-arm right"></span>' +
-      '<span class="robot-head">' +
-      '<span class="robot-antenna"></span>' +
-      '<span class="robot-face">' +
-      '<span class="robot-eye left"></span><span class="robot-eye right"></span>' +
-      '<span class="robot-mouth"></span>' +
-      "</span>" +
-      '<span class="robot-ear left"></span><span class="robot-ear right"></span>' +
-      "</span>" +
+      '<img class="robot-img" src="images/robot.svg" alt="" width="76" height="94" decoding="async">' +
       "</span>" +
       "</span>" +
       '<span class="robot-ping" aria-hidden="true"></span>' +
       "</button>" +
+      '<div class="robot-menu" id="robotMenu" role="menu" aria-label="Exo robot menu" hidden>' +
+      '<button class="robot-menu-btn" id="robotTour" type="button" role="menuitem" aria-label="Salon ka voice tour shuru karein">Salon ka voice tour</button>' +
+      '<button class="robot-menu-btn" id="robotChat" type="button" role="menuitem" aria-label="Salon AI se chat karein">Chat karein</button>' +
+      '<button class="robot-menu-btn robot-menu-close" id="robotMenuClose" type="button" role="menuitem" aria-label="Robot menu band karein">Close</button>' +
+      "</div>" +
+      '<div class="robot-bubble" id="robotBubble" role="region" aria-label="Salon tour ka offer" hidden>' +
+      '<button class="robot-bubble-x" id="robotBubbleClose" type="button" aria-label="Message band karein">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+      'stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
+      "</button>" +
+      '<p class="robot-bubble-text">Namaste! Salon ka voice tour dekhna chahenge?</p>' +
+      '<div class="robot-bubble-actions">' +
+      '<button class="robot-bubble-btn primary" id="robotBubbleTour" type="button" aria-label="Salon ka voice tour shuru karein">Voice tour shuru karo</button>' +
+      '<button class="robot-bubble-btn" id="robotBubbleChat" type="button" aria-label="Salon AI se chat karein">Chat karo</button>' +
+      "</div>" +
+      "</div>" +
       '<section class="chat-panel" id="chatPanel" role="dialog" aria-label="Salon AI assistant" aria-hidden="true">' +
       '<header class="chat-head">' +
       '<div class="chat-avatar" aria-hidden="true">' +
-      '<span class="mini-bot"><span class="mini-antenna"></span>' +
-      '<span class="mini-face"><i></i><i></i></span></span>' +
+      '<img class="avatar-img" src="images/robot.svg" alt="" width="40" height="49" decoding="async">' +
       "</div>" +
       '<div class="chat-title">' +
       '<span class="chat-eyebrow">AI Concierge</span>' +
@@ -1601,7 +1679,10 @@
       "</button>" +
       "</header>" +
       '<div class="chat-toolbar"><span>Salon ke baare mein poochhein</span>' +
-      '<button class="chat-new" id="chatNew" type="button">New chat</button></div>' +
+      '<div class="chat-toolbar-actions">' +
+      '<button class="chat-new" id="chatTour" type="button" aria-label="Salon ka voice tour shuru karein">Tour</button>' +
+      '<button class="chat-new" id="chatNew" type="button">New chat</button>' +
+      "</div></div>" +
       '<div class="chat-log" id="chatLog" role="log" aria-live="polite" aria-relevant="additions"></div>' +
       '<div class="chat-chips" id="chatChips" aria-label="Quick replies"></div>' +
       '<div class="chat-compose">' +
@@ -1620,11 +1701,20 @@
 
     els.root = root;
     els.launcher = root.querySelector("#chatLauncher");
+    els.menu = root.querySelector("#robotMenu");
+    els.menuTour = root.querySelector("#robotTour");
+    els.menuChat = root.querySelector("#robotChat");
+    els.menuClose = root.querySelector("#robotMenuClose");
+    els.bubble = root.querySelector("#robotBubble");
+    els.bubbleTour = root.querySelector("#robotBubbleTour");
+    els.bubbleChat = root.querySelector("#robotBubbleChat");
+    els.bubbleClose = root.querySelector("#robotBubbleClose");
     els.panel = root.querySelector("#chatPanel");
     els.title = root.querySelector("#chatSalonName");
     els.wa = root.querySelector("#chatWa");
     els.close = root.querySelector("#chatClose");
     els.newChat = root.querySelector("#chatNew");
+    els.chatTour = root.querySelector("#chatTour");
     els.log = root.querySelector("#chatLog");
     els.chips = root.querySelector("#chatChips");
     els.input = root.querySelector("#chatInput");
@@ -1644,13 +1734,58 @@
      Events
      --------------------------------------------------------- */
   function bind() {
-    els.launcher.addEventListener("click", openChat);
+    els.launcher.addEventListener("click", function (event) {
+      event.preventDefault();
+      toggleMenu();
+    });
     els.close.addEventListener("click", closeChat);
+
+    els.menuTour.addEventListener("click", startTour);
+    els.menuChat.addEventListener("click", function () {
+      openChat();
+    });
+    els.menuClose.addEventListener("click", function () {
+      closeMenu(true);
+    });
+
+    els.menu.addEventListener("keydown", function (event) {
+      var items = menuButtons();
+      if (!items.length) return;
+      var index = items.indexOf(document.activeElement);
+      var next = -1;
+
+      if (event.key === "ArrowDown") next = (index + 1) % items.length;
+      else if (event.key === "ArrowUp") next = (index - 1 + items.length) % items.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = items.length - 1;
+
+      if (next > -1) {
+        event.preventDefault();
+        items[next].focus();
+      }
+    });
+
+    els.bubbleTour.addEventListener("click", startTour);
+    els.bubbleChat.addEventListener("click", function () {
+      openChat();
+    });
+    els.bubbleClose.addEventListener("click", function () {
+      hideBubble();
+      els.launcher.focus();
+    });
+
+    document.addEventListener("pointerdown", function (event) {
+      if (!menuOpen) return;
+      if (els.menu.contains(event.target) || els.launcher.contains(event.target)) return;
+      closeMenu(false);
+    });
 
     els.newChat.addEventListener("click", function () {
       resetHistory();
       els.input.focus();
     });
+
+    els.chatTour.addEventListener("click", startTour);
 
     els.send.addEventListener("click", function () {
       sendMessage(els.input.value);
@@ -1668,10 +1803,21 @@
     });
 
     document.addEventListener("keydown", function (event) {
-      if (
-        event.key === "Escape" &&
-        els.panel.classList.contains("open")
-      ) {
+      if (event.key !== "Escape") return;
+
+      if (menuOpen) {
+        event.preventDefault();
+        closeMenu(true);
+        return;
+      }
+
+      if (els.bubble && !els.bubble.hidden) {
+        event.preventDefault();
+        hideBubble();
+        return;
+      }
+
+      if (els.panel.classList.contains("open")) {
         event.preventDefault();
         closeChat();
       }
@@ -1698,7 +1844,11 @@
 
     buildDom();
     bind();
-    initRobot3D();
+    window.RobotUI = { setTalking: setTalking };
+    /* Naya robot ab images/robot.svg se aata hai (detailed + animated).
+       3D WebGL robot ki jagah SVG use ho raha hai — module file maujood
+       hai, dobara chalu karna ho to neeche wali line un-comment kar do. */
+    // initRobot3D();
     checkBackendStatus();
 
     var stored = loadHistory();
@@ -1715,6 +1865,7 @@
     }
 
     resizeInput();
+    scheduleBubble();
   }
 
   if (document.readyState === "loading") {

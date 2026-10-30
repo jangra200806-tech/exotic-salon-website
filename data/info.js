@@ -86,6 +86,60 @@ const SALON_INFO = {
     note: "Sound on karne ke liye video par tap karein"
   },
 
+  /* ---------- 1b. HERO SLIDER (home page) ----------
+     3 slides. image / alt / badge / icon / title (2 lines) / accent / text
+     + dono buttons ka label aur link. position = object-position. */
+  heroSlides: [
+    {
+      image: "images/gallery1.jpg",
+      width: 720,
+      height: 900,
+      position: "center top",
+      alt: "Bridal makeup by Exotic Salon, Kaithal",
+      badge: "Bridal Studio",
+      icon: "sparkle",
+      title: ["Bridal makeup", "for your big day"],
+      accent: "Bridal",
+      text: "HD and airbrush bridal looks with draping, hair styling and jewellery setting — all under one roof.",
+      primaryLabel: "Explore Services",
+      primaryHref: "services.html#bridal",
+      secondaryLabel: "Contact Us",
+      secondaryHref: "contact.html"
+    },
+    {
+      image: "images/slide5.jpg",
+      width: 1600,
+      height: 900,
+      position: "center 50%",
+      alt: "Hair wash and grooming stations at Exotic Salon",
+      badge: "Hair & Grooming",
+      icon: "scissors",
+      title: ["Hair that", "feels like you"],
+      accent: "Hair",
+      text: "Precision cuts, colour, keratin and beard styling for men, women and kids.",
+      primaryLabel: "Explore Services",
+      primaryHref: "services.html",
+      secondaryLabel: "Contact Us",
+      secondaryHref: "contact.html"
+    },
+    {
+      image: "images/hero-bg.jpg",
+      width: 1728,
+      height: 1152,
+      position: "center 45%",
+      alt: "Inside Exotic Hair & Beauty Unisex Salon, Kaithal",
+      badge: "Our Salon",
+      icon: "store",
+      title: ["A calm space", "in the heart of Kaithal"],
+      accent: "Kaithal",
+      text: "Golden mirrors, hygienic tools and a team that listens — visit us in Huda Sector 20.",
+      primaryLabel: "Explore Services",
+      primaryHref: "services.html",
+      secondaryLabel: "Contact Us",
+      secondaryHref: "contact.html"
+    }
+  ],
+
   /* ---------- 2. CONTACT ---------- */
   phone: {
     display: "09000997800",
@@ -117,16 +171,25 @@ const SALON_INFO = {
     full: "DSS 266, Huda Sector 20, Huda, Kaithal, Haryana 136027",
     /* Google Map embed (no API key needed) */
     mapEmbed:
-      "https://www.google.com/maps?q=Huda+Sector+20+Kaithal+Haryana+136027&output=embed",
+      "https://www.google.com/maps?q=29.8128007,76.4155915&z=17&output=embed",
     /* "Get Directions" button link */
     mapLink:
-      "https://www.google.com/maps/dir/?api=1&destination=Huda+Sector+20+Kaithal+Haryana+136027",
+      "https://www.google.com/maps/dir/?api=1&destination=29.8128007,76.4155915",
     /* Google listing link — "Rate us on Google" ke liye base.
        Jab aapko asli Google review link mile, use reviewUrl mein daal do
        (file ke end mein, SALON_INFO.reviewUrl wali line par). */
     googleListing:
       "https://www.google.com/maps/search/?api=1&query=Exotic+Hair+%26+Beauty+Unisex+Salon+Huda+Sector+20+Kaithal"
   },
+
+  /* ---------- 3b. GOOGLE MAPS LOCATION ----------
+     Location se judi har cheez yahan se aati hai (HTML mein hardcode nahi). */
+  mapLat: 29.8128007,
+  mapLng: 76.4155915,
+  mapEmbedUrl:
+    "https://www.google.com/maps?q=29.8128007,76.4155915&z=17&output=embed",
+  mapDirectionsUrl:
+    "https://www.google.com/maps/dir/?api=1&destination=29.8128007,76.4155915",
 
   /* ---------- 4. RATING ---------- */
   rating: {

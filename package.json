@@ -12,5 +12,17 @@
   "type": "commonjs",
   "dependencies": {
     "nodemailer": "^10.1.2"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jangra200806-tech/exotic-salon-website.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jangra200806-tech/exotic-salon-website/issues"
+  },
+  "homepage": "https://github.com/jangra200806-tech/exotic-salon-website#readme"
 }
