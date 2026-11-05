@@ -16,10 +16,41 @@
   var synth = SPEECH_OK ? window.speechSynthesis : null;
   var voices = [];
 
+  function tourText(text, D) {
+    var c = D && D.confirmed;
+    if (!c) return text;
+    if (!c.prices) {
+      text = text.replace(/with clear starting prices/g, "");
+      text = text.replace(/with prices and durations/g, "with durations");
+      text = text.replace(/prices at a glance/g, "services at a glance");
+      text = text.replace(/starting prices/g, "services");
+      text = text.replace(/prices and durations/g, "durations");
+      text = text.replace(/and durations/g, "");
+      text = text.replace(/duration/g, "");
+      text = text.replace(/\s+/g, " ").trim();
+    }
+    if (!c.durations) {
+      text = text.replace(/with prices and durations/g, "with prices");
+      text = text.replace(/prices and durations/g, "prices");
+      text = text.replace(/and durations/g, "");
+      text = text.replace(/duration/g, "");
+      text = text.replace(/\s+/g, " ").trim();
+    }
+    if (!c.offers) {
+      text = text.replace(/, and check the current offers for extra value/g, "");
+      text = text.replace(/offers for extra value/g, "");
+    }
+    if (!c.team) {
+      text = text.replace(/Meet the specialists/g, "Visit us");
+      text = text.replace(/specialists behind your look/g, "our services");
+    }
+    return text;
+  }
+
   var PAGES = {
     "index.html": {
       label: "Home",
-      next: "services.html",
+      next: "services",
       steps: [
         {
           sel: "#home",
@@ -67,7 +98,7 @@
     },
     "services.html": {
       label: "Services",
-      next: "gallery.html",
+      next: "gallery",
       steps: [
         {
           sel: ".page-banner",
@@ -90,7 +121,7 @@
     },
     "gallery.html": {
       label: "Gallery",
-      next: "contact.html",
+      next: "contact",
       steps: [
         {
           sel: ".page-banner",
@@ -535,8 +566,9 @@
         if (!active || token !== runToken) return;
       }
 
-      setCaption((i + 1) + " / " + steps.length + "  ·  " + step.text);
-      await narrate(step.text);
+      var spokenText = tourText(step.text, window.SALON_INFO);
+      setCaption((i + 1) + " / " + steps.length + "  ·  " + spokenText);
+      await narrate(spokenText);
       if (!active || token !== runToken) return;
 
       await wait(step.pause || 900);
@@ -629,7 +661,7 @@
 
     if (pageKey() !== "index.html") {
       storeSet();
-      window.location.href = "index.html?tour=1";
+      window.location.href = "/?tour=1";
       return;
     }
 

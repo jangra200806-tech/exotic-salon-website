@@ -15,9 +15,11 @@
   var D = (typeof window !== "undefined" && window.SALON_INFO) || {};
   var SALON = D.shortName || "Exotic Salon";
   var WA_BASE =
-    (D.whatsapp && D.whatsapp.link) || "https://wa.me/919000997800";
+    (D.whatsapp && D.whatsapp.link) || "https://wa.me/" + (D.whatsappNumber || "917082014381");
   var PHONE = (D.phone && D.phone.display) || "09000997800";
   var STORAGE_KEY = "exotic-ai-chat-v1";
+  var ROBOT_POS_KEY = "exotic-robot-pos";
+  var BUBBLE_SEEN_KEY = "exotic-bubble-seen";
   var SCRIPT_NODE = document.currentScript;
   var ROBOT_URL = SCRIPT_NODE && SCRIPT_NODE.src
     ? new URL("robot3d.js", SCRIPT_NODE.src).href
@@ -34,8 +36,7 @@
     "AI assistant, kabhi galti ho sakti hai. Booking ke liye WhatsApp use karein.";
 
   var FALLBACK =
-    "Main abhi AI service se connect nahi kar paya. Aap dobara try karein ya " +
-    "hume WhatsApp/call karein. WhatsApp: " +
+    "Main abhi AI service se connect nahi kar paya, lekin mainin local assistant se baat kar rahe hain. Main services, prices, timings, address aur booking mein help kar sakta hoon. Apna sawal likhein ya \"help\" likhein. WhatsApp: " +
     WA_BASE +
     " · Phone: " +
     PHONE;
@@ -244,6 +245,10 @@
     "acrylic nails", "lash lift"
   ];
 
+  var LOCAL_HELP_WORDS = [
+    "help", "kya kar sakta", "kya poochh sakta", "kya poochhna", "what can you do", "what do you do", "kaise madad", "madad", "sawal", "questions", "capabilities", "features", "koi bhi sawal"
+  ];
+
   var LOCAL_ALIASES = [
     { keys: ["advance haircut", "advance hair cut", "advanced haircut", "advanced hair cut", "advance cut"], names: ["Advance Hair Cut"] },
     { keys: ["haircut", "hair cut", "hair cutting", "haircutting", "bal katna", "baal katna", "bal katne", "baal katne", "baal cut", "bal cut", "baal cutting", "bal cutting", "baal katwana", "bal katwana"], names: ["Men's Haircut", "Women's Haircut", "Kids Hair Cut", "Advance Hair Cut"] },
@@ -337,6 +342,7 @@
 
   function localPriceOf(name) {
     var service = localServicesByNames([name])[0];
+    if (D.confirmed && !D.confirmed.prices) return "price ke liye WhatsApp par poochein";
     return service && service.price ? service.price : "price data me listed nahi";
   }
 
@@ -348,11 +354,22 @@
   }
 
   function localServiceLine(service, withDesc) {
-    var price = service.price
-      ? "starting from " + service.price
-      : "price data me listed nahi";
-    return "• " + service.name + " — " + price +
-      (service.duration ? " (" + service.duration + ")" : "") +
+    var parts = [service.name];
+    if (D.confirmed && D.confirmed.prices && service.price) {
+      parts.push("starting from " + service.price);
+    } else if (D.confirmed && !D.confirmed.prices) {
+      parts.push("price ke liye WhatsApp par poochein");
+    } else if (service.price) {
+      parts.push("starting from " + service.price);
+    }
+    if (D.confirmed && D.confirmed.durations && service.duration) {
+      parts.push("(" + service.duration + ")");
+    } else if (D.confirmed && !D.confirmed.durations && service.duration) {
+      parts.push("(duration ke liye WhatsApp par poochein)");
+    } else if (service.duration) {
+      parts.push("(" + service.duration + ")");
+    }
+    return "• " + parts.join(" — ") +
       (withDesc && service.desc ? "\n  " + service.desc : "");
   }
 
@@ -447,15 +464,21 @@
       extra += "\nFacial unisex hai — ladkon aur ladkiyon dono ke liye available.";
     }
 
-    var bridalOffer = (D.offers || []).find(function (offer) {
-      return /bridal/i.test(offer.title || "");
-    });
-    if (bridalOffer && localHasWord(q, "bridal")) {
-      extra += "\n" + bridalOffer.desc + " (" + bridalOffer.highlight + ").";
+    if (D.confirmed && D.confirmed.offers) {
+      var bridalOffer = (D.offers || []).find(function (offer) {
+        return /bridal/i.test(offer.title || "");
+      });
+      if (bridalOffer && localHasWord(q, "bridal")) {
+        extra += "\n" + bridalOffer.desc + " (" + bridalOffer.highlight + ").";
+      }
     }
 
+    var priceNote = D.confirmed && !D.confirmed.prices
+      ? "\nPrices ke liye WhatsApp par poochein."
+      : "";
+
     return (wantsPrice ? "Ye services available hain, prices data ke according:" : "Yes, ye services available hain:") +
-      "\n" + lines + extra +
+      "\n" + lines + extra + priceNote +
       "\n\nBooking ke liye naam, service, date aur time WhatsApp/call par bhejein: " +
       WA_BASE + " · " + PHONE;
   }
@@ -489,26 +512,41 @@
         .map(function (service) { return service.name; });
       return names.length ? "• " + group + ": " + names.join(", ") : "";
     }).filter(Boolean);
-    var popular = all.filter(function (service) {
+    var popular = D.confirmed && !D.confirmed.popular ? [] : all.filter(function (service) {
       return service.popular && service.price;
     }).slice(0, 6);
 
+    var popularSection = D.confirmed && D.confirmed.popular && D.confirmed.prices && popular.length > 0
+      ? "\n\nPopular starting prices:\n" +
+        popular.map(function (service) {
+          return "• " + service.name + " — starting from " + service.price;
+        }).join("\n")
+      : "";
+
     return "Exotic Salon me ye services available hain:\n" +
       groupLines.join("\n") +
-      "\n\nPopular starting prices:\n" +
-      popular.map(function (service) {
-        return "• " + service.name + " — starting from " + service.price;
-      }).join("\n") +
+      popularSection +
       "\n\nKis service ka price ya duration chahiye?";
   }
 
   function localPriceReply() {
     var priced = (D.services || []).filter(function (service) {
-      return !!service.price;
+      return service.price;
     }).slice(0, 10);
+
+    if (D.confirmed && !D.confirmed.prices) {
+      return "Prices ki confirmed info data me listed nahi hai; exact price salon team confirm karegi. " +
+        "Aap kis service ka price jaanna chahte hain?";
+    }
+
+    if (!priced.length) {
+      return "Prices data me listed nahi hain; exact price salon team confirm karegi. " +
+        "Aap kis service ka price jaanna chahte hain?";
+    }
+
     return "Popular services ke starting prices:\n" +
       priced.map(function (service) { return localServiceLine(service, false); }).join("\n") +
-      "\n\nAap kisi service ka naam poochhein to exact price/duration bata dunga. Full list services.html par hai.";
+      "\n\nAap kisi service ka naam poochhein to exact price/duration bata dunga. Full list services par hai.";
   }
 
   function localBookingDetails(q) {
@@ -652,7 +690,7 @@
     lines.push("");
     lines.push("WhatsApp: " + WA_BASE);
     lines.push("Phone: " + PHONE);
-    lines.push("Online form: contact.html#book");
+    lines.push("Online form: contact#book");
     lines.push("Final slot salon team WhatsApp/call par confirm karegi.");
     return lines.join("\n");
   }
@@ -733,7 +771,7 @@
     var instagram = D.instagram || {};
     return "Phone: " + PHONE +
       "\nWhatsApp: " + WA_BASE +
-      "\nContact form: contact.html#book" +
+      "\nContact form: contact#book" +
       (instagram.handle ? "\nInstagram: " + instagram.handle + " (" + instagram.url + ")" : "");
   }
 
@@ -786,6 +824,10 @@
   }
 
   function localRatingReply() {
+    if (D.confirmed && !D.confirmed.testimonials) {
+      return "Reviews/rating ki confirmed info data me listed nahi hai; salon team se WhatsApp/call par poochein: " +
+        PHONE + " · " + WA_BASE + ".";
+    }
     var rating = D.rating || {};
     var address = D.address || {};
     return (rating.text || "4.9★ rated by 60+ customers in Kaithal") +
@@ -795,7 +837,7 @@
   function localAboutReply() {
     return "Main " + (D.name || "Exotic Hair & Beauty Unisex Salon") +
       ", Kaithal ka AI assistant hoon. " + (D.about || "") +
-      (D.rating && D.rating.text ? "\n" + D.rating.text + "." : "");
+      (D.confirmed && D.confirmed.testimonials && D.rating && D.rating.text ? "\n" + D.rating.text + "." : "");
   }
 
   function localFacilitiesReply() {
@@ -823,7 +865,7 @@
     var paymentFaq = (D.faqs || []).find(function (item) {
       return /payment|upi|card|cash/i.test((item.q || "") + " " + (item.a || ""));
     });
-    var offers = (D.offers || []).map(function (offer) { return offer.title; });
+    var offers = D.confirmed && D.confirmed.offers ? (D.offers || []).map(function (offer) { return offer.title; }) : [];
     return (D.name || "Exotic Hair & Beauty Unisex Salon") +
       "\n" + (D.about || "") +
       "\nServices: " + (D.services || []).length + " services — " + groups.join(", ") +
@@ -834,13 +876,17 @@
       "\nPhone: " + PHONE +
       "\nWhatsApp: " + WA_BASE +
       (instagram.handle ? "\nInstagram: " + instagram.handle : "") +
-      (rating.text ? "\nRating: " + rating.text : "") +
+      (D.confirmed && D.confirmed.testimonials && rating.text ? "\nRating: " + rating.text : "") +
       "\nPayment: " + ((paymentFaq && paymentFaq.a) || "Cash, UPI aur Card.").replace(/^Haan,\s*hum\s*/i, "") +
       "\nHome services: " + localHomeServiceText() +
       (offers.length ? "\nOffers: " + offers.join(", ") : "");
   }
 
   function localTeamReply(q) {
+    if (D.confirmed && !D.confirmed.team) {
+      return "Team ki details data me listed nahi hain; salon team se WhatsApp/call par poochein: " +
+        PHONE + " · " + WA_BASE + ".";
+    }
     var team = D.team || [];
     var lead = "Hamari team me " + team.length + " members hain:";
     var member = null;
@@ -880,7 +926,7 @@
   function localGalleryReply() {
     var instagram = D.instagram || {};
     var note = D.beforeAfter ? "" : "\nBefore/after slider abhi data me listed nahi hai.";
-    return "Aap hamara work gallery page par dekh sakte hain: gallery.html" +
+    return "Aap hamara work gallery page par dekh sakte hain: gallery" +
       "\n• Photos: " + (D.gallery || []).length +
       "\n• Videos: " + (D.videos || []).length +
       (instagram.handle ? "\nInstagram: " + instagram.handle + " (" + instagram.url + ")" : "") +
@@ -1018,7 +1064,32 @@
       return "Skin/medical problem ke liye doctor se consult karna best hai. Main salon facial/skin care services ke baare me bata sakta hoon. Appointment: WhatsApp " + WA_BASE + " · Phone " + PHONE;
     }
 
-    return "Is specific baat ki confirmed info mere paas nahi hai. Main salon services, prices, timings, address aur appointment me help kar sakta hoon. WhatsApp: " + WA_BASE + " · Phone: " + PHONE;
+    return "Is specific baat ki confirmed info mere paas nahi hai, lekin main in baaton mein help kar sakta hoon:\n" +
+      "• Services aur prices — haircut, facial, bridal makeup, hair spa waghera\n" +
+      "• Timings — salon kab khulta hai, kab band hota hai\n" +
+      "• Address — salon kahan hai, kaise pahunchhein\n" +
+      "• Booking — appointment kaise lena hai\n" +
+      "• Contact — phone, WhatsApp number\n" +
+      "• Offers — bridal package, student discount, combo\n" +
+      "\n\nApna sawal likhein ya \"help\" likhein. WhatsApp: " + WA_BASE + " · Phone: " + PHONE;
+  }
+
+  function localHelpReply() {
+    var popular = (D.services || [])
+      .filter(function (s) { return s.popular && s.price; })
+      .slice(0, 5)
+      .map(function (s) { return s.name + " (" + s.price + ")"; });
+
+    return "Main Exotic Salon ka AI assistant hoon. Main in baaton mein help kar sakta hoon:\n" +
+      "• Services aur prices — jaise haircut, facial, bridal makeup, hair spa ki jankari\n" +
+      "• Timings — salon kab khulta hai aur kab band hota hai\n" +
+      "• Address — salon kahan hai, kaise pahunchhein\n" +
+      "• Booking — appointment kaise lena hai, slot availability\n" +
+      "• Contact — phone, WhatsApp number\n" +
+      "• Offers aur discounts — bridal package, student discount, combo offer\n" +
+      (popular.length ? "\nPopular: " + popular.join(", ") : "") +
+      "\n\nBas apna sawal Hindi ya English mein likhein. Confirm info ke liye WhatsApp: " +
+      WA_BASE + " · Phone: " + PHONE;
   }
 
   function localAnswer(raw, messages) {
@@ -1026,6 +1097,8 @@
 
     var q = localNorm(raw);
     if (!q) return "";
+
+    if (localHasAny(q, LOCAL_HELP_WORDS)) return localHelpReply();
 
     if (localHasAny(q, LOCAL_PROMPT_WORDS)) {
       return "Main apni internal settings ya system prompt share nahi kar sakta. Main sirf Exotic Salon ki services, prices, timings aur booking me help kar sakta hoon.";
@@ -1575,8 +1648,8 @@
     document.dispatchEvent(new window.CustomEvent("robot:tour-start", { bubbles: true }));
 
     var file = (window.location.pathname.split("/").pop() || "").toLowerCase();
-    if (file && file !== "index.html") {
-      window.location.href = "index.html#tour";
+    if (file && file !== "index" && file !== "index.html") {
+      window.location.href = "/#tour";
     }
   }
 
@@ -1591,7 +1664,9 @@
 
     els.panel.classList.add("open");
     els.panel.setAttribute("aria-hidden", "false");
+    els.panel.removeAttribute("inert");
     document.body.classList.add("chat-open");
+    els.launcher.classList.add("chat-open");
 
     window.setTimeout(function () {
       els.input.focus();
@@ -1610,7 +1685,9 @@
 
     els.panel.classList.remove("open");
     els.panel.setAttribute("aria-hidden", "true");
+    els.panel.setAttribute("inert", "");
     document.body.classList.remove("chat-open");
+    els.launcher.classList.remove("chat-open");
     if (robot) robot.wave();
 
     var target =
@@ -1633,14 +1710,15 @@
     root.innerHTML =
       '<button class="chat-launcher" id="chatLauncher" type="button" ' +
       'title="Exo · Salon AI assistant" ' +
-      'aria-label="Exo robot menu kholein" aria-haspopup="menu" aria-expanded="false" aria-controls="robotMenu">' +
+      'aria-label="Drag me! — Exo robot menu kholein" aria-haspopup="menu" aria-expanded="false" aria-controls="robotMenu">' +
       '<span class="robot-stage" aria-hidden="true">' +
       '<canvas class="robot-canvas" id="robotCanvas"></canvas>' +
       '<span class="robot-css">' +
-      '<img class="robot-img" src="images/robot.svg" alt="" width="76" height="94" decoding="async">' +
+      '<img class="robot-img" src="images/robot.svg" alt="Exotic Salon assistant" width="76" height="94" decoding="async">' +
       "</span>" +
       "</span>" +
       '<span class="robot-ping" aria-hidden="true"></span>' +
+      '<span class="drag-bubble" id="dragBubble" aria-hidden="true"><span class="drag-icon">⇄</span> Drag me!</span>' +
       "</button>" +
       '<div class="robot-menu" id="robotMenu" role="menu" aria-label="Exo robot menu" hidden>' +
       '<button class="robot-menu-btn" id="robotTour" type="button" role="menuitem" aria-label="Salon ka voice tour shuru karein">Salon ka voice tour</button>' +
@@ -1658,10 +1736,10 @@
       '<button class="robot-bubble-btn" id="robotBubbleChat" type="button" aria-label="Salon AI se chat karein">Chat karo</button>' +
       "</div>" +
       "</div>" +
-      '<section class="chat-panel" id="chatPanel" role="dialog" aria-label="Salon AI assistant" aria-hidden="true">' +
+      '<section class="chat-panel" id="chatPanel" role="dialog" aria-label="Salon AI assistant" aria-hidden="true" inert>' +
       '<header class="chat-head">' +
       '<div class="chat-avatar" aria-hidden="true">' +
-      '<img class="avatar-img" src="images/robot.svg" alt="" width="40" height="49" decoding="async">' +
+      '<img class="avatar-img" src="images/robot.svg" alt="Exotic Salon assistant" width="40" height="49" decoding="async">' +
       "</div>" +
       '<div class="chat-title">' +
       '<span class="chat-eyebrow">AI Concierge</span>' +
@@ -1723,6 +1801,7 @@
     els.robotCanvas = root.querySelector("#robotCanvas");
     els.status = root.querySelector("#chatStatus");
     els.statusText = root.querySelector("#chatStatusText");
+    els.dragBubble = root.querySelector("#dragBubble");
 
     els.title.textContent = SALON;
     els.panel.setAttribute("aria-label", SALON + " AI assistant");
@@ -1736,7 +1815,11 @@
   function bind() {
     els.launcher.addEventListener("click", function (event) {
       event.preventDefault();
-      toggleMenu();
+      var now = Date.now();
+      if (now - lastToggleTime > 300) {
+        lastToggleTime = now;
+        toggleMenu();
+      }
     });
     els.close.addEventListener("click", closeChat);
 
@@ -1783,6 +1866,89 @@
     els.newChat.addEventListener("click", function () {
       resetHistory();
       els.input.focus();
+    });
+
+    /* ---------- Robot drag logic ---------- */
+    var drag = { active: false, startX: 0, startY: 0, startLeft: 0, startTop: 0, moved: false };
+
+    function clamp(val, min, max) { return Math.min(max, Math.max(min, val)); }
+
+    function snapToEdge(x, y, w, h) {
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var leftEdge = x, rightEdge = vw - (x + w), topEdge = y, bottomEdge = vh - (y + h);
+      var min = Math.min(leftEdge, rightEdge, topEdge, bottomEdge);
+      if (min === leftEdge) return { x: 12, y: clamp(y, 12, vh - h - 12) };
+      if (min === rightEdge) return { x: vw - w - 12, y: clamp(y, 12, vh - h - 12) };
+      if (min === topEdge) return { x: clamp(x, 12, vw - w - 12), y: 12 };
+      return { x: clamp(x, 12, vw - w - 12), y: vh - h - 12 };
+    }
+
+    function applyPosition(x, y) {
+      els.launcher.style.left = x + "px";
+      els.launcher.style.top = y + "px";
+      els.launcher.style.right = "auto";
+      els.launcher.style.bottom = "auto";
+      try { localStorage.setItem(ROBOT_POS_KEY, JSON.stringify({ x: x, y: y })); } catch (e) {}
+    }
+
+    function loadRobotPosition() {
+      try { var pos = JSON.parse(localStorage.getItem(ROBOT_POS_KEY)); } catch (e) { pos = null; }
+      if (pos && typeof pos.x === "number" && typeof pos.y === "number") {
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var w = els.launcher.offsetWidth || 76, h = els.launcher.offsetHeight || 76;
+        var nx = clamp(pos.x, 12, vw - w - 12);
+        var ny = clamp(pos.y, 12, vh - h - 12);
+        applyPosition(nx, ny);
+      } else {
+        return;
+      }
+    }
+
+    els.launcher.addEventListener("pointerdown", function (event) {
+      if (event.button !== 0) return;
+      drag.active = true;
+      drag.moved = false;
+      drag.startX = event.clientX;
+      drag.startY = event.clientY;
+      drag.startLeft = parseFloat(els.launcher.style.left) || 0;
+      drag.startTop = parseFloat(els.launcher.style.top) || 0;
+      els.launcher.setPointerCapture(event.pointerId);
+    }, { passive: false });
+
+    els.launcher.addEventListener("pointermove", function (event) {
+      if (!drag.active) return;
+      var dx = event.clientX - drag.startX;
+      var dy = event.clientY - drag.startY;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) drag.moved = true;
+      var nx = clamp(drag.startLeft + dx, 12, window.innerWidth - (els.launcher.offsetWidth || 76) - 12);
+      var ny = clamp(drag.startTop + dy, 12, window.innerHeight - (els.launcher.offsetHeight || 76) - 12);
+      applyPosition(nx, ny);
+    }, { passive: false });
+
+    var lastToggleTime = 0;
+    els.launcher.addEventListener("pointerup", function (event) {
+      if (!drag.active) { drag.active = false; return; }
+      drag.active = false;
+      els.launcher.releasePointerCapture(event.pointerId);
+      if (!drag.moved) {
+        var now = Date.now();
+        if (now - lastToggleTime > 300) {
+          lastToggleTime = now;
+          toggleMenu();
+        }
+      } else {
+        var snapped = snapToEdge(
+          parseFloat(els.launcher.style.left) || 0,
+          parseFloat(els.launcher.style.top) || 0,
+          els.launcher.offsetWidth || 76,
+          els.launcher.offsetHeight || 76
+        );
+        applyPosition(snapped.x, snapped.y);
+      }
+    }, { passive: false });
+
+    els.launcher.addEventListener("pointercancel", function () {
+      drag.active = false;
     });
 
     els.chatTour.addEventListener("click", startTour);
@@ -1833,6 +1999,8 @@
       });
       els.chips.appendChild(button);
     });
+
+    loadRobotPosition();
   }
 
   /* ---------------------------------------------------------
@@ -1866,6 +2034,16 @@
 
     resizeInput();
     scheduleBubble();
+
+    /* ---------- Drag me bubble: first 7s of every visit ---------- */
+    try {
+      els.launcher.classList.add("drag-hint");
+      els.dragBubble.classList.add("show");
+      setTimeout(function () {
+        els.dragBubble.classList.remove("show");
+        els.launcher.classList.remove("drag-hint");
+      }, 7000);
+    } catch (e) {}
   }
 
   if (document.readyState === "loading") {

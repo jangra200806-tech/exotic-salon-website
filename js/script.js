@@ -34,14 +34,16 @@
 
   /* Real photo sizes — layout shift rokne ke liye */
   const DIMS = {
-    "images/gallery1.jpg": [720, 900],
-    "images/gallery2.jpg": [778, 900],
-    "images/gallery3.jpg": [678, 900],
-    "images/gallery4.jpg": [637, 900],
-    "images/gallery5.jpg": [322, 900],
-    "images/gallery6.jpg": [475, 900],
-    "images/hero.jpg": [1600, 900],
-    "images/about.jpg": [675, 900]
+    "images/bridal-makeup-kaithal-01.jpg": [720, 900],
+    "images/bridal-look-kaithal-01.jpg": [778, 900],
+    "images/bridal-jewellery-kaithal-01.jpg": [678, 900],
+    "images/hd-bridal-makeup-kaithal-01.jpg": [637, 900],
+    "images/party-hair-kaithal-01.jpg": [322, 900],
+    "images/salon-session-kaithal-01.jpg": [475, 900],
+    "images/salon-storefront-kaithal.jpg": [1600, 900],
+    "images/salon-about-kaithal.jpg": [675, 900],
+    "images/salon-interior-kaithal.jpg": [1728, 1152],
+    "images/waiting-lounge-kaithal.jpg": [1600, 900]
   };
 
   function dimAttrs(src) {
@@ -86,16 +88,31 @@
     const year = $("#year");
     if (year) year.textContent = new Date().getFullYear();
 
+    /* Phone-number links: only touch href + aria-label.
+       Never set textContent on .js-phone elements — some contain
+       inline SVG icons (floating call button, footer phone links)
+       that must not be wiped out by text replacement. */
     $$(".js-phone").forEach(function (a) {
-      a.setAttribute("href", "tel:" + D.phone.tel);
+      a.setAttribute("href", "tel:" + D.callPhone);
+      a.setAttribute("aria-label", "Call " + D.callPhone);
     });
     $$(".js-phone-text").forEach(function (el) {
-      el.textContent = D.phone.display;
+      el.textContent = D.callPhone;
     });
 
     $$(".js-wa").forEach(function (a) {
-      a.setAttribute("href", D.whatsapp.link);
+      a.setAttribute("href", "https://wa.me/" + D.whatsappNumber);
     });
+
+    /* JSON-LD telephone in <head> */
+    const jsonLd = document.querySelector('script[type="application/ld+json"]');
+    if (jsonLd) {
+      try {
+        const data = JSON.parse(jsonLd.textContent);
+        if (data.telephone) data.telephone = "+" + D.callPhone;
+        jsonLd.textContent = JSON.stringify(data);
+      } catch (e) { /* ignore JSON-LD parse errors */ }
+    }
 
     $$(".js-insta").forEach(function (a) {
       a.setAttribute("href", D.instagram.url);
@@ -153,9 +170,9 @@
      2. Header + mobile menu
      --------------------------------------------------------- */
   function initHeader() {
-    const header = $("#siteHeader");
-    const burger = $("#hamburger");
-    const menu = $("#mobileMenu");
+    const header = document.getElementById("siteHeader");
+    const burger = document.getElementById("hamburger");
+    const menu = document.getElementById("mobileMenu");
 
     function onScroll() {
       if (header) header.classList.toggle("scrolled", window.scrollY > 8);
@@ -173,6 +190,7 @@
     }
 
     burger.addEventListener("click", function () {
+      closeAllDropdowns();
       setOpen(!menu.classList.contains("open"));
     });
 
@@ -191,6 +209,80 @@
       if (!menu.classList.contains("open")) return;
       if (menu.contains(event.target) || burger.contains(event.target)) return;
       setOpen(false);
+    });
+
+    /* ---------------------------------------------------------
+       Dropdown toggles (Services, Gallery)
+       --------------------------------------------------------- */
+    const dropToggles = $$(".nav-drop-toggle");
+    let closeTimer = null;
+
+    function closeAllDropdowns() {
+      $$(".nav-item.has-dropdown").forEach(function (item) {
+        item.classList.remove("hover-open", "is-open");
+        const btn = item.querySelector(".nav-drop-toggle");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    dropToggles.forEach(function (btn) {
+      const item = btn.closest(".nav-item.has-dropdown");
+      const dropdown = item.querySelector(".nav-dropdown");
+
+      /* Mobile/touch: tap to toggle (one at a time) */
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const isOpen = item.classList.contains("is-open");
+        closeAllDropdowns();
+        if (!isOpen) {
+          item.classList.add("is-open");
+          btn.setAttribute("aria-expanded", "true");
+        } else {
+          btn.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      /* Desktop hover: open on enter, close with 150ms delay on leave */
+      btn.addEventListener("mouseenter", function () {
+        clearTimeout(closeTimer);
+        closeAllDropdowns();
+        item.classList.add("hover-open");
+        btn.setAttribute("aria-expanded", "true");
+      });
+
+      btn.addEventListener("mouseleave", function () {
+        closeTimer = setTimeout(function () {
+          item.classList.remove("hover-open");
+          btn.setAttribute("aria-expanded", "false");
+        }, 150);
+      });
+
+      /* Keep open when mouse moves from parent into dropdown */
+      dropdown.addEventListener("mouseenter", function () {
+        clearTimeout(closeTimer);
+        item.classList.add("hover-open");
+      });
+
+      dropdown.addEventListener("mouseleave", function () {
+        closeTimer = setTimeout(function () {
+          item.classList.remove("hover-open");
+          btn.setAttribute("aria-expanded", "false");
+        }, 150);
+      });
+    });
+
+    /* Close dropdowns on outside tap/click */
+    document.addEventListener("pointerdown", function (event) {
+      if (!event.target.closest(".nav-item.has-dropdown")) {
+        closeAllDropdowns();
+      }
+    });
+
+    /* Close dropdowns on Esc */
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeAllDropdowns();
+      }
     });
   }
 
@@ -281,8 +373,8 @@
     bar.className = "mobile-bar";
     bar.innerHTML =
       '<div class="mb-inner">' +
-      '<a class="btn btn-outline js-phone" href="tel:' + esc(D.phone.tel) + '">Call</a>' +
-      '<a class="btn btn-primary js-wa" href="' + esc(D.whatsapp.link) + '" target="_blank" rel="noopener">WhatsApp</a>' +
+      '<a class="btn btn-outline js-phone" href="tel:' + esc(D.callPhone) + '">' + esc(D.callPhone) + '</a>' +
+      '<a class="btn btn-primary js-wa" href="https://wa.me/' + esc(D.whatsappNumber) + '" target="_blank" rel="noopener">WhatsApp</a>' +
       "</div>";
     document.body.appendChild(bar);
 
@@ -297,26 +389,102 @@
   /* ---------------------------------------------------------
      6. Service cards
      --------------------------------------------------------- */
+  /* Service id → short video preview (falls back to the service photo) */
+  var SERVICE_VIDEO = {
+    m1: "videos/mens-haircut.mp4",
+    m2: "videos/mens-fade.mp4",
+    m3: "videos/hair-styling.mp4",
+    m4: "videos/hair-wash.mp4",
+    hc1: "videos/kids-cut.mp4",
+    hc2: "videos/mirror-closeup.mp4",
+    hc3: "videos/hair-wash.mp4",
+    hc10: "videos/hair-styling.mp4",
+    b1: "videos/bridal-blue.mp4",
+    mu1: "videos/makeup-application.mp4",
+    mu2: "videos/client-look.mp4",
+    mu3: "videos/client-look.mp4",
+    mu4: "videos/makeup-application.mp4",
+    mu5: "videos/bridal-pink.mp4",
+    gr2: "videos/mens-fade.mp4",
+    m5: "videos/client-chair.mp4",
+    w1: "videos/long-hair.mp4"
+  };
+
+  var GROUP_PHOTO = {
+    "Hair Care": "images/services/hair-spa-kaithal.jpg",
+    "Makeup": "images/services/bridal-makeup-kaithal.jpg",
+    "Nails": "images/services/airbrush-makeup-kaithal.jpg",
+    "Grooming": "images/services/mens-haircut-kaithal.jpg",
+    "Hair Removal": "images/services/hair-spa-kaithal.jpg",
+    "Skin Care": "images/services/airbrush-makeup-kaithal.jpg"
+  };
+
+  function serviceMedia(s) {
+    var videoSrc = s.video || SERVICE_VIDEO[s.id] || "";
+    var videos = D.videos || [];
+    var video = null;
+    for (var i = 0; i < videos.length; i++) {
+      if (videos[i].src === videoSrc) { video = videos[i]; break; }
+    }
+    var own = s.img || s.photo || "";
+    var thumb = own || (video && video.poster) || GROUP_PHOTO[s.group] ||
+      "images/salon-interior-kaithal.jpg";
+    var poster = own || (video && video.poster) || thumb;
+    return { video: videoSrc, thumb: thumb, poster: poster };
+  }
+
   function serviceCard(s, withReveal) {
     const price = s.price
       ? '<span class="price">' + esc(s.price) + "</span>"
-      : '<span class="price is-ask">Ask for price</span>';
+      : '<span class="price is-ask">Ask price</span>';
 
     const book =
-      "contact.html?service=" + encodeURIComponent(s.name) + "#book";
+      "contact?service=" + encodeURIComponent(s.name) + "#book";
+    const media = serviceMedia(s);
+    const webp = /\.(jpe?g|png)$/i.test(media.thumb)
+      ? media.thumb.replace(/\.(jpe?g|png)$/i, "") + "-480.webp"
+      : "";
 
     return (
-      '<article class="card service-card' + (withReveal ? " reveal" : "") + '"' +
-      ' data-categories="' + esc((s.categories || []).join(" ")) + '">' +
+      '<article class="card service-card service-card--compact' +
+      (withReveal ? " reveal" : "") + '"' +
+      ' id="service-' + esc(s.id) + '"' +
+      ' data-categories="' + esc((s.categories || []).join(" ")) + '"' +
+      ' data-media-src="' + esc(media.video || media.thumb) + '"' +
+      ' data-media-type="' + (media.video ? "video" : "image") + '"' +
+      ' data-media-poster="' + esc(media.poster) + '"' +
+      ' data-book="' + esc(book) + '">' +
+      '<div class="service-photo-wrap" aria-hidden="true">' +
+      '<picture class="service-picture">' +
+      (webp ? '<source srcset="' + esc(webp) + '" type="image/webp">' : "") +
+      '<img class="service-photo" src="' + esc(media.thumb) + '" alt="' + esc(s.name) + ' at Exotic Salon Kaithal" width="96" height="96" loading="lazy" decoding="async">' +
+      "</picture>" +
+      "</div>" +
+      '<div class="service-info">' +
       '<div class="service-top"><h3>' + esc(s.name) + "</h3>" + price + "</div>" +
-      "<p>" + esc(s.desc) + "</p>" +
+      (s.desc ? '<p class="service-desc">' + esc(s.desc) + "</p>" : "") +
       '<div class="service-meta"><span>' + esc(s.duration) + "</span>" +
       (s.popular ? '<span class="badge-popular">Popular</span>' : "") +
       "</div>" +
-      '<a class="service-link" href="' + esc(book) + '">Book this' +
-      '<span aria-hidden="true">→</span></a>' +
+      "</div>" +
+      '<span class="service-go" aria-hidden="true">↗</span>' +
+      '<button class="service-open" type="button">' +
+      '<span class="visually-hidden">View details for ' + esc(s.name) + "</span>" +
+      "</button>" +
       "</article>"
     );
+  }
+
+  function serviceIcon(id) {
+    const icons = {
+      m1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18V3z"/><path d="M16 14v2M8 14v2M12 16v2"/></svg>',
+      w1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.47"/><path d="M16 3.13A4 4 0 0 1 10.21 3"/></svg>',
+      b1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-5a1.65 1.65 0 0 0-1.82-1.51 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-5a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33h.1a1.65 1.65 0 0 0 1-1.51V4.33a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-0 2 2 0 0 1 0 2.83l.06.06a1.65 1.65 0 0 0 1.51 1h.1a1.65 1.65 0 0 0 1.82-.33v-.1a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83v.1l.06.06a1.65 1.65 0 0 0-.33 1.82z"/></svg>',
+      m2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 13h10M7 18h10M7 13v5M17 13v5M5 7h14v2H5zM12 7v2M15 13h-1M11 13H9"/></svg>',
+      hc10: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 13h10M7 18h10M7 13v5M17 13v5M5 7h14v2H5z"/></svg>',
+      b1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="7"/><polyline points="8 21 12 17 16 21"/></svg>'
+    };
+    return icons[id] || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>';
   }
 
   function renderFeaturedServices() {
@@ -360,17 +528,32 @@
      8. Gallery preview (home)
      --------------------------------------------------------- */
   function renderGalleryPreview() {
-    const box = $("#galleryPreview");
+    const box = $("#homeGallery");
     if (!box) return;
 
     box.innerHTML = D.gallery
       .slice(0, 6)
       .map(function (g) {
+        var stem = g.src.replace(/\.(jpg|jpeg|png)$/i, "");
+        var dims = dimAttrs(g.src);
+        var w = g.width || 0;
+        var widths = [480, 720, 800, 1200].filter(function (tw) { return tw <= w; });
+    if (!widths.length && w) widths = [w];
+        var webp = widths
+          .map(function (tw) { return stem + "-" + tw + ".webp " + tw + "w"; })
+          .join(", ");
+        var fallback = w >= 1200 ? stem + "-1200.jpg" : g.src;
         return (
-          '<a class="photo-tile reveal" href="gallery.html" aria-label="' +
+          '<a class="photo-tile reveal" href="gallery" aria-label="' +
           esc(g.caption) + " — open gallery" + '">' +
-          '<img src="' + esc(g.src) + '" alt="' + esc(g.alt) + '" ' +
-          dimAttrs(g.src) + ' loading="lazy" decoding="async">' +
+          '<picture class="photo-picture">' +
+          (webp
+            ? '<source srcset="' + webp + '" ' +
+              'sizes="(max-width: 1023px) 50vw, 33vw" type="image/webp">'
+            : "") +
+          '<img src="' + fallback + '" alt="' + esc(g.alt) + '" ' +
+          dims + ' loading="lazy" decoding="async">' +
+          '</picture>' +
           '<span class="cap">' + esc(g.caption) + "</span>" +
           "</a>"
         );
@@ -567,105 +750,6 @@
     apply(active ? active.dataset.filter : "all");
   }
 
-  /* ---------------------------------------------------------
-     12. Gallery page — grid, lightbox, videos, before/after
-     --------------------------------------------------------- */
-  function renderGalleryPage() {
-    const grid = $("#galleryGrid");
-    if (!grid) return;
-
-    grid.innerHTML = D.gallery
-      .map(function (g, i) {
-        return (
-          '<button class="photo-tile reveal" type="button" data-i="' + i + '" ' +
-          'aria-label="View ' + esc(g.caption) + ' photo">' +
-          '<img src="' + esc(g.src) + '" alt="' + esc(g.alt) + '" ' +
-          dimAttrs(g.src) + ' loading="lazy" decoding="async">' +
-          '<span class="cap">' + esc(g.caption) + "</span>" +
-          "</button>"
-        );
-      })
-      .join("");
-
-    initLightbox();
-  }
-
-  function initLightbox() {
-    const lb = $("#lightbox");
-    const img = $("#lbImg");
-    const cap = $("#lbCap");
-    const closeBtn = $("#lbClose");
-    if (!lb || !img || !closeBtn) return;
-
-    const items = D.gallery;
-    let index = 0;
-    let lastFocus = null;
-
-    function show(i) {
-      index = (i + items.length) % items.length;
-      const g = items[index];
-      img.src = g.src;
-      img.alt = g.alt;
-      if (cap) cap.textContent = g.caption;
-    }
-
-    function open(i) {
-      lastFocus = document.activeElement;
-      show(i);
-      lb.classList.add("open");
-      lb.setAttribute("aria-hidden", "false");
-      document.body.classList.add("no-scroll");
-      closeBtn.focus();
-    }
-
-    function close() {
-      lb.classList.remove("open");
-      lb.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("no-scroll");
-      if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
-    }
-
-    document.addEventListener("click", function (event) {
-      const tile = event.target.closest("#galleryGrid .photo-tile");
-      if (tile) open(Number(tile.dataset.i));
-    });
-
-    closeBtn.addEventListener("click", close);
-    const prev = $("#lbPrev");
-    const next = $("#lbNext");
-    if (prev) prev.addEventListener("click", function () { show(index - 1); });
-    if (next) next.addEventListener("click", function () { show(index + 1); });
-
-    lb.addEventListener("click", function (event) {
-      if (event.target === lb) close();
-    });
-
-    /* Focus trap — Tab lightbox ke andar hi rahe */
-    lb.addEventListener("keydown", function (event) {
-      if (event.key !== "Tab") return;
-      const focusables = $$("button", lb).filter(function (b) {
-        return !b.disabled && b.offsetParent !== null;
-      });
-      if (!focusables.length) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    });
-
-    document.addEventListener("keydown", function (event) {
-      if (!lb.classList.contains("open")) return;
-      if (event.key === "Escape") close();
-      else if (event.key === "ArrowLeft") show(index - 1);
-      else if (event.key === "ArrowRight") show(index + 1);
-    });
-  }
-
   function renderVideos() {
     const grid = $("#videoGrid");
     if (!grid) return;
@@ -839,7 +923,7 @@
         if (date && date.value) msg += " on " + date.value;
         msg += ".";
         if (name && name.value.trim()) msg += " — " + name.value.trim();
-        return D.whatsapp.link + "?text=" + encodeURIComponent(msg);
+        return "https://wa.me/" + D.whatsappNumber + "?text=" + encodeURIComponent(msg);
       }
       function update() { waBtn.setAttribute("href", buildLink()); }
       ["input", "change"].forEach(function (ev) { form.addEventListener(ev, update); });
@@ -907,7 +991,7 @@
     el.innerHTML =
       '<span class="hs-ic">' + icon("home") + "</span>" +
       "<span>" + esc(D.homeService) + "</span>" +
-      '<a class="hs-link" href="' + esc(D.whatsapp.link) + '" target="_blank" rel="noopener">' +
+      '<a class="hs-link" href="https://wa.me/' + esc(D.whatsappNumber) + '" target="_blank" rel="noopener">' +
       "Ask on WhatsApp</a>";
   }
 
@@ -942,6 +1026,96 @@
   /* ---------------------------------------------------------
      14. Boot
      --------------------------------------------------------- */
+  function initServiceModal() {
+    if (document.querySelector("#serviceModal")) return;
+    const modal = document.createElement("div");
+    modal.id = "serviceModal";
+    modal.className = "service-modal";
+    modal.innerHTML =
+      '<div class="service-modal-backdrop"></div>' +
+      '<div class="service-modal-content" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle">' +
+      '  <button class="service-modal-close" type="button" aria-label="Close">×</button>' +
+      '  <div class="service-modal-body">' +
+      '    <h3 class="service-modal-title" id="serviceModalTitle">Service details</h3>' +
+      '    <div class="service-modal-media"></div>' +
+      '    <div class="service-modal-foot">' +
+      '      <a class="btn btn-primary service-modal-book" href="contact#book">Book this service</a>' +
+      '    </div>' +
+      '  </div>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    const backdrop = modal.querySelector(".service-modal-backdrop");
+    const closeBtn = modal.querySelector(".service-modal-close");
+    const titleEl = modal.querySelector(".service-modal-title");
+    const mediaEl = modal.querySelector(".service-modal-media");
+    const bookEl = modal.querySelector(".service-modal-book");
+    let lastCard = null;
+
+    function close() {
+      modal.classList.remove("open");
+      document.body.classList.remove("modal-open");
+      mediaEl.innerHTML = "";
+      if (lastCard && lastCard.focus) lastCard.focus();
+      lastCard = null;
+    }
+
+    function openCard(card) {
+      lastCard = card.querySelector(".service-open") || card;
+      const nameEl = card.querySelector("h3");
+      const name = nameEl ? nameEl.textContent : "";
+      const mediaSrc = card.getAttribute("data-media-src");
+      const mediaType = card.getAttribute("data-media-type") || "image";
+      const poster = card.getAttribute("data-media-poster");
+      titleEl.textContent = name;
+      bookEl.href = card.getAttribute("data-book") || "contact#book";
+      mediaEl.innerHTML = "";
+      if (mediaType === "video" && mediaSrc) {
+        const vid = document.createElement("video");
+        vid.src = mediaSrc;
+        if (poster) vid.poster = poster;
+        vid.controls = true;
+        vid.autoplay = true;
+        vid.playsInline = true;
+        vid.setAttribute("playsinline", "");
+        vid.preload = "metadata";
+        mediaEl.appendChild(vid);
+        const p = vid.play();
+        if (p && p.catch) p.catch(function () {});
+      } else if (mediaSrc) {
+        const img = document.createElement("img");
+        img.src = mediaSrc;
+        img.alt = name;
+        mediaEl.appendChild(img);
+      }
+      modal.classList.add("open");
+      document.body.classList.add("modal-open");
+      closeBtn.focus();
+    }
+
+    backdrop.addEventListener("click", close);
+    closeBtn.addEventListener("click", close);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modal.classList.contains("open")) close();
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.closest("a")) return;
+      const card = e.target.closest(".service-card");
+      if (card) openCard(card);
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      if (!e.target.closest) return;
+      const card = e.target.closest(".service-card");
+      if (card && document.activeElement === card) {
+        e.preventDefault();
+        openCard(card);
+      }
+    });
+  }
+
   function init() {
     fillCommon();
     injectSeo();
@@ -957,7 +1131,6 @@
     renderOffers();
 
     renderServicesPage();
-    renderGalleryPage();
     renderVideos();
     initBeforeAfter();
 
@@ -968,72 +1141,12 @@
     renderOpenStatus();
 
     initReveal();
+    initServiceModal();
   }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
-  }
-})();
-
-/* =========================================================
-   2026 header: desktop dropdowns + mobile accordions
-   ========================================================= */
-(function () {
-  "use strict";
-
-  function closeAll(except) {
-    document.querySelectorAll(".nav-item.is-open").forEach(function (item) {
-      if (item === except) return;
-      item.classList.remove("is-open");
-      var btn = item.querySelector(".nav-drop-toggle");
-      if (btn) btn.setAttribute("aria-expanded", "false");
-    });
-  }
-
-  document.querySelectorAll(".nav-item.has-dropdown .nav-drop-toggle").forEach(function (btn) {
-    btn.addEventListener("click", function (event) {
-      event.preventDefault();
-      var item = btn.closest(".nav-item");
-      var open = !item.classList.contains("is-open");
-      closeAll(item);
-      item.classList.toggle("is-open", open);
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-  });
-
-  document.addEventListener("click", function (event) {
-    if (!event.target.closest(".nav-item.has-dropdown")) closeAll(null);
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key !== "Escape") return;
-    var open = document.querySelector(".nav-item.is-open");
-    closeAll(null);
-    if (open) {
-      var btn = open.querySelector(".nav-drop-toggle");
-      if (btn) btn.focus();
-    }
-  });
-
-  document.querySelectorAll(".m-acc-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var panel = btn.nextElementSibling;
-      var open = !btn.classList.contains("is-open");
-      btn.classList.toggle("is-open", open);
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-      if (panel) panel.classList.toggle("is-open", open);
-    });
-  });
-
-  /* keep the floating stack and robot out of the open mobile menu */
-  var menu = document.getElementById("mobileMenu");
-  if (menu) {
-    var syncMenu = function () {
-      document.body.classList.toggle("menu-open", menu.classList.contains("open"));
-    };
-    new MutationObserver(syncMenu).observe(menu, { attributes: true, attributeFilter: ["class"] });
-    syncMenu();
   }
 })();

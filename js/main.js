@@ -1,8 +1,7 @@
 /* =========================================================
    js/main.js
    ---------------------------------------------------------
-   Contact form ko /api/contact par POST karta hai
-   (Brevo SMTP se salon ko email jaati hai).
+   Contact form ko /api/enquiry par POST karta hai.
 
    Sirf contact.html par load hota hai. Agar page par
    #contactForm na ho to chup-chaap kuch nahi karta.
@@ -53,7 +52,9 @@
         phone: valueOf(fd, "phone"),
         service: valueOf(fd, "service"),
         date: valueOf(fd, "date"),
-        message: valueOf(fd, "message")
+        time: valueOf(fd, "time"),
+        message: valueOf(fd, "message"),
+        website: valueOf(fd, "website")
       };
 
       /* Client-side validation (server bhi dobara check karta hai) */
@@ -69,11 +70,11 @@
       var originalLabel = submitBtn ? submitBtn.textContent : "";
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = "Sending…";
+        submitBtn.textContent = "Bhej rahe hain…";
       }
       setMsg("Aapki enquiry bhej rahe hain…", "info");
 
-      fetch("/api/contact", {
+      fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -85,26 +86,17 @@
               return {};
             })
             .then(function (data) {
-              return { ok: res.ok && data && data.ok, data: data };
+              return { ok: res.ok, data: data };
             });
         })
         .then(function (result) {
           if (!result.ok) {
             throw new Error((result.data && result.data.error) || "Request failed");
           }
-          setMsg(
-            "Shukriya " +
-              payload.name +
-              "! Aapki enquiry mil gayi hai — hum jaldi aapko call ya WhatsApp par contact karenge.",
-            "success"
-          );
-          form.reset();
+          showConfirmCard(payload.name);
         })
         .catch(function () {
-          setMsg(
-            "Sorry, abhi enquiry nahi bhej paye. Kripya direct call karein ya neeche wale WhatsApp button se message bhejein.",
-            "error"
-          );
+          showErrorCard();
         })
         .then(function () {
           if (submitBtn) {
@@ -113,5 +105,39 @@
           }
         });
     });
+
+    /* Confirmation card dikhao aur form hide karo */
+    function showConfirmCard(name) {
+      var card = document.getElementById("confirmCard");
+      if (!card) {
+        /* Fallback: simple message */
+        setMsg(
+          "Shukriya " +
+            name +
+            "! Aapki enquiry bhej di gayi hai. Salon team aapko jaldi WhatsApp ya call karegi.",
+          "success"
+        );
+        form.reset();
+        return;
+      }
+      var nameEl = document.getElementById("confirmName");
+      if (nameEl) nameEl.textContent = name;
+      form.style.display = "none";
+      card.style.display = "block";
+      card.focus();
+    }
+
+    /* Error card/message dikhao, form bhara raha rahe */
+    function showErrorCard() {
+      setMsg(
+        "Abhi enquiry nahi ja saki. Kripya WhatsApp par bhej dein.",
+        "error"
+      );
+      var waBtn = document.getElementById("waBtn");
+      if (waBtn) {
+        waBtn.classList.add("highlight-fallback");
+        waBtn.focus();
+      }
+    }
   });
 })();

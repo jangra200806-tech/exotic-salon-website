@@ -32,9 +32,17 @@ const RATE_WINDOW_MS = 60 * 1000;
 const REQUEST_TIMEOUT_MS = 15000;
 const HEALTH_TIMEOUT_MS = 10000;
 
-const FALLBACK_REPLY =
-  "Main abhi AI service se connect nahi kar paya. Aap dobara try karein ya hume WhatsApp/call karein. " +
-  "WhatsApp: https://wa.me/919000997800 · Phone: 09000997800";
+function fallbackReply(D) {
+  const wa = (D.whatsapp && D.whatsapp.link) || "https://wa.me/" + (D.whatsappNumber || "917082014381");
+  const ph = (D.callPhone || D.phone && D.phone.display) || "09000997800";
+  return (
+    "Main abhi AI service se connect nahi kar paya. Aap dobara try karein ya hume WhatsApp/call karein. " +
+    "WhatsApp: " +
+    wa +
+    " · Phone: " +
+    ph
+  );
+}
 
 /* Best-effort in-memory rate limit.
    Serverless par har instance ka apna memory hota hai, isliye ye
@@ -387,8 +395,8 @@ function hasChatAny(text, words) {
 
 function localContactBits(D) {
   return {
-    wa: (D.whatsapp && D.whatsapp.link) || "https://wa.me/919000997800",
-    phone: (D.phone && D.phone.display) || "09000997800"
+    wa: (D.whatsapp && D.whatsapp.link) || "https://wa.me/" + (D.whatsappNumber || "917082014381"),
+    phone: D.callPhone || (D.phone && D.phone.display) || "09000997800"
   };
 }
 
@@ -503,12 +511,23 @@ function findLocalServices(D, q) {
   return localServiceIntent(D, q).services;
 }
 
-function localServiceLine(service, includeDesc) {
-  const price = service.price
-    ? "starting from " + service.price
-    : "price data me listed nahi";
-  return "• " + service.name + " — " + price +
-    (service.duration ? " (" + service.duration + ")" : "") +
+function localServiceLine(service, includeDesc, D) {
+  const parts = [service.name];
+  if (D.confirmed && D.confirmed.prices && service.price) {
+    parts.push("starting from " + service.price);
+  } else if (D.confirmed && !D.confirmed.prices) {
+    parts.push("price ke liye WhatsApp par poochein");
+  } else if (service.price) {
+    parts.push("starting from " + service.price);
+  }
+  if (D.confirmed && D.confirmed.durations && service.duration) {
+    parts.push("(" + service.duration + ")");
+  } else if (D.confirmed && !D.confirmed.durations && service.duration) {
+    parts.push("(duration ke liye WhatsApp par poochein)");
+  } else if (service.duration) {
+    parts.push("(" + service.duration + ")");
+  }
+  return "• " + parts.join(" — ") +
     (includeDesc && service.desc ? "\n  " + service.desc : "");
 }
 
@@ -517,7 +536,7 @@ function localServiceReply(D, q, services) {
   const wantsPrice = hasChatAny(q, LOCAL_PRICE_WORDS);
   const includeDesc = services.length <= 3;
   const lines = services.map(function (service) {
-    return localServiceLine(service, includeDesc);
+    return localServiceLine(service, includeDesc, D);
   }).join("\n");
   let extra = "";
 
@@ -526,15 +545,21 @@ function localServiceReply(D, q, services) {
     extra += "\nFacial unisex hai — ladkon aur ladkiyon dono ke liye available.";
   }
 
-  const bridalOffer = (D.offers || []).find(function (offer) {
-    return /bridal/i.test(offer.title || "");
-  });
-  if (bridalOffer && hasChatWord(q, "bridal")) {
-    extra += "\n" + bridalOffer.desc + " (" + bridalOffer.highlight + ").";
+  if (D.confirmed && D.confirmed.offers) {
+    const bridalOffer = (D.offers || []).find(function (offer) {
+      return /bridal/i.test(offer.title || "");
+    });
+    if (bridalOffer && hasChatWord(q, "bridal")) {
+      extra += "\n" + bridalOffer.desc + " (" + bridalOffer.highlight + ").";
+    }
   }
 
+  const priceNote = D.confirmed && !D.confirmed.prices
+    ? "\nPrices ke liye WhatsApp par poochein."
+    : "";
+
   return (wantsPrice ? "Ye services available hain, prices data ke according:" : "Yes, ye services available hain:") +
-    "\n" + lines + extra +
+    "\n" + lines + extra + priceNote +
     "\n\nBooking ke liye naam, service, date aur time WhatsApp/call par bhejein: " +
     bits.wa + " · " + bits.phone;
 }
@@ -561,10 +586,14 @@ function localTrialReply(D) {
     return /bridal/i.test(item.title || "");
   });
   const bridal = findServicesByNames(D, ["Bridal Makeup"])[0];
-  return (offer
+  const offerText = D.confirmed && D.confirmed.offers && offer
     ? offer.desc + " (" + offer.highlight + ")."
-    : "Bridal Package me pre-bridal trial included hai.") +
-    (bridal && bridal.price ? "\nBridal Makeup starting from " + bridal.price + "." : "") +
+    : "Bridal Package me pre-bridal trial included hai.";
+  const priceText = D.confirmed && D.confirmed.prices && bridal && bridal.price
+    ? "\nBridal Makeup starting from " + bridal.price + "."
+    : "";
+  return offerText +
+    priceText +
     "\nTrial slot salon team confirm karegi; appointment ke liye booking flow use karein.";
 }
 
@@ -610,11 +639,15 @@ function localHygieneReply(D) {
 
 function localParkingReply(D) {
   const address = D.address || {};
+  if (D.confirmed && !D.confirmed.parking) {
+    return "Parking ki confirmed info data me listed nahi hai; salon team se WhatsApp/call par poochein: " +
+      (D.callPhone || D.phone && D.phone.display || "09000997800") + ".";
+  }
   return "Parking ki dedicated info data me listed nahi hai. " +
     "Salon " + (address.full || "Huda Sector 20, Kaithal") + " par hai, " +
     "landmark " + (address.landmark || "Near Community Center") + ". " +
     "Parking ki exact jagah ke liye salon phone par confirm kar sakte hain: " +
-    (D.phone && D.phone.display ? D.phone.display : "09000997800") + ".";
+    (D.callPhone || D.phone && D.phone.display || "09000997800") + ".";
 }
 
 function localAvailabilityReply(D, q) {
@@ -661,7 +694,7 @@ function localServicesReply(D, q) {
     if (filtered.length) {
       return "Ye " + (asksMen ? "men's" : "women's") + " services available hain:\n" +
         filtered.map(function (service) {
-          return localServiceLine(service, false);
+          return localServiceLine(service, false, D);
         }).join("\n") +
         "\n\nKisi specific service ka price/duration poochhein.";
     }
@@ -679,16 +712,21 @@ function localServicesReply(D, q) {
     return names.length ? "• " + group + ": " + names.join(", ") : "";
   }).filter(Boolean);
 
-  const popular = all.filter(function (service) {
-    return service.popular && service.price;
+  const allServices = D.services || [];
+  const popular = allServices.filter(function (service) {
+    return (D.confirmed && !D.confirmed.popular) ? false : service.popular && service.price;
   }).slice(0, 6);
+
+  const popularSection = D.confirmed && D.confirmed.popular && D.confirmed.prices && popular.length > 0
+    ? "\n\nPopular starting prices:\n" +
+      popular.map(function (service) {
+        return "• " + service.name + " — starting from " + service.price;
+      }).join("\n")
+    : "";
 
   return "Exotic Salon me ye services available hain:\n" +
     groupLines.join("\n") +
-    "\n\nPopular starting prices:\n" +
-    popular.map(function (service) {
-      return "• " + service.name + " — starting from " + service.price;
-    }).join("\n") +
+    popularSection +
     "\n\nKis service ka price ya duration chahiye?";
 }
 
@@ -768,12 +806,17 @@ function localGenderServicesReply(D, intent) {
 function localPriceReply(D) {
   const all = D.services || [];
   const popular = all.filter(function (service) {
-    return service.popular && service.price;
+    return (D.confirmed && !D.confirmed.popular) ? false : service.popular && service.price;
   }).slice(0, 5);
   const extra = all.filter(function (service) {
     return service.price && popular.indexOf(service) === -1;
   }).slice(0, Math.max(0, 5 - popular.length));
   const priced = popular.concat(extra).slice(0, 5);
+
+  if (D.confirmed && !D.confirmed.prices) {
+    return "Prices ki confirmed info data me listed nahi hai; exact price salon team confirm karegi. " +
+      "Aap kis service ka price jaanna chahte hain?";
+  }
 
   if (!priced.length) {
     return "Prices data me listed nahi hain; exact price salon team confirm karegi. " +
@@ -782,7 +825,7 @@ function localPriceReply(D) {
 
   return "Popular services ke starting prices:\n" +
     priced.map(function (service) {
-      return localServiceLine(service, false);
+      return localServiceLine(service, false, D);
     }).join("\n") +
     "\n\nPrices change ho sakti hain. Jo service is list me nahi, uska exact price data me listed nahi; " +
     "salon team confirm karegi.";
@@ -1084,6 +1127,10 @@ function localInstagramReply(D) {
 }
 
 function localRatingReply(D) {
+  if (D.confirmed && !D.confirmed.testimonials) {
+    return "Reviews/rating ki confirmed info data me listed nahi hai; salon team se WhatsApp/call par poochein: " +
+      (D.callPhone || D.phone && D.phone.display || "09000997800") + ".";
+  }
   const rating = D.rating || {};
   const address = D.address || {};
   return (rating.text || "4.9★ rated by 60+ customers in Kaithal") +
@@ -1093,7 +1140,7 @@ function localRatingReply(D) {
 function localAboutReply(D) {
   return "Main " + (D.name || "Exotic Hair & Beauty Unisex Salon") +
     ", Kaithal ka AI assistant hoon. " + (D.about || "") +
-    (D.rating && D.rating.text ? "\n" + D.rating.text + "." : "");
+    (D.confirmed && D.confirmed.testimonials && D.rating && D.rating.text ? "\n" + D.rating.text + "." : "");
 }
 
 function localFacilitiesReply(D) {
@@ -1130,8 +1177,8 @@ function localSalonDetailsReply(D) {
     (timings.open || "9:00 AM") + " – " + (timings.close || "10:00 PM") +
     " (" + (timings.note || "Open all 7 days") + ")" +
     "\nAddress: " + (address.full || "DSS 266, Huda Sector 20, Kaithal") +
-    "\nPhone: " + (D.phone && D.phone.display ? D.phone.display : "09000997800") +
-    "\nWhatsApp: " + (D.whatsapp && D.whatsapp.link ? D.whatsapp.link : "https://wa.me/919000997800") +
+    "\nPhone: " + (D.callPhone || D.phone && D.phone.display || "09000997800") +
+    "\nWhatsApp: " + (D.whatsapp && D.whatsapp.link ? D.whatsapp.link : "https://wa.me/" + (D.whatsappNumber || "917082014381")) +
     (instagram.handle ? "\nInstagram: " + instagram.handle : "") +
     (rating.text ? "\nRating: " + rating.text : "") +
     "\nPayment: " + payment +
@@ -1140,6 +1187,10 @@ function localSalonDetailsReply(D) {
 }
 
 function localTeamReply(D, q) {
+  if (D.confirmed && !D.confirmed.team) {
+    return "Team ki details data me listed nahi hain; salon team se WhatsApp/call par poochein: " +
+      (D.callPhone || D.phone && D.phone.display || "09000997800") + ".";
+  }
   const team = D.team || [];
   let lead = "Hamari team me " + team.length + " members hain:";
 
@@ -1190,6 +1241,7 @@ function localGreetingReply(D) {
 
 function localServicePrice(D, name) {
   const service = findServicesByNames(D, [name])[0];
+  if (D.confirmed && !D.confirmed.prices) return "price ke liye WhatsApp par poochein";
   return service && service.price ? service.price : "price WhatsApp/call par";
 }
 
@@ -1408,8 +1460,8 @@ function buildSystemPrompt(D) {
   const address = D.address || {};
   const timings = D.timings || {};
   const rating = D.rating || {};
-  const whatsapp = (D.whatsapp && D.whatsapp.link) || "https://wa.me/919000997800";
-  const phone = (D.phone && D.phone.display) || "09000997800";
+  const whatsapp = (D.whatsapp && D.whatsapp.link) || "https://wa.me/" + (D.whatsappNumber || "917082014381");
+  const phone = D.callPhone || (D.phone && D.phone.display) || "09000997800";
   const instagram = D.instagram || {};
   const homeService = localHomeServiceText(D);
 
@@ -1483,20 +1535,22 @@ function buildSystemPrompt(D) {
           Array.isArray(s.categories) && s.categories.length
             ? s.categories.join("/")
             : "unisex";
-        return (s.name || "Service") + " | " + cats + " | " + priceLabel(s);
+        const priceText = D.confirmed && D.confirmed.prices && s.price ? s.price : "price ke liye WhatsApp par poochein";
+        const durationText = D.confirmed && D.confirmed.durations && s.duration ? " | " + s.duration : "";
+        return (s.name || "Service") + " | " + cats + " | " + priceText + durationText;
       });
 
       return group + ":\n" + rows.join("\n");
     })
     .filter(Boolean);
 
-  const offers = (D.offers || []).map(function (o) {
+  const offers = D.confirmed && D.confirmed.offers ? (D.offers || []).map(function (o) {
     return [o.title, o.tag, o.desc, o.highlight].filter(Boolean).join(" | ");
-  });
+  }) : [];
 
-  const team = (D.team || []).map(function (m) {
+  const team = D.confirmed && D.confirmed.team ? (D.team || []).map(function (m) {
     return [m.name, m.role, m.speciality].filter(Boolean).join(" | ");
-  });
+  }) : [];
 
   const features = (D.features || []).map(function (feature) {
     return feature.title + ": " + feature.text;
@@ -1517,20 +1571,20 @@ function buildSystemPrompt(D) {
     .filter(Boolean)
     .join(", ");
 
-  const ratingLine = [
+  const ratingLine = D.confirmed && D.confirmed.testimonials ? [
     rating.value != null ? rating.value + "★" : "",
     rating.count != null ? rating.count + "+ Google reviews" : "",
     rating.text
   ]
     .filter(Boolean)
-    .join(" | ");
+    .join(" | ") : "";
 
   const menCut = (D.services || []).find(function (s) {
     return /men'?s haircut/i.test(String(s.name || ""));
   });
-  const menCutPrice = menCut && menCut.price
+  const menCutPrice = D.confirmed && D.confirmed.prices && menCut && menCut.price
     ? "starting from " + menCut.price
-    : "price data me listed nahi";
+    : "price ke liye WhatsApp par poochein";
 
   return [
     "Tum " + name + ", Kaithal ke official AI assistant ho.",
@@ -1728,8 +1782,8 @@ function sameOrigin(req) {
   return true;
 }
 
-function fallback(res) {
-  return res.status(200).json({ reply: FALLBACK_REPLY, fallback: true });
+function fallback(res, D) {
+  return res.status(200).json({ reply: fallbackReply(D), fallback: true });
 }
 
 function badBody(res, reason) {
@@ -2077,6 +2131,8 @@ module.exports = async function handler(req, res) {
     });
   }
 
+  const D = readSalonData();
+
   const body = readBody(req);
   const rawMessages = body.messages;
 
@@ -2122,7 +2178,7 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ reply: localReply, local: true });
     }
     console.error("missing GROQ_API_KEY - no local salon reply");
-    return fallback(res);
+    return fallback(res, D);
   }
 
   const promptState = getSystemPrompt();
@@ -2133,7 +2189,7 @@ module.exports = async function handler(req, res) {
       console.warn("system prompt unavailable - local salon reply used");
       return res.status(200).json({ reply: localReply, local: true });
     }
-    return fallback(res);
+    return fallback(res, D);
   }
 
   const groqMessages = [{ role: "system", content: promptState.prompt }].concat(messages);
@@ -2145,7 +2201,7 @@ module.exports = async function handler(req, res) {
       console.warn("Groq reply unavailable - local salon reply used");
       return res.status(200).json({ reply: localReply, local: true });
     }
-    return fallback(res);
+    return fallback(res, D);
   }
 
   return res.status(200).json({ reply: reply });

@@ -258,6 +258,12 @@ const server = http.createServer(async function (req, res) {
   /* ---------- Static files ---------- */
   if (urlPath === "/") urlPath = "/index.html";
 
+  /* Clean URLs local preview: /services -> /services.html */
+  if (!path.extname(urlPath)) {
+    const htmlPath = path.join(ROOT, urlPath + ".html");
+    if (fs.existsSync(htmlPath)) urlPath += ".html";
+  }
+
   /* API source files static se serve na karo (sirf route handlers). */
   if (urlPath.indexOf("/api/") === 0) {
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });

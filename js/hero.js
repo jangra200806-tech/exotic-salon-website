@@ -1,6 +1,7 @@
 /* =========================================================
    Exotic Salon — hero slider + floating button guard
    ---------------------------------------------------------
+   Full-bleed photo background, text overlaid on the left.
    - data-driven slides from SALON_INFO.heroSlides
    - 6s autoplay, 800ms crossfade, slow zoom (CSS)
    - dots, swipe, keyboard arrows, hover/focus pause
@@ -61,40 +62,65 @@
 
   if (!slidesWrap || !dotsWrap || !slides.length) return;
 
-  slider.insertAdjacentHTML(
-    "afterbegin",
-    '<h1 class="visually-hidden">Exotic Hair &amp; Beauty Unisex Salon — Kaithal</h1>'
-  );
-
   slidesWrap.innerHTML = slides
     .map(function (slide, i) {
       var first = i === 0;
       var line1 = (slide.title && slide.title[0]) || "";
       var line2 = (slide.title && slide.title[1]) || "";
       var icon = ICONS[slide.icon] || ICONS.sparkle;
+      var imgPath = esc(slide.image);
+      var stem = imgPath.replace(/\.(jpg|jpeg|png)$/i, "");
+      var w = slide.width || 1600;
+      var h = slide.height || 900;
+
+      /* Only reference WebP variants that we know exist (<= original width). */
+      var webpSrcset = [];
+      [480, 720, 800, 1200, 1600].forEach(function (tw) {
+        if (tw <= w) webpSrcset.push(stem + "-" + tw + ".webp " + tw + "w");
+      });
 
       return (
         '<article class="hs-slide' + (first ? " is-active" : "") + '" role="group" ' +
         'aria-roledescription="slide" aria-label="' + (i + 1) + " of " + slides.length + '" ' +
-        'aria-hidden="' + (first ? "false" : "true") + '">' +
-        '<img class="hs-media" src="' + esc(slide.image) + '" alt="' + esc(slide.alt) + '" ' +
+        'aria-hidden="' + (first ? "false" : "true") + '"' + (first ? "" : " inert") + ">" +
+
+        /* Full-bleed background photo */
+        '<picture class="hs-bg-picture">' +
+        (webpSrcset.length
+          ? '<source srcset="' + webpSrcset.join(", ") + '" sizes="100vw" type="image/webp">'
+          : "") +
+        '<source srcset="' + imgPath + ' ' + w + 'w" sizes="100vw" type="image/jpeg">' +
+        '<img class="hs-bg-img" src="' + imgPath + '" alt="' + esc(slide.alt) + '" ' +
+        'style="object-position:' + esc(slide.position || "center top") + '" ' +
         (first
-          ? 'fetchpriority="high" width="' + esc(slide.width || 1600) + '" height="' + esc(slide.height || 900) + '"'
-          : 'loading="lazy"') +
-        ' decoding="async" style="object-position:' + esc(slide.position || "center") + '">' +
-        '<div class="hs-inner"><div class="container"><div class="hs-content">' +
+          ? 'fetchpriority="high" loading="eager" width="' + w + '" height="' + h + '"'
+          : 'loading="lazy" width="' + w + '" height="' + h + '"') +
+        ' decoding="async" ' +
+        'onerror="this.style.display=\'none\';this.closest(\'.hs-slide\').classList.add(\'hs-img-failed\');">' +
+        '</picture>' +
+
+        /* Text overlay, left aligned */
+        '<div class="hs-inner">' +
+        '<div class="container">' +
+        '<div class="hs-content">' +
         '<span class="hs-badge hs-anim" style="--d:0ms">' + icon + "<span>" + esc(slide.badge) + "</span></span>" +
-        '<h2 class="hs-title hs-anim" style="--d:90ms">' +
+        (first
+          ? '<h1 class="hs-title hs-anim" style="--d:45ms">'
+          : '<h2 class="hs-title hs-anim" style="--d:45ms">') +
         '<span class="hs-line">' + accentLine(line1, slide.accent) + "</span>" +
         '<span class="hs-line">' + accentLine(line2, slide.accent) + "</span>" +
-        "</h2>" +
-        '<p class="hs-text hs-anim" style="--d:180ms">' + esc(slide.text) + "</p>" +
+        (first ? "</h1>" : "</h2>") +
+        '<p class="hs-text hs-anim" style="--d:120ms">' + esc(slide.text) + "</p>" +
         '<div class="hs-actions hs-anim" style="--d:270ms">' +
         '<a class="hs-btn hs-btn-primary" href="' + esc(slide.primaryHref) + '">' +
         esc(slide.primaryLabel) + ARROW + "</a>" +
         '<a class="hs-btn hs-btn-glass" href="' + esc(slide.secondaryHref) + '">' +
         PHONE_ICON + esc(slide.secondaryLabel) + "</a>" +
-        "</div></div></div></div></article>"
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        "</article>"
       );
     })
     .join("");
@@ -103,7 +129,7 @@
     .map(function (slide, i) {
       return (
         '<button class="hs-dot' + (i === 0 ? " is-active" : "") + '" type="button" ' +
-        'role="tab" aria-selected="' + (i === 0 ? "true" : "false") + '" ' +
+        (i === 0 ? 'aria-current="true" ' : "") +
         'aria-label="Go to slide ' + (i + 1) + ": " + esc(slide.badge) + '"></button>'
       );
     })
@@ -119,10 +145,9 @@
   var paused = false;
 
   function restartZoom(el) {
-    var img = el && el.querySelector(".hs-media");
+    var img = el && el.querySelector(".hs-bg-img");
     if (!img) return;
     img.style.animation = "none";
-    /* force reflow so the zoom animation restarts on every activation */
     void img.offsetWidth;
     img.style.animation = "";
   }
@@ -135,13 +160,16 @@
       var on = i === target;
       el.classList.toggle("is-active", on);
       el.setAttribute("aria-hidden", on ? "false" : "true");
+      if (on) el.removeAttribute("inert");
+      else el.setAttribute("inert", "");
       if (on) restartZoom(el);
     });
 
     dotEls.forEach(function (dot, i) {
       var on = i === target;
       dot.classList.toggle("is-active", on);
-      dot.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
     });
 
     index = target;

@@ -22,22 +22,6 @@ const SALON_INFO = {
     "hygienic environment ke saath aapko ek royal experience deti hai.",
   founded: "2019",
 
-  /* ---------- 1b. HERO SLIDESHOW (front page banner) ----------
-     Front page ke banner mein ye photos apne aap cross-fade hoti
-     hain (har 2 second). Naya photo add karna ho to yahan line
-     jod do — photo 1600x900 (16:9) rakho, tab best lagegi.
-
-     AGAR `images/home-banner.jpg` NA MILE to kuch tootega nahi —
-     us slide ke waqt purana hero background dikhta rahega.
-     ---------------------------------------------------------- */
-  heroSlides: [
-    { src: "images/hero.jpg", alt: "Exotic Hair & Beauty Unisex Salon ka storefront board — Huda Sector 20, Kaithal" },
-    { src: "images/slide2.jpg", alt: "Gold arch mirrors aur styling chairs at Exotic Salon Kaithal" },
-    { src: "images/slide3.jpg", alt: "Exotic Hair & Beauty Unisex Salon ka board aur entrance, Kaithal" },
-    { src: "images/slide4.jpg", alt: "Facial aur skin care room at Exotic Hair & Beauty Unisex Salon, Kaithal" },
-    { src: "images/slide5.jpg", alt: "Waiting lounge with leather chairs at Exotic Salon Kaithal" },
-    { src: "images/home-banner.jpg", alt: "Exotic Hair & Beauty Unisex Salon Kaithal ka banner" }
-  ],
 
   /* ---------- 1c. MOBILE BOTTOM ACTION BAR (sab pages) ----------
      Mobile (768px se chhoti screen) par neeche ek fixed bar
@@ -80,7 +64,7 @@ const SALON_INFO = {
      ---------------------------------------------------------- */
   homeVideo: {
     src: "videos/bridal-blue.mp4",
-    poster: "images/poster-bridal-blue.jpg",
+    poster: "images/poster-bridal-blue.webp",
     alt: "Dulhan ka bridal look — blue lehenga, mehndi aur bridal jewellery, Exotic Hair & Beauty Unisex Salon Kaithal",
     caption: "Bridal Makeup — hamare salon se",
     note: "Sound on karne ke liye video par tap karein"
@@ -91,39 +75,45 @@ const SALON_INFO = {
      + dono buttons ka label aur link. position = object-position. */
   heroSlides: [
     {
-      image: "images/gallery1.jpg",
+      image: "images/bridal-makeup-kaithal-01.jpg",
+      webp: "images/bridal-makeup-kaithal-01-720.webp",
+      fallback: "images/bridal-makeup-kaithal-01.jpg",
       width: 720,
       height: 900,
       position: "center top",
-      alt: "Bridal makeup by Exotic Salon, Kaithal",
+      alt: "Bridal makeup with red lehenga at Exotic Hair & Beauty, Kaithal",
       badge: "Bridal Studio",
       icon: "sparkle",
       title: ["Bridal makeup", "for your big day"],
       accent: "Bridal",
       text: "HD and airbrush bridal looks with draping, hair styling and jewellery setting — all under one roof.",
       primaryLabel: "Explore Services",
-      primaryHref: "services.html#bridal",
+      primaryHref: "services",
       secondaryLabel: "Contact Us",
-      secondaryHref: "contact.html"
+      secondaryHref: "contact"
     },
     {
-      image: "images/slide5.jpg",
+      image: "images/waiting-lounge-kaithal.jpg",
+      webp: "images/waiting-lounge-kaithal-1200.webp",
+      fallback: "images/waiting-lounge-kaithal.jpg",
       width: 1600,
       height: 900,
       position: "center 50%",
-      alt: "Hair wash and grooming stations at Exotic Salon",
+      alt: "Hair wash and grooming stations at Exotic Salon, Kaithal",
       badge: "Hair & Grooming",
       icon: "scissors",
       title: ["Hair that", "feels like you"],
       accent: "Hair",
       text: "Precision cuts, colour, keratin and beard styling for men, women and kids.",
       primaryLabel: "Explore Services",
-      primaryHref: "services.html",
+      primaryHref: "services",
       secondaryLabel: "Contact Us",
-      secondaryHref: "contact.html"
+      secondaryHref: "contact"
     },
     {
-      image: "images/hero-bg.jpg",
+      image: "images/salon-interior-kaithal.jpg",
+      webp: "images/salon-interior-kaithal-1200.webp",
+      fallback: "images/salon-interior-kaithal.jpg",
       width: 1728,
       height: 1152,
       position: "center 45%",
@@ -134,9 +124,8 @@ const SALON_INFO = {
       accent: "Kaithal",
       text: "Golden mirrors, hygienic tools and a team that listens — visit us in Huda Sector 20.",
       primaryLabel: "Explore Services",
-      primaryHref: "services.html",
-      secondaryLabel: "Contact Us",
-      secondaryHref: "contact.html"
+      primaryHref: "services",
+      secondaryLabel: "Contact Us"
     }
   ],
 
@@ -407,12 +396,12 @@ const SALON_INFO = {
 
   /* ---------- 13. GALLERY ---------- */
   gallery: [
-    { src: "images/gallery1.jpg", alt: "Bride in a maroon and gold lehenga with full bridal makeup and jewellery at Exotic Hair & Beauty Unisex Salon, Kaithal", caption: "Bridal Makeup" },
-    { src: "images/gallery2.jpg", alt: "Bride standing in a pink and red bridal lehenga with dupatta at Exotic Hair & Beauty Unisex Salon, Kaithal",              caption: "Bridal Look" },
-    { src: "images/gallery3.jpg", alt: "Close-up of bridal makeup with gold jewellery, maang tikka and red bangles at Exotic Salon Kaithal",                         caption: "Bridal Jewellery" },
-    { src: "images/gallery4.jpg", alt: "Bride in a red bridal lehenga with jewellery looking down at Exotic Hair & Beauty Unisex Salon, Kaithal",                   caption: "HD Bridal Makeup" },
-    { src: "images/gallery5.jpg", alt: "Client in a cream and red printed saree with party makeup at Exotic Salon Kaithal",                                        caption: "Party Makeup" },
-    { src: "images/gallery6.jpg", alt: "Client in a saree with party makeup posing beside a gold panel at Exotic Salon Kaithal",                                    caption: "Party Look" }
+    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in a maroon and gold lehenga with full bridal makeup and jewellery at Exotic Hair & Beauty Unisex Salon, Kaithal", caption: "Bridal Makeup" },
+    { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "bridal", alt: "Bride standing in a pink and red bridal lehenga with dupatta at Exotic Hair & Beauty Unisex Salon, Kaithal",              caption: "Bridal Look" },
+    { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "bridal", alt: "Close-up of bridal makeup with gold jewellery, maang tikka and red bangles at Exotic Salon Kaithal",                         caption: "Bridal Jewellery" },
+    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in a red bridal lehenga with jewellery looking down at Exotic Hair & Beauty Unisex Salon, Kaithal",                   caption: "HD Bridal Makeup" },
+    { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "salon",  alt: "Client in a cream and red printed saree with party makeup at Exotic Salon Kaithal",                                        caption: "Party Makeup" },
+    { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "salon",  alt: "Client in a saree with party makeup posing beside a gold panel at Exotic Salon Kaithal",                                    caption: "Party Look" }
   ],
 
   /* ---------- 13b. VIDEOS (gallery page) ----------
@@ -422,21 +411,21 @@ const SALON_INFO = {
      images/ mein rakho, aur yahan ek line badha do.
      ---------------------------------------------------------- */
   videos: [
-    { src: "videos/salon-front.mp4",          poster: "images/poster-salon-front.jpg",          caption: "Salon Front",     alt: "Exotic Hair & Beauty Unisex Salon ka storefront bahar se, Huda Sector 20, Kaithal" },
-    { src: "videos/salon-interior.mp4",       poster: "images/poster-salon-interior.jpg",       caption: "Salon Interior",  alt: "Salon ke andar clients aur staff kaam karte hue, Exotic Salon Kaithal" },
-    { src: "videos/mens-haircut.mp4",         poster: "images/poster-mens-haircut.jpg",         caption: "Men's Haircut",   alt: "Male client ka haircut banate hue — before look, Exotic Salon Kaithal" },
-    { src: "videos/mens-fade.mp4",            poster: "images/poster-mens-fade.jpg",            caption: "Men's Fade Cut",  alt: "Male client ka fade aur top haircut banate hue, close-up, Exotic Salon Kaithal" },
-    { src: "videos/hair-wash.mp4",            poster: "images/poster-hair-wash.jpg",            caption: "Hair Wash",       alt: "Client ko hair wash basin par head wash diya ja raha hai, Exotic Salon Kaithal" },
-    { src: "videos/hair-styling.mp4",         poster: "images/poster-hair-styling.jpg",         caption: "Hair Styling",    alt: "Lambe baalon ko blow-dry aur style karte hue, Exotic Salon Kaithal" },
-    { src: "videos/makeup-application.mp4",   poster: "images/poster-makeup-application.jpg",   caption: "Makeup",          alt: "Client ke chehre par blush brush se makeup lagate hue, Exotic Salon Kaithal" },
-    { src: "videos/bridal-pink.mp4",          poster: "images/poster-bridal-pink.jpg",          caption: "Bridal Look",     alt: "Dulhan pink aur red bridal lehenga aur dupatta mein, Exotic Salon Kaithal" },
-    { src: "videos/bridal-blue.mp4",          poster: "images/poster-bridal-blue.jpg",          caption: "Bridal Makeup",   alt: "Dulhan blue lehenga, mehndi aur bridal jewellery ke saath, Exotic Salon Kaithal" },
-    { src: "videos/client-look.mp4",          poster: "images/poster-client-look.jpg",          caption: "Party Look",      alt: "Client ka light makeup look, front facing, Exotic Salon Kaithal" },
-    { src: "videos/client-chair.mp4",         poster: "images/poster-client-chair.jpg",         caption: "Salon Session",   alt: "Chair par baithi client ke baal stylist set kar rahe hain, Exotic Salon Kaithal" },
-    { src: "videos/long-hair.mp4",            poster: "images/poster-long-hair.jpg",            caption: "Hair Care",       alt: "Lambe aur chamakte baalon ka close-up, Exotic Salon Kaithal" },
-    { src: "videos/kids-cut.mp4",             poster: "images/poster-kids-cut.jpg",             caption: "Kids Haircut",    alt: "Salon mein bacche ka haircut karte hue, Exotic Salon Kaithal" },
-    { src: "videos/mirror-closeup.mp4",       poster: "images/poster-mirror-closeup.jpg",       caption: "Mirror Shot",     alt: "Mirror mein client ka close-up jab baal set kiye ja rahe hain, Exotic Salon Kaithal" },
-    { src: "videos/client-reel.mp4",          poster: "images/poster-client-reel.jpg",          caption: "Fun Reel",        alt: "Client ke saath mazedaar reel — boxing gloves ke saath, Exotic Salon Kaithal" }
+    { src: "videos/salon-front.mp4",          poster: "images/poster-salon-front.webp",          caption: "Salon Front",     alt: "Exotic Hair & Beauty Unisex Salon ka storefront bahar se, Huda Sector 20, Kaithal" },
+    { src: "videos/salon-interior.mp4",       poster: "images/poster-salon-interior.webp",       caption: "Salon Interior",  alt: "Salon ke andar clients aur staff kaam karte hue, Exotic Salon Kaithal" },
+    { src: "videos/mens-haircut.mp4",         poster: "images/poster-mens-haircut.webp",         caption: "Men's Haircut",   alt: "Male client ka haircut banate hue — before look, Exotic Salon Kaithal" },
+    { src: "videos/mens-fade.mp4",            poster: "images/poster-mens-fade.webp",            caption: "Men's Fade Cut",  alt: "Male client ka fade aur top haircut banate hue, close-up, Exotic Salon Kaithal" },
+    { src: "videos/hair-wash.mp4",            poster: "images/poster-hair-wash.webp",            caption: "Hair Wash",       alt: "Client ko hair wash basin par head wash diya ja raha hai, Exotic Salon Kaithal" },
+    { src: "videos/hair-styling.mp4",         poster: "images/poster-hair-styling.webp",         caption: "Hair Styling",    alt: "Lambe baalon ko blow-dry aur style karte hue, Exotic Salon Kaithal" },
+    { src: "videos/makeup-application.mp4",   poster: "images/poster-makeup-application.webp",   caption: "Makeup",          alt: "Client ke chehre par blush brush se makeup lagate hue, Exotic Salon Kaithal" },
+    { src: "videos/bridal-pink.mp4",          poster: "images/poster-bridal-pink.webp",          caption: "Bridal Look",     alt: "Dulhan pink aur red bridal lehenga aur dupatta mein, Exotic Salon Kaithal" },
+    { src: "videos/bridal-blue.mp4",          poster: "images/poster-bridal-blue.webp",          caption: "Bridal Makeup",   alt: "Dulhan blue lehenga, mehndi aur bridal jewellery ke saath, Exotic Salon Kaithal" },
+    { src: "videos/client-look.mp4",          poster: "images/poster-client-look.webp",          caption: "Party Look",      alt: "Client ka light makeup look, front facing, Exotic Salon Kaithal" },
+    { src: "videos/client-chair.mp4",         poster: "images/poster-client-chair.webp",         caption: "Salon Session",   alt: "Chair par baithi client ke baal stylist set kar rahe hain, Exotic Salon Kaithal" },
+    { src: "videos/long-hair.mp4",            poster: "images/poster-long-hair.webp",            caption: "Hair Care",       alt: "Lambe aur chamakte baalon ka close-up, Exotic Salon Kaithal" },
+    { src: "videos/kids-cut.mp4",             poster: "images/poster-kids-cut.webp",             caption: "Kids Haircut",    alt: "Salon mein bacche ka haircut karte hue, Exotic Salon Kaithal" },
+    { src: "videos/mirror-closeup.mp4",       poster: "images/poster-mirror-closeup.webp",       caption: "Mirror Shot",     alt: "Mirror mein client ka close-up jab baal set kiye ja rahe hain, Exotic Salon Kaithal" },
+    { src: "videos/client-reel.mp4",          poster: "images/poster-client-reel.webp",          caption: "Fun Reel",        alt: "Client ke saath mazedaar reel — boxing gloves ke saath, Exotic Salon Kaithal" }
   ],
 
   /* ---------- 14. BEFORE / AFTER SLIDER ----------
@@ -497,6 +486,12 @@ const SALON_INFO = {
    Abhi filhaal salon ki Google listing ka link diya hua hai
    (address.googleListing), taaki button abhi se kaam kare. */
 SALON_INFO.reviewUrl = SALON_INFO.address.googleListing;
+
+/* Compatibility aliases used by js/script.js, chatbot.js and look-builder.js.
+   Keeps phone/WhatsApp links working without changing the data shape above. */
+SALON_INFO.callPhone = SALON_INFO.phone.display;
+SALON_INFO.whatsappNumber = SALON_INFO.whatsapp.number;
+SALON_INFO.whatsappUrl = SALON_INFO.whatsapp.link;
 
 /* Aasaan access ke liye global par attach kar dete hain */
 window.SALON_INFO = SALON_INFO;

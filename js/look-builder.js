@@ -318,7 +318,7 @@
           if (hasServicesPage) {
             openPanel(link);
           } else {
-            window.location.href = "services.html?look=1";
+            window.location.href = "services?look=1";
           }
         });
       });
@@ -563,9 +563,16 @@
       '<label for="lookNote">Note (optional)</label>' +
       '<textarea id="lookNote" name="lookNote" rows="3" maxlength="300" placeholder="Koi special request?"></textarea>' +
       "</div>" +
-      '<button class="btn btn-primary look-send" type="submit">Send on WhatsApp</button>' +
+      '<button class="btn btn-primary look-send" type="submit">Send enquiry</button>' +
+      '<button class="btn btn-outline look-wa" type="button" style="margin-left:8px;">Book on WhatsApp instead</button>' +
+      '<input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;visibility:hidden;">' +
       '<p class="look-form-status" id="lookFormStatus" role="status" aria-live="polite"></p>' +
       "</form>" +
+      '<div id="lookConfirmCard" class="look-confirm-card" style="display:none;" role="status" aria-live="polite">' +
+      '<h3 style="margin-top:0;">Dhanyavad, <span id="lookConfirmName"></span>!</h3>' +
+      '<p>Aapki enquiry bhej di gayi hai. Salon team aapko jaldi WhatsApp ya call karegi.</p>' +
+      '<button class="btn btn-outline look-wa" type="button">Dobara bhejein</button>' +
+      "</div>" +
       "</div>";
 
     document.body.appendChild(overlay);
@@ -609,15 +616,86 @@
       event.preventDefault();
       if (!validateForm()) return;
 
-      var url = buildWhatsAppUrl();
-      if (!url) {
-        setStatus("WhatsApp link config nahi hai.", true);
+      var originalBtn = document.querySelector(".look-send");
+      var originalLabel = originalBtn ? originalBtn.textContent : "";
+      if (originalBtn) {
+        originalBtn.disabled = true;
+        originalBtn.textContent = "Bhej rahe hain…";
+      }
+      setStatus("Aapki enquiry bhej rahe hain…", false);
+
+      var selectedServices = selected.map(function (id) {
+        var s = byId[id];
+        return s ? s.name : "";
+      }).filter(Boolean).join(", ");
+
+      var payload = {
+        name: nameInput.value.trim(),
+        phone: phoneDigits(),
+        service: selectedServices,
+        date: dateInput.value,
+        time: timeInput.value,
+        message: noteInput.value.trim(),
+        website: ""
+      };
+
+      fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            return { ok: res.ok && data && data.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (!result.ok) {
+            throw new Error((result.data && result.data.error) || "Request failed");
+          }
+          lookShowConfirm(nameInput.value.trim());
+        })
+        .catch(function () {
+          lookShowError();
+        })
+        .then(function () {
+          if (originalBtn) {
+            originalBtn.disabled = false;
+            originalBtn.textContent = originalLabel;
+          }
+        });
+    });
+
+    document.getElementById("lookPanel").addEventListener("click", function (event) {
+      if (event.target.classList.contains("look-wa")) {
+        event.preventDefault();
+        var url = buildWhatsAppUrl();
+        if (url) window.open(url, "_blank", "noopener");
+      }
+    });
+
+    /* Confirmation card for look-builder enquiry success */
+    function lookShowConfirm(name) {
+      var card = document.getElementById("lookConfirmCard");
+      if (!card) {
+        setStatus("Enquiry bhej di gayi hai. Salon team aapko jaldi contact karegi.", false);
         return;
       }
+      var nameEl = document.getElementById("lookConfirmName");
+      if (nameEl) nameEl.textContent = name;
+      panel.querySelector(".look-form").style.display = "none";
+      card.style.display = "block";
+      card.focus();
+    }
 
-      setStatus("WhatsApp khul raha hai...", false);
-      window.open(url, "_blank", "noopener");
-    });
+    function lookShowError() {
+      setStatus("Abhi enquiry nahi ja saki. Kripya WhatsApp par bhej dein.", true);
+      var waBtn = document.querySelector(".look-wa");
+      if (waBtn) {
+        waBtn.classList.add("highlight-fallback");
+        waBtn.focus();
+      }
+    }
 
     phoneInput.addEventListener("input", function () {
       var digits = phoneDigits();
@@ -934,7 +1012,7 @@
   }
 
   function buildWhatsAppUrl() {
-    var base = D.whatsappUrl || (D.whatsapp && D.whatsapp.link);
+    var base = D.whatsappUrl || "https://wa.me/" + D.whatsappNumber;
     if (!base) return "";
 
     var lines = [];
