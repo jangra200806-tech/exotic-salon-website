@@ -467,6 +467,7 @@
       (s.popular ? '<span class="badge-popular">Popular</span>' : "") +
       "</div>" +
       "</div>" +
+      '<a class="btn btn-outline js-wa" href="https://wa.me/919000997800?text=Hello%20Exotic%20Salon%2C%20mujhe%20' + encodeURIComponent(s.name) + '%20ke%20liye%20appointment%20book%20karni%20hai" target="_blank" rel="noopener">Book on WhatsApp</a>' +
       '<span class="service-go" aria-hidden="true">↗</span>' +
       '<button class="service-open" type="button">' +
       '<span class="visually-hidden">View details for ' + esc(s.name) + "</span>" +

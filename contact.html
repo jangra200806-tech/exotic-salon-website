@@ -260,7 +260,7 @@
                 <p>Share your name, number and the service you want — we’ll call back to confirm.</p>
               </div>
 
-              <form id="contactForm" action="/api/enquiry" method="post">
+              <form id="contactForm" onsubmit="return submitContactForm(event);">
                 <div class="form-group">
                   <label for="cName">Your name</label>
                   <input id="cName" name="name" type="text" autocomplete="name" placeholder="e.g. Priya Sharma" required>
@@ -480,6 +480,35 @@
     } else {
       loadIdle("js/quiz.js");
       loadIdle("js/look-builder.js");
+    }
+  </script>
+
+  <script>
+    "use strict";
+    function submitContactForm(event) {
+      event.preventDefault();
+      var name = document.getElementById("cName").value.trim();
+      var phone = document.getElementById("cPhone").value.trim();
+      var service = document.getElementById("serviceSelect").value;
+      var date = document.getElementById("cDate").value;
+      var time = document.getElementById("cTime").value;
+      var message = document.getElementById("cMessage").value.trim();
+
+      if (!name || !phone || !service || !date || !time) {
+        alert("Kripya sabhi required fields bharein.");
+        return false;
+      }
+
+      var msg = "Hello Exotic Salon, mujhe appointment book karni hai.%0A" +
+                "*Naam:* " + encodeURIComponent(name) + "%0A" +
+                "*Phone:* " + encodeURIComponent(phone) + "%0A" +
+                "*Service:* " + encodeURIComponent(service) + "%0A" +
+                (date ? "*Date:* " + encodeURIComponent(date) + "%0A" : "") +
+                (time ? "*Time:* " + encodeURIComponent(time) + "%0A" : "") +
+                (message ? "*Message:* " + encodeURIComponent(message) : "");
+
+      window.open("https://wa.me/919000997800?text=" + msg, "_blank");
+      return false;
     }
   </script>
 </body>
