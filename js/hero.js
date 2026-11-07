@@ -62,9 +62,13 @@
 
   if (!slidesWrap || !dotsWrap || !slides.length) return;
 
-  slidesWrap.innerHTML = slides
+  /* Slide 1 is static HTML in index.html for fast LCP.
+     JS generates only slides 2 and 3 (lazy-loaded). */
+  var jsSlides = slides.slice(1);
+
+  slidesWrap.innerHTML = jsSlides
     .map(function (slide, i) {
-      var first = i === 0;
+      var first = false; // slide 1 is static HTML, all JS slides are non-first
       var line1 = (slide.title && slide.title[0]) || "";
       var line2 = (slide.title && slide.title[1]) || "";
       var icon = ICONS[slide.icon] || ICONS.sparkle;
@@ -82,7 +86,7 @@
 
       return (
         '<article class="hs-slide' + (first ? " is-active" : "") + '" role="group" ' +
-        'aria-roledescription="slide" aria-label="' + (i + 1) + " of " + slides.length + '" ' +
+        'aria-roledescription="slide" aria-label="' + (i + 2) + " of " + slides.length + '" ' +
         'aria-hidden="' + (first ? "false" : "true") + '"' + (first ? "" : " inert") + ">" +
 
         /* Full-bleed background photo */
