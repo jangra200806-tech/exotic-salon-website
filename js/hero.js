@@ -69,7 +69,7 @@
       var line2 = (slide.title && slide.title[1]) || "";
       var icon = ICONS[slide.icon] || ICONS.sparkle;
       var imgPath = esc(slide.image);
-      var stem = imgPath.replace(/\.(jpg|jpeg|png)$/i, "");
+      var stem = imgPath.replace(/\.(jpg|jpeg|png|webp)$/i, "");
       var w = slide.width || 1600;
       var h = slide.height || 900;
 
