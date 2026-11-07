@@ -75,8 +75,8 @@ const SALON_INFO = {
      + dono buttons ka label aur link. position = object-position. */
   heroSlides: [
     {
-      image: "images/bridal-makeup-kaithal-01.jpg",
-      webp: "images/bridal-makeup-kaithal-01.jpg",
+      image: "images/bridal-makeup-kaithal-01-720.webp",
+      webp: "images/bridal-makeup-kaithal-01-480.webp",
       fallback: "images/bridal-makeup-kaithal-01.jpg",
       width: 1600,
       height: 900,
@@ -94,8 +94,8 @@ const SALON_INFO = {
       secondaryHref: "contact"
     },
     {
-      image: "images/salon-interior-kaithal.jpg",
-      webp: "images/salon-interior-kaithal.jpg",
+      image: "images/salon-interior-kaithal-1200.webp",
+      webp: "images/salon-interior-kaithal-1200.webp",
       fallback: "images/salon-interior-kaithal.jpg",
       width: 1600,
       height: 900,
@@ -113,8 +113,8 @@ const SALON_INFO = {
       secondaryHref: "contact"
     },
     {
-      image: "images/salon-storefront-kaithal.jpg",
-      webp: "images/salon-storefront-kaithal.jpg",
+      image: "images/salon-storefront-kaithal-1200.webp",
+      webp: "images/salon-storefront-kaithal-1200.webp",
       fallback: "images/salon-storefront-kaithal.jpg",
       width: 1600,
       height: 900,
