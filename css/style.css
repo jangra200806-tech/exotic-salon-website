@@ -5763,3 +5763,9 @@ h1, h2, h3, h4 { color: var(--dark); }
   .chat-launcher { bottom: calc(var(--mb-bar-h, 0px) + 12px); }
   .chat-root { bottom: calc(var(--mb-bar-h, 0px) + 14px); }
 }
+
+/* ---- Content-visibility for below-fold sections (Speed Index) ---- */
+#why, #about, #gallery-preview, #reviews, #team-offers, #visit {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}

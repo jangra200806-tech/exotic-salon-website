@@ -1078,7 +1078,7 @@
         vid.autoplay = true;
         vid.playsInline = true;
         vid.setAttribute("playsinline", "");
-        vid.preload = "metadata";
+        vid.preload = "none";
         mediaEl.appendChild(vid);
         const p = vid.play();
         if (p && p.catch) p.catch(function () {});
@@ -1086,6 +1086,10 @@
         const img = document.createElement("img");
         img.src = mediaSrc;
         img.alt = name;
+        img.width = 480;
+        img.height = 854;
+        img.loading = "lazy";
+        img.decoding = "async";
         mediaEl.appendChild(img);
       }
       modal.classList.add("open");
