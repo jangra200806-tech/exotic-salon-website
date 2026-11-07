@@ -15,7 +15,6 @@
 
   /* info.js load na ho to page ka static content hi dikhe */
   if (typeof SALON_INFO === "undefined") {
-    console.warn("SALON_INFO not found — data/info.js load karo.");
     return;
   }
   const D = SALON_INFO;

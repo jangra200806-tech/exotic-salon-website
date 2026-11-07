@@ -1414,10 +1414,7 @@
       })
       .catch(function (error) {
         els.launcher.classList.add("robot-3d-fallback");
-        console.warn(
-          "3D robot unavailable, using the CSS robot: " +
-            (error && (error.message || error.name) ? (error.message || error.name) : "unknown error")
-        );
+        // Silent fallback: 3D robot unavailable, using CSS robot
       });
   }
 
@@ -1471,12 +1468,7 @@
         var local = localAnswer(text, history);
         return local ? cleanReply(local) : "";
       } catch (localError) {
-        console.warn(
-          "Local salon fallback failed: " +
-          (localError && (localError.message || localError.name)
-            ? (localError.message || localError.name)
-            : "unknown error")
-        );
+        // Silent fallback: local salon data unavailable
         return "";
       }
     }
@@ -1515,15 +1507,9 @@
         }
       } else {
         if (!response.ok) {
-          console.error(
-            "Chat API failed: HTTP " + response.status +
-            (data && data.error ? " - " + data.error : "")
-          );
+          // Silent fallback: chat API HTTP error
         } else if (data && data.fallback) {
-          console.warn(
-            "Chat API returned the fallback response. " +
-            "Local salon data answer used instead."
-          );
+          // Silent fallback: local salon data answer used instead
         }
 
         var localReply = localFallbackReply();
@@ -1534,10 +1520,7 @@
         }
       }
     } catch (e) {
-      console.error(
-        "Chat API request failed: " +
-        (e && (e.name || e.message) ? (e.name || e.message) : "unknown error")
-      );
+      // Silent fallback: chat API request failed
       replyText = localFallbackReply() || FALLBACK;
     } finally {
       if (apiTimer) window.clearTimeout(apiTimer);
