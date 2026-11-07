@@ -75,11 +75,11 @@ const SALON_INFO = {
      + dono buttons ka label aur link. position = object-position. */
   heroSlides: [
     {
-      image: "images/bridal-makeup-kaithal-01.jpg",
-      webp: "images/bridal-makeup-kaithal-01-720.webp",
+      image: "images/bridal-makeup-kaithal-01-480.webp",
+      webp: "images/bridal-makeup-kaithal-01-480.webp",
       fallback: "images/bridal-makeup-kaithal-01.jpg",
-      width: 720,
-      height: 900,
+      width: 480,
+      height: 600,
       position: "center top",
       alt: "Bridal makeup with red lehenga at Exotic Hair & Beauty, Kaithal",
       badge: "Bridal Studio",
@@ -93,11 +93,11 @@ const SALON_INFO = {
       secondaryHref: "contact"
     },
     {
-      image: "images/salon-interior-kaithal.jpg",
-      webp: "images/salon-interior-kaithal-1200.webp",
+      image: "images/salon-interior-kaithal-480.webp",
+      webp: "images/salon-interior-kaithal-480.webp",
       fallback: "images/salon-interior-kaithal.jpg",
-      width: 1200,
-      height: 800,
+      width: 480,
+      height: 320,
       position: "center center",
       alt: "Inside Exotic Hair & Beauty Unisex Salon, Kaithal",
       badge: "Our Salon",
@@ -111,7 +111,7 @@ const SALON_INFO = {
       secondaryHref: "contact"
     },
     {
-      image: "images/waiting-lounge-kaithal.jpg",
+      image: "images/waiting-lounge-kaithal-1200.webp",
       webp: "images/waiting-lounge-kaithal-1200.webp",
       fallback: "images/waiting-lounge-kaithal.jpg",
       width: 1200,
