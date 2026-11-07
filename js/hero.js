@@ -105,11 +105,11 @@
         '<div class="hs-content">' +
         '<span class="hs-badge hs-anim" style="--d:0ms">' + icon + "<span>" + esc(slide.badge) + "</span></span>" +
         (first
-          ? '<h1 class="hs-title hs-anim" style="--d:45ms">'
-          : '<h2 class="hs-title hs-anim" style="--d:45ms">') +
+          ? '<p class="hs-title hs-anim" style="--d:45ms">'
+          : '<p class="hs-title hs-anim" style="--d:45ms">') +
         '<span class="hs-line">' + accentLine(line1, slide.accent) + "</span>" +
         '<span class="hs-line">' + accentLine(line2, slide.accent) + "</span>" +
-        (first ? "</h1>" : "</h2>") +
+        "</p>" +
         '<p class="hs-text hs-anim" style="--d:120ms">' + esc(slide.text) + "</p>" +
         '<div class="hs-actions hs-anim" style="--d:270ms">' +
         '<a class="hs-btn hs-btn-primary" href="' + esc(slide.primaryHref) + '">' +

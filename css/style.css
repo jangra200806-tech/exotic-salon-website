@@ -3451,23 +3451,35 @@ h1, h2, h3, h4 { font-family: var(--font-head); color: var(--dark); }
 }
 
 .hs-dot {
-  width: 9px;
-  height: 9px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: transparent;
   cursor: pointer;
   transition: width 0.3s ease, background 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.hs-dot.is-active {
+.hs-dot::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.hs-dot.is-active::before {
   width: 34px;
   background: var(--gold);
 }
 
-.hs-dot:hover { background: var(--white); }
-.hs-dot.is-active:hover { background: var(--gold); }
+.hs-dot:hover::before { background: var(--white); }
+.hs-dot.is-active:hover::before { background: var(--gold); }
 
 /* Fallback when a hero image fails to load */
 .hs-slide.hs-img-failed .hs-bg-picture {

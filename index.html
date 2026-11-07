@@ -35,6 +35,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <!-- ============ HEADER ========== -->
   <header class="header" id="siteHeader">
     <div class="container nav">
@@ -50,10 +51,10 @@
         <a class="nav-link active" href="index.html" aria-current="page">Home</a>
 
         <div class="nav-item has-dropdown">
-          <button class="nav-link nav-drop-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+          <button class="nav-link nav-drop-toggle" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-services">
             Services <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <div class="nav-dropdown">
+          <div class="nav-dropdown" id="dropdown-services">
             <a href="services.html">All Services</a>
             <a href="services.html#men">Men</a>
             <a href="services.html#women">Women</a>
@@ -64,10 +65,10 @@
         </div>
 
         <div class="nav-item has-dropdown">
-          <button class="nav-link nav-drop-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+          <button class="nav-link nav-drop-toggle" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-gallery">
             Gallery <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <div class="nav-dropdown">
+          <div class="nav-dropdown" id="dropdown-gallery">
             <a href="gallery.html">Photos</a>
             <a href="gallery.html#videos">Videos</a>
           </div>

@@ -1720,10 +1720,10 @@
       '<span class="robot-ping" aria-hidden="true"></span>' +
       '<span class="drag-bubble" id="dragBubble" aria-hidden="true"><span class="drag-icon">⇄</span> Drag me!</span>' +
       "</button>" +
-      '<div class="robot-menu" id="robotMenu" role="menu" aria-label="Exo robot menu" hidden>' +
-      '<button class="robot-menu-btn" id="robotTour" type="button" role="menuitem" aria-label="Salon ka voice tour shuru karein">Salon ka voice tour</button>' +
-      '<button class="robot-menu-btn" id="robotChat" type="button" role="menuitem" aria-label="Salon AI se chat karein">Chat karein</button>' +
-      '<button class="robot-menu-btn robot-menu-close" id="robotMenuClose" type="button" role="menuitem" aria-label="Robot menu band karein">Close</button>' +
+      '<div class="robot-menu" id="robotMenu" role="group" aria-label="Exo robot menu" hidden>' +
+      '<button class="robot-menu-btn" id="robotTour" type="button" aria-label="Salon ka voice tour shuru karein">Salon ka voice tour</button>' +
+      '<button class="robot-menu-btn" id="robotChat" type="button" aria-label="Salon AI se chat karein">Chat karein</button>' +
+      '<button class="robot-menu-btn robot-menu-close" id="robotMenuClose" type="button" aria-label="Robot menu band karein">Close</button>' +
       "</div>" +
       '<div class="robot-bubble" id="robotBubble" role="region" aria-label="Salon tour ka offer" hidden>' +
       '<button class="robot-bubble-x" id="robotBubbleClose" type="button" aria-label="Message band karein">' +
