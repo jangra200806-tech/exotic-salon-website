@@ -73,16 +73,8 @@
       var line2 = (slide.title && slide.title[1]) || "";
       var icon = ICONS[slide.icon] || ICONS.sparkle;
       var imgPath = esc(slide.image);
-      var stem = imgPath.replace(/\.(jpg|jpeg|png|webp)$/i, "");
       var w = slide.width || 1600;
       var h = slide.height || 900;
-
-      /* Only reference WebP variants that we know exist (<= original width). */
-      var webpSrcset = [];
-      var maxW = slide.webpMaxWidth || w;
-      [480, 720, 800, 1200, 1600].forEach(function (tw) {
-        if (tw <= w && tw <= maxW) webpSrcset.push(stem + "-" + tw + ".webp " + tw + "w");
-      });
 
       return (
         '<article class="hs-slide' + (first ? " is-active" : "") + '" role="group" ' +
@@ -91,9 +83,6 @@
 
         /* Full-bleed background photo */
         '<picture class="hs-bg-picture">' +
-        (webpSrcset.length
-          ? '<source srcset="' + webpSrcset.join(", ") + '" sizes="100vw" type="image/webp">'
-          : "") +
         '<source srcset="' + imgPath + ' ' + w + 'w" sizes="100vw" type="image/jpeg">' +
         '<img class="hs-bg-img" src="' + imgPath + '" alt="' + esc(slide.alt) + '" ' +
         'style="object-position:' + esc(slide.position || "center top") + '" ' +
