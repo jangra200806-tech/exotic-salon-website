@@ -82,7 +82,7 @@ const SALON_INFO = {
       height: 900,
       position: "center top",
       webpMaxWidth: 720,
-      alt: "Bridal makeup with red lehenga at Exotic Hair & Beauty, Kaithal",
+      alt: "Bridal makeup and hair styling by Exotic Salon in Kaithal",
       badge: "Bridal Studio",
       icon: "sparkle",
       title: ["Bridal makeup", "for your big day"],
@@ -101,7 +101,7 @@ const SALON_INFO = {
       height: 900,
       position: "center",
       webpMaxWidth: 1600,
-      alt: "Inside Exotic Hair & Beauty Unisex Salon, Kaithal",
+      alt: "Exotic Salon interior in Huda Sector 20, Kaithal",
       badge: "Our Salon",
       icon: "store",
       title: ["A calm space", "in the heart of Kaithal"],
@@ -400,12 +400,12 @@ const SALON_INFO = {
 
   /* ---------- 13. GALLERY ---------- */
   gallery: [
-    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in a maroon and gold lehenga with full bridal makeup and jewellery at Exotic Hair & Beauty Unisex Salon, Kaithal", caption: "Bridal Makeup" },
-    { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "bridal", alt: "Bride standing in a pink and red bridal lehenga with dupatta at Exotic Hair & Beauty Unisex Salon, Kaithal",              caption: "Bridal Look" },
-    { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "bridal", alt: "Close-up of bridal makeup with gold jewellery, maang tikka and red bangles at Exotic Salon Kaithal",                         caption: "Bridal Jewellery" },
-    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in a red bridal lehenga with jewellery looking down at Exotic Hair & Beauty Unisex Salon, Kaithal",                   caption: "HD Bridal Makeup" },
-    { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "salon",  alt: "Client in a cream and red printed saree with party makeup at Exotic Salon Kaithal",                                        caption: "Party Makeup" },
-    { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "salon",  alt: "Client in a saree with party makeup posing beside a gold panel at Exotic Salon Kaithal",                                    caption: "Party Look" }
+    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in maroon lehenga with bridal makeup at Exotic Salon Kaithal", caption: "Bridal Makeup" },
+    { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "bridal", alt: "Bride in pink bridal lehenga with dupatta at Exotic Salon Kaithal",              caption: "Bridal Look" },
+    { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "bridal", alt: "Close-up of bridal makeup with gold jewellery at Exotic Salon Kaithal",                                        caption: "Bridal Jewellery" },
+    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in red bridal lehenga with jewellery at Exotic Salon Kaithal",                   caption: "HD Bridal Makeup" },
+    { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "salon",  alt: "Client in cream printed saree with party makeup at Exotic Salon Kaithal",                                        caption: "Party Makeup" },
+    { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "salon",  alt: "Client in saree with party makeup beside gold panel at Exotic Salon Kaithal",                                    caption: "Party Look" }
   ],
 
   /* ---------- 13b. VIDEOS (gallery page) ----------
