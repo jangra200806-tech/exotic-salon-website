@@ -75,8 +75,9 @@
 
       /* Only reference WebP variants that we know exist (<= original width). */
       var webpSrcset = [];
+      var maxW = slide.webpMaxWidth || w;
       [480, 720, 800, 1200, 1600].forEach(function (tw) {
-        if (tw <= w) webpSrcset.push(stem + "-" + tw + ".webp " + tw + "w");
+        if (tw <= w && tw <= maxW) webpSrcset.push(stem + "-" + tw + ".webp " + tw + "w");
       });
 
       return (
