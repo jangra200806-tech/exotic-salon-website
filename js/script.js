@@ -445,7 +445,7 @@
       : "";
 
     return (
-      '<article class="card service-card service-card--compact' +
+      '<article class="card service-card' +
       (withReveal ? " reveal" : "") + '"' +
       ' id="service-' + esc(s.id) + '"' +
       ' data-categories="' + esc((s.categories || []).join(" ")) + '"' +
@@ -456,18 +456,18 @@
       '<div class="service-photo-wrap" aria-hidden="true">' +
       '<picture class="service-picture">' +
       (webp ? '<source srcset="' + esc(webp) + '" type="image/webp">' : "") +
-      '<img class="service-photo" src="' + esc(media.thumb) + '" alt="' + esc(s.name) + ' at Exotic Salon Kaithal" width="96" height="96" loading="lazy" decoding="async">' +
+      '<img class="service-photo" src="' + esc(media.thumb) + '" alt="' + esc(s.name) + ' at Exotic Salon Kaithal" width="1600" height="900" loading="lazy" decoding="async">' +
       "</picture>" +
       "</div>" +
       '<div class="service-info">' +
-      '<div class="service-top"><h3>' + esc(s.name) + "</h3>" + price + "</div>" +
+      '<h3 class="service-name">' + esc(s.name) + "</h3>" +
+      '<div class="price-wrapper">' + price + "</div>" +
       (s.desc ? '<p class="service-desc">' + esc(s.desc) + "</p>" : "") +
       '<div class="service-meta"><span>' + esc(s.duration) + "</span>" +
       (s.popular ? '<span class="badge-popular">Popular</span>' : "") +
       "</div>" +
       "</div>" +
-      '<a class="btn btn-outline js-wa" href="https://wa.me/919000997800?text=Hello%20Exotic%20Salon%2C%20mujhe%20' + encodeURIComponent(s.name) + '%20ke%20liye%20appointment%20book%20karni%20hai" target="_blank" rel="noopener">Book on WhatsApp</a>' +
-      '<span class="service-go" aria-hidden="true">↗</span>' +
+      '<a class="btn btn-wa" href="https://wa.me/919000997800?text=Hello%20Exotic%20Salon%2C%20mujhe%20' + encodeURIComponent(s.name) + '%20ke%20liye%20appointment%20book%20karni%20hai" target="_blank" rel="noopener">Book on WhatsApp</a>' +
       '<button class="service-open" type="button">' +
       '<span class="visually-hidden">View details for ' + esc(s.name) + "</span>" +
       "</button>" +
