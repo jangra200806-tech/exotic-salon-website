@@ -80,7 +80,7 @@ const SALON_INFO = {
       fallback: "images/bridal-makeup-kaithal-01.jpg",
       width: 1600,
       height: 900,
-      position: "center",
+      position: "center top",
       webpMaxWidth: 720,
       alt: "Bridal makeup with red lehenga at Exotic Hair & Beauty, Kaithal",
       badge: "Bridal Studio",
