@@ -3559,6 +3559,7 @@ h1, h2, h3, h4 { font-family: var(--font-head); color: var(--dark); }
   margin: 0;
   border-radius: 16px;
   color: var(--white);
+  background-color: var(--gold);
   box-shadow: 0 10px 24px rgba(20, 20, 20, 0.2);
   transition: transform 0.2s ease;
   overflow: hidden;

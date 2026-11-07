@@ -1710,7 +1710,7 @@
     root.innerHTML =
       '<button class="chat-launcher" id="chatLauncher" type="button" ' +
       'title="Exo · Salon AI assistant" ' +
-      'aria-label="Drag me! — Exo robot menu kholein" aria-haspopup="menu" aria-expanded="false" aria-controls="robotMenu">' +
+      'aria-label="Drag me! — Exo robot menu kholein" aria-haspopup="true" aria-expanded="false" aria-controls="robotMenu">' +
       '<span class="robot-stage" aria-hidden="true">' +
       '<canvas class="robot-canvas" id="robotCanvas"></canvas>' +
       '<span class="robot-css">' +
