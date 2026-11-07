@@ -75,12 +75,12 @@ const SALON_INFO = {
      + dono buttons ka label aur link. position = object-position. */
   heroSlides: [
     {
-      image: "images/bridal-makeup-kaithal-01-720.webp",
-      webp: "images/bridal-makeup-kaithal-01-480.webp",
+      image: "images/bridal-makeup-kaithal-01.jpg",
+      webp: "images/bridal-makeup-kaithal-01.jpg",
       fallback: "images/bridal-makeup-kaithal-01.jpg",
-      width: 480,
-      height: 600,
-      position: "center top",
+      width: 1600,
+      height: 900,
+      position: "center",
       alt: "Bridal makeup with red lehenga at Exotic Hair & Beauty, Kaithal",
       badge: "Bridal Studio",
       icon: "sparkle",
@@ -93,12 +93,12 @@ const SALON_INFO = {
       secondaryHref: "contact"
     },
     {
-      image: "images/salon-interior-kaithal-1200.webp",
-      webp: "images/salon-interior-kaithal-1200.webp",
+      image: "images/salon-interior-kaithal.jpg",
+      webp: "images/salon-interior-kaithal.jpg",
       fallback: "images/salon-interior-kaithal.jpg",
-      width: 1200,
-      height: 800,
-      position: "center center",
+      width: 1600,
+      height: 900,
+      position: "center",
       alt: "Inside Exotic Hair & Beauty Unisex Salon, Kaithal",
       badge: "Our Salon",
       icon: "store",
@@ -111,12 +111,12 @@ const SALON_INFO = {
       secondaryHref: "contact"
     },
     {
-      image: "images/salon-storefront-kaithal-1200.webp",
-      webp: "images/salon-storefront-kaithal-1200.webp",
+      image: "images/salon-storefront-kaithal.jpg",
+      webp: "images/salon-storefront-kaithal.jpg",
       fallback: "images/salon-storefront-kaithal.jpg",
-      width: 1200,
-      height: 800,
-      position: "center center",
+      width: 1600,
+      height: 900,
+      position: "center",
       alt: "Exotic Salon storefront exterior at Huda Sector 20, Kaithal",
       badge: "Salon Exterior",
       icon: "store",
