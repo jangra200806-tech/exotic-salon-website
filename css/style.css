@@ -3231,6 +3231,7 @@ h1, h2, h3, h4 { font-family: var(--font-head); color: var(--dark); }
 
 .hs-slide.is-active .hs-bg-img {
   animation: hs-zoom 7s ease-out both;
+  opacity: 1;
 }
 
 @keyframes hs-zoom {
