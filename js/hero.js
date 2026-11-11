@@ -87,8 +87,8 @@
         '<img class="hs-bg-img" src="' + imgPath + '" alt="' + esc(slide.alt) + '" ' +
         'style="object-position:' + esc(slide.position || "center top") + '" ' +
         (first
-          ? 'fetchpriority="high" loading="eager" width="' + w + '" height="' + h + '"'
-          : 'loading="lazy" width="' + w + '" height="' + h + '"') +
+          ? 'fetchpriority="high" loading="eager" width="' + w + '" height="' + h + '" aspect-ratio="' + w + "/" + h + '"'
+          : 'loading="lazy" width="' + w + '" height="' + h + '" aspect-ratio="' + w + "/" + h + '"') +
         ' decoding="async" ' +
         'onerror="this.style.display=\'none\';this.closest(\'.hs-slide\').classList.add(\'hs-img-failed\');">' +
         '</picture>' +

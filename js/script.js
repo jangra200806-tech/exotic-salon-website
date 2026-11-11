@@ -302,14 +302,6 @@
       if (io) io.unobserve(el);
     }
 
-    function check() {
-      const vh = window.innerHeight || 800;
-      pending.forEach(function (el) {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < vh + 100 && rect.bottom > -100) reveal(el);
-      });
-    }
-
     if ("IntersectionObserver" in window) {
       io = new IntersectionObserver(
         function (entries) {
@@ -321,11 +313,6 @@
       );
       items.forEach(function (el) { io.observe(el); });
     }
-
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check);
-    window.addEventListener("load", check);
-    check();
 
     /* Safety net — content kabhi invisible na rahe */
     window.setTimeout(function () { pending.forEach(reveal); }, 6000);
@@ -378,7 +365,9 @@
     document.body.appendChild(bar);
 
     function setHeight() {
-      document.documentElement.style.setProperty("--mb-bar-h", bar.offsetHeight + "px");
+      window.requestAnimationFrame(function () {
+        document.documentElement.style.setProperty("--mb-bar-h", bar.offsetHeight + "px");
+      });
     }
     setHeight();
     window.addEventListener("resize", setHeight);
@@ -456,7 +445,7 @@
       '<div class="service-photo-wrap" aria-hidden="true">' +
       '<picture class="service-picture">' +
       (webp ? '<source srcset="' + esc(webp) + '" type="image/webp">' : "") +
-      '<img class="service-photo" src="' + esc(media.thumb) + '" alt="' + esc(s.name) + ' at Exotic Salon Kaithal" width="1600" height="900" loading="lazy" decoding="async">' +
+      '<img class="service-photo" src="' + esc(media.thumb) + '" alt="' + esc(s.name) + ' at Exotic Salon Kaithal" width="1600" height="900" aspect-ratio="1600/900" loading="lazy" decoding="async">' +
       "</picture>" +
       "</div>" +
       '<div class="service-info">' +
@@ -551,7 +540,7 @@
             ? '<source srcset="' + webp + '" ' +
               'sizes="(max-width: 1023px) 50vw, 33vw" type="image/webp">'
             : "") +
-          '<img src="' + fallback + '" alt="' + esc(g.alt) + '" ' +
+          '<img src="' + fallback + '" alt="' + esc(g.alt) + '" width="' + g.width + '" height="' + g.height + '" aspect-ratio="' + g.width + '/' + g.height + '" ' +
           dims + ' loading="lazy" decoding="async">' +
           '</picture>' +
           '<span class="cap">' + esc(g.caption) + "</span>" +
@@ -859,7 +848,9 @@
       if (!isOpen && panel) {
         item.classList.add("open");
         btn.setAttribute("aria-expanded", "true");
-        panel.style.maxHeight = panel.scrollHeight + "px";
+        window.requestAnimationFrame(function () {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        });
       }
     });
   }

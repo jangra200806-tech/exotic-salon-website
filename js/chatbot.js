@@ -32,6 +32,9 @@
 
   var CHIPS = ["Prices", "Timings", "Bridal booking", "Home service"];
 
+  var TOUR_START_RE = /\b(tour|ghum\w*|show me around|guide me)\b/i;
+  var TOUR_STOP_RE = /\b(stop|band|bandh|ruko|rok|end|cancel|finish)\b/i;
+
   var NOTE =
     "AI assistant, kabhi galti ho sakti hai. Booking ke liye WhatsApp use karein.";
 
@@ -46,6 +49,7 @@
   var loading = false;
   var lastFocus = null;
   var robot = null;
+  var tourStartTimer = null;
 
   /* Public hook: window.RobotUI.setTalking(true) / setTalking(false) */
   window.RobotUI = window.RobotUI || {};
@@ -1444,6 +1448,8 @@
 
     if (text.length > 500) text = text.slice(0, 500);
 
+    if (handleTourCommand(text)) return;
+
     addMessage("user", text);
     els.input.value = "";
     resizeInput();
@@ -1617,7 +1623,116 @@
     bubbleShowTimer = window.setTimeout(showBubble, 4000);
   }
 
+  function tourActive() {
+    if (window.SalonTour && typeof window.SalonTour.isActive === "function") {
+      return window.SalonTour.isActive();
+    }
+    return document.body.classList.contains("tour-active");
+  }
+
+  function syncTourControls() {
+    var active = tourActive();
+
+    if (els.chatTour) {
+      els.chatTour.textContent = active ? "Stop tour" : "Tour";
+      els.chatTour.setAttribute(
+        "aria-label",
+        active ? "Salon tour band karein" : "Salon ka voice tour shuru karein"
+      );
+      els.chatTour.classList.toggle("tour-stop", active);
+    }
+
+    if (els.menuTour) {
+      els.menuTour.textContent = active ? "Stop tour" : "Salon ka voice tour";
+      els.menuTour.setAttribute(
+        "aria-label",
+        active ? "Salon tour band karein" : "Salon ka voice tour shuru karein"
+      );
+    }
+  }
+
+  function stopTour() {
+    try {
+      if (window.SalonTour && typeof window.SalonTour.stop === "function") {
+        window.SalonTour.stop();
+      } else {
+        document.dispatchEvent(new window.CustomEvent("robot:tour-stop", { bubbles: true }));
+      }
+    } catch (e) {
+      document.body.classList.remove("tour-active");
+    }
+
+    syncTourControls();
+  }
+
+  function isTourStartRequest(text) {
+    var q = String(text || "").toLowerCase().trim();
+    if (!q) return false;
+    if (TOUR_STOP_RE.test(q) && /tour|ghum|guide/i.test(q)) return false;
+    if (TOUR_START_RE.test(q)) return true;
+    return /\b(dikhao|dikha do)\b/i.test(q) &&
+      /\b(salon|website|tour|robot)\b/i.test(q);
+  }
+
+  function isTourStopRequest(text) {
+    var q = String(text || "").toLowerCase().trim();
+    if (!q) return false;
+    if (!TOUR_STOP_RE.test(q)) return false;
+    return tourActive() || /tour|ghum|guide|website/i.test(q);
+  }
+
+  function handleTourCommand(text) {
+    var startAsk = isTourStartRequest(text);
+    var stopAsk = isTourStopRequest(text);
+    if (!startAsk && !stopAsk) return false;
+
+    addMessage("user", text);
+    els.input.value = "";
+    resizeInput();
+    updateChips();
+
+    if (stopAsk) {
+      if (tourStartTimer) {
+        window.clearTimeout(tourStartTimer);
+        tourStartTimer = null;
+        addMessage("assistant", "Theek hai, tour start cancel kar diya.");
+      } else if (tourActive()) {
+        stopTour();
+        addMessage("assistant", "Theek hai, tour stop kar diya. Ab aap koi bhi sawaal poochh sakte hain.");
+      } else {
+        addMessage("assistant", "Abhi koi tour active nahi hai. Tour shuru karne ke liye \"tour shuru karo\" likhein.");
+      }
+      els.input.focus();
+      return true;
+    }
+
+    if (tourActive()) {
+      addMessage("assistant", "Tour already chal raha hai. Tour bar ke Stop button se aap ise rok sakte hain.");
+      els.input.focus();
+      return true;
+    }
+
+    addMessage(
+      "assistant",
+      "Bilkul! Main salon ka voice tour shuru kar raha hoon. Tour ke saath Stop button bhi milega, jisse aap kabhi bhi tour rok sakte hain."
+    );
+    window.clearTimeout(tourStartTimer);
+    tourStartTimer = window.setTimeout(function () {
+      tourStartTimer = null;
+      startTour();
+    }, 750);
+    return true;
+  }
+
   function startTour() {
+    window.clearTimeout(tourStartTimer);
+    tourStartTimer = null;
+
+    if (tourActive()) {
+      stopTour();
+      return;
+    }
+
     closeMenu(false);
     cancelBubble();
     hideBubble();
@@ -1625,6 +1740,7 @@
 
     if (window.SalonTour && typeof window.SalonTour.start === "function") {
       window.SalonTour.start();
+      syncTourControls();
       return;
     }
 
@@ -1697,7 +1813,7 @@
       '<span class="robot-stage" aria-hidden="true">' +
       '<canvas class="robot-canvas" id="robotCanvas"></canvas>' +
       '<span class="robot-css">' +
-      '<img class="robot-img" src="images/robot.svg" alt="Exotic Salon assistant" width="76" height="94" decoding="async">' +
+      '<img class="robot-img" src="images/robot.svg" alt="Exotic Salon assistant" width="76" height="94" aspect-ratio="76/94" decoding="async">' +
       "</span>" +
       "</span>" +
       '<span class="robot-ping" aria-hidden="true"></span>' +
@@ -1722,7 +1838,7 @@
       '<section class="chat-panel" id="chatPanel" role="dialog" aria-label="Salon AI assistant" aria-hidden="true" inert>' +
       '<header class="chat-head">' +
       '<div class="chat-avatar" aria-hidden="true">' +
-      '<img class="avatar-img" src="images/robot.svg" alt="Exotic Salon assistant" width="40" height="49" decoding="async">' +
+      '<img class="avatar-img" src="images/robot.svg" alt="Exotic Salon assistant" width="40" height="49" aspect-ratio="40/49" decoding="async">' +
       "</div>" +
       '<div class="chat-title">' +
       '<span class="chat-eyebrow">AI Concierge</span>' +
@@ -1806,7 +1922,9 @@
     });
     els.close.addEventListener("click", closeChat);
 
-    els.menuTour.addEventListener("click", startTour);
+    els.menuTour.addEventListener("click", function () {
+      if (tourActive()) stopTour(); else startTour();
+    });
     els.menuChat.addEventListener("click", function () {
       openChat();
     });
@@ -1934,7 +2052,9 @@
       drag.active = false;
     });
 
-    els.chatTour.addEventListener("click", startTour);
+    els.chatTour.addEventListener("click", function () {
+      if (tourActive()) stopTour(); else startTour();
+    });
 
     els.send.addEventListener("click", function () {
       sendMessage(els.input.value);
@@ -1983,6 +2103,14 @@
       els.chips.appendChild(button);
     });
 
+    if (window.MutationObserver) {
+      new window.MutationObserver(syncTourControls).observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class"]
+      });
+    }
+
+    syncTourControls();
     loadRobotPosition();
   }
 
@@ -1995,6 +2123,7 @@
 
     buildDom();
     bind();
+    syncTourControls();
     window.RobotUI = { setTalking: setTalking };
     /* Naya robot ab images/robot.svg se aata hai (detailed + animated).
        3D WebGL robot ki jagah SVG use ho raha hai — module file maujood

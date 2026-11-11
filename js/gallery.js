@@ -43,7 +43,7 @@
     state.items = filteredItems();
     state.container = containerId;
     grid.innerHTML = state.items.map(function(g){
-      var dims = (g.width&&g.height)? 'width="'+g.width+'" height="'+g.height+'"' : "";
+      var dims = (g.width&&g.height)? 'width="'+g.width+'" height="'+g.height+'" aspect-ratio="'+g.width+'/'+g.height+'"' : "";
       var cat = esc(g.category || "salon");
       var stem = g.src.replace(/\.(jpg|jpeg|png)$/i, "");
       var w = g.width || 0;

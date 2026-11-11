@@ -11,8 +11,8 @@
   <meta property="og:title" content="Best Unisex Salon in Kaithal | Exotic Hair & Beauty">
   <meta property="og:description" content="Exotic Hair & Beauty, Kaithal — bridal makeup, haircut, skin care & grooming. Huda Sector 20. Open 9 AM–10 PM. Book your appointment today!">
   <meta property="og:url" content="https://exotic-salon.vercel.app/">
-  <meta property="og:image" content="https://exotic-salon.vercel.app/images/og-image.jpg">
-  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image" content="https://exotic-salon.vercel.app/images/og-image.webp">
+  <meta property="og:image:type" content="image/webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Exotic Hair & Beauty Unisex Salon in Kaithal">
@@ -21,19 +21,19 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Best Unisex Salon in Kaithal | Exotic Hair & Beauty">
   <meta name="twitter:description" content="Exotic Hair & Beauty, Kaithal — bridal makeup, haircut, skin care & grooming. Huda Sector 20. Open 9 AM–10 PM. Book your appointment today!">
-  <meta name="twitter:image" content="https://exotic-salon.vercel.app/images/og-image.jpg">
+  <meta name="twitter:image" content="https://exotic-salon.vercel.app/images/og-image.webp">
   <title>Best Unisex Salon in Kaithal | Exotic Hair & Beauty</title>
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="canonical" href="https://exotic-salon.vercel.app/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="images/bridal-makeup-kaithal-01-640.webp" imagesrcset="images/bridal-makeup-kaithal-01-640.webp 640w, images/bridal-makeup-kaithal-01-1200.webp 1200w" imagesizes="(max-width: 640px) 640px, 1200px" fetchpriority="high">
+  <link rel="preload" as="image" href="images/bridal-makeup-kaithal-01-480.webp" imagesrcset="images/bridal-makeup-kaithal-01-480.webp 480w, images/bridal-makeup-kaithal-01-640.webp 640w, images/bridal-makeup-kaithal-01-1200.webp 1200w" imagesizes="(max-width: 480px) 480px, (max-width: 640px) 640px, 1200px" fetchpriority="high">
   <link rel="preload" as="font" href="fonts/inter-400-latin.woff2" type="font/woff2" crossorigin>
   <link rel="preload" as="font" href="fonts/inter-400-latin-ext.woff2" type="font/woff2" crossorigin>
   <link rel="preload" as="font" href="fonts/playfair-display-600-latin.woff2" type="font/woff2" crossorigin>
   <link rel="preload" as="font" href="fonts/playfair-display-600-latin-ext.woff2" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="css/style.css"></noscript>
+  <link rel="stylesheet" href="css/style.min.v2.css">
+  <noscript><link rel="stylesheet" href="css/style.min.v2.css"></noscript>
   <style>
     /* ===== CRITICAL CSS (above-the-fold) ===== */
     /* Font-face */
@@ -148,7 +148,7 @@
   <header class="header" id="siteHeader">
     <div class="container nav">
       <a class="brand" href="/">
-        <span class="brand-mark" aria-hidden="true">E</span>
+        <img class="brand-logo" src="images/logo.png" alt="Exotic Hair & Beauty Unisex Salon Kaithal" width="120" height="60" loading="eager">
         <span class="brand-text">
           <strong class="js-short-name">Exotic Salon</strong>
           <small>Hair & Beauty · Kaithal</small>
@@ -182,12 +182,16 @@
           </div>
         </div>
 
-        <a class="nav-link" href="contact.html">Contact</a>
+        <a class="nav-link" href="contact.html" aria-label="Contact Exotic Salon">Contact</a>
 
         <a class="btn btn-primary nav-book" href="contact.html#book">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
           Book Now
         </a>
+        <div class="open-badge" id="openBadge" role="status" aria-live="polite">
+          <span class="open-badge-dot" aria-hidden="true"></span>
+          <span id="openBadgeText">Loading...</span>
+        </div>
       </nav>
 
       <div class="nav-actions">
@@ -242,13 +246,13 @@
   <main id="main">
 
     <!-- ============ 1. HERO SLIDER ============ -->
-    <section class="hero-slider" id="home" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Salon highlights">
-      <div class="hs-slides" id="heroSlides">
+    <section class="hero-slider" id="home" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Salon highlights" style="height:calc(100vh - 80px);min-height:520px;max-height:720px;">
+      <div class="hs-slides" id="heroSlides" style="position:absolute;inset:0;width:100%;height:100%;">
         <!-- Slide 1: static HTML for instant LCP (image loads immediately, no JS wait) -->
         <article class="hs-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 3" aria-hidden="false">
           <picture class="hs-bg-picture">
-            <source srcset="images/bridal-makeup-kaithal-01-640.webp 640w, images/bridal-makeup-kaithal-01-1200.webp 1200w" sizes="100vw" type="image/webp">
-            <img class="hs-bg-img" src="images/bridal-makeup-kaithal-01-720.webp" alt="Bridal makeup and hair styling by Exotic Salon in Kaithal" width="1600" height="900" fetchpriority="high" loading="eager" decoding="async" style="object-position:center top">
+            <source srcset="images/bridal-makeup-kaithal-01-480.webp 480w, images/bridal-makeup-kaithal-01-640.webp 640w, images/bridal-makeup-kaithal-01-1200.webp 1200w" sizes="(max-width: 480px) 480px, (max-width: 640px) 640px, 1200px" type="image/webp">
+            <img class="hs-bg-img" src="images/bridal-makeup-kaithal-01-720.webp" alt="Bridal makeup and hair styling by Exotic Salon in Kaithal" width="1600" height="900" aspect-ratio="1600/900" fetchpriority="high" loading="eager" decoding="async" style="object-position:center top">
           </picture>
           <div class="hs-inner">
             <div class="container">
@@ -345,6 +349,36 @@
       </div>
     </section>
 
+    <!-- ============ COMBO ESTIMATOR ============ -->
+    <section class="section" id="combo-estimator" aria-label="Combo Price Estimator">
+      <div class="container">
+        <div class="section-head">
+          <h2>Apna Combo Banao</h2>
+          <p>Apni pasand ki services chunein aur total price aur time live dekhein.</p>
+        </div>
+        <div class="combo-grid" id="comboGrid"></div>
+        <div class="combo-summary" aria-live="polite">
+          <h3>Total Estimate</h3>
+          <div class="combo-details">
+            <span>Services selected:</span>
+            <span class="combo-count">0</span>
+          </div>
+          <div class="combo-details">
+            <span>Total price:</span>
+            <span class="combo-total">₹0</span>
+          </div>
+          <div class="combo-details">
+            <span>Total time:</span>
+            <span class="combo-time">0 min</span>
+          </div>
+          <p class="combo-note">Final price salon team confirm karegi.</p>
+        </div>
+        <div class="combo-cta">
+          <a class="btn btn-primary js-combo-wa" href="#" target="_blank" rel="noopener">WhatsApp pe book karo</a>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ 3. WHY CHOOSE US ============ -->
     <section class="section section--alt" id="why">
       <div class="container">
@@ -385,10 +419,38 @@
           <figure class="about-media">
             <picture>
               <source srcset="images/salon-about-kaithal-480.webp" type="image/webp">
-              <img src="images/salon-about-kaithal.jpg" alt="Exotic Salon interior in Huda Sector 20, Kaithal" width="675" height="900" loading="lazy" decoding="async">
+              <img src="images/salon-about-kaithal-480.webp" alt="Exotic Salon interior in Huda Sector 20, Kaithal" width="480" height="640" aspect-ratio="480/640" loading="lazy" decoding="async">
             </picture>
             <figcaption>Huda Sector 20, Kaithal · Open all 7 days</figcaption>
           </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3.5 BEFORE / AFTER SLIDER ============ -->
+    <section class="section" id="beforeAfter" aria-label="Before After Slider">
+      <div class="container">
+        <div class="section-head">
+          <h2>See the Transformation</h2>
+          <p>Real results — before and after our salon services.</p>
+        </div>
+        <div id="baSlider" class="ba-slider" aria-roledescription="before after slider" aria-label="Before After comparison slider">
+          <div class="ba-img-wrap ba-before">
+            <img id="baBeforeImg" class="ba-img" src="images/bridal-makeup-kaithal-01-720.webp" alt="Before bridal makeup" width="720" height="900" aspect-ratio="720/900" loading="lazy" decoding="async">
+          </div>
+          <div class="ba-img-wrap ba-after">
+            <img id="baAfterImg" class="ba-img" src="images/bridal-makeup-kaithal-01-720.webp" alt="After bridal makeup" width="720" height="900" aspect-ratio="720/900" loading="lazy" decoding="async">
+          </div>
+          <div id="baHandle" class="ba-handle" role="slider" aria-label="Drag to compare before and after" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></div>
+          <div class="ba-labels">
+            <span>Before</span>
+            <span>After</span>
+          </div>
+        </div>
+        <div class="ba-tabs" role="tablist" aria-label="Choose before-after pair">
+          <button class="ba-tab active" type="button" role="tab" aria-selected="true" data-pair="bridal">Bridal Makeup</button>
+          <button class="ba-tab" type="button" role="tab" aria-selected="false" data-pair="haircut">Men's Haircut</button>
+          <button class="ba-tab" type="button" role="tab" aria-selected="false" data-pair="haircolour">Hair Colour</button>
         </div>
       </div>
     </section>
@@ -425,6 +487,38 @@
             <button type="button" id="testiPrev" aria-label="Previous review">←</button>
             <div class="testi-dots" id="testiDots"></div>
             <button type="button" id="testiNext" aria-label="Next review">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. QUIZ: FIND YOUR HAIRSTYLE ============ -->
+    <section class="section" id="hair-quiz" aria-label="Find your hairstyle quiz">
+      <div class="container">
+        <div class="section-head">
+          <h2>Find Your Hairstyle</h2>
+          <p>Answer a few quick questions and get personalized service suggestions.</p>
+        </div>
+        <div class="quiz-section">
+          <div class="quiz-progress-wrap">
+            <div class="quiz-progress-label">
+              <span id="quizProgressText">Question 1 of 4</span>
+              <span id="quizProgressNum">0%</span>
+            </div>
+            <div class="quiz-progress-bar">
+              <div class="quiz-progress-fill" id="quizProgressFill"></div>
+            </div>
+          </div>
+          <div class="quiz-card" id="quizCard">
+            <div class="quiz-question" id="quizQuestion">Loading...</div>
+            <div class="quiz-options" id="quizOptions"></div>
+          </div>
+          <div class="quiz-result" id="quizResult" aria-live="polite">
+            <div class="quiz-result-icon" id="quizResultIcon">💇</div>
+            <div class="quiz-result-title" id="quizResultTitle">Your Look</div>
+            <div class="quiz-services" id="quizServices"></div>
+            <p class="quiz-note">Final price aur time salon team confirm karegi.</p>
+            <button type="button" class="btn btn-primary quiz-restart" id="quizRestartBtn">Dobara karein</button>
           </div>
         </div>
       </div>
@@ -483,6 +577,37 @@
                 <span class="offer-highlight">Best Value</span>
               </article>
             </div>
+            <div class="offer-countdown" id="offerCountdown" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6.5 SPIN & WIN ============ -->
+    <section class="section" id="spin-win" aria-label="Spin and Win wheel">
+      <div class="container">
+        <div class="section-head">
+          <h2>Spin & Win</h2>
+          <p>Apne karobaar ko spin karein aur exciting prizes jeetein!</p>
+        </div>
+        <div class="spin-section">
+          <div class="spin-header">
+            <h2>Spin & Win</h2>
+            <span id="spinTriedMsg" style="display:none;font-size:0.85rem;color:var(--muted);">Kal phir try karo!</span>
+          </div>
+          <div class="spin-wheel-wrap">
+            <div class="spin-wheel" id="spinWheel"></div>
+            <div class="spin-pointer"></div>
+          </div>
+          <button type="button" class="btn btn-primary spin-btn" id="spinBtn">Spin karo</button>
+          <div class="spin-result" id="spinResult" aria-live="polite">
+            <div class="spin-prize" id="spinPrize"></div>
+            <div class="spin-code" id="spinCode"></div>
+            <button type="button" class="btn btn-primary spin-claim" id="spinClaimBtn">WhatsApp pe claim karo</button>
+            <p class="spin-note">Offer salon team confirm karegi. Terms apply.</p>
+          </div>
+          <div class="spin-tried-today" id="spinTriedToday" style="display:none;">
+            <p>Kal phir try karo! Ek device se din me ek baar spin kiya ja sakta hai.</p>
           </div>
         </div>
       </div>
@@ -577,7 +702,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a class="brand" href="/">
-            <span class="brand-mark" aria-hidden="true">E</span>
+            <img class="brand-logo" src="images/logo.png" alt="Exotic Hair & Beauty Unisex Salon Kaithal" width="100" height="50" loading="lazy">
             <span class="brand-text">
               <strong class="js-short-name">Exotic Salon</strong>
               <small>Hair &amp; Beauty · Kaithal</small>
@@ -603,7 +728,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="services">Services</a></li>
             <li><a href="gallery">Gallery</a></li>
-            <li><a href="contact">Contact</a></li>
+            <li><a href="contact" aria-label="Contact Exotic Salon via phone or WhatsApp">Contact</a></li>
           </ul>
         </div>
 
@@ -651,11 +776,13 @@
     </a>
   </div>
 
-  <script src="data/info.js" defer></script>
-  <script src="js/script.js" defer></script>
+  <script src="data/info.min.v2.js" defer></script>
+  <script src="js/script.min.v2.js" defer></script>
   <script src="js/hero.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/tour.js" defer></script>
+  <script src="js/features.js" defer></script>
+  <script src="js/features2.js" defer></script>
 
   <!-- Chatbot loads when the browser is idle (or on first interaction) so it never blocks the page -->
   <script>

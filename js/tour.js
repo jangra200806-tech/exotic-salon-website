@@ -463,7 +463,7 @@
       '<div class="tour-actions">' +
       '<button class="tour-btn" id="tourSound" type="button" aria-pressed="true">Sound on</button>' +
       '<button class="tour-btn" id="tourNext" type="button">Next</button>' +
-      '<button class="tour-btn tour-stop" id="tourStop" type="button">Stop</button>' +
+      '<button class="tour-btn tour-stop" id="tourStop" type="button" aria-label="Salon tour band karein">Stop tour</button>' +
       "</div>";
 
     document.body.appendChild(bar);

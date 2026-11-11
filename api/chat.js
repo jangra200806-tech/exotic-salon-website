@@ -513,20 +513,12 @@ function findLocalServices(D, q) {
 
 function localServiceLine(service, includeDesc, D) {
   const parts = [service.name];
-  if (D.confirmed && D.confirmed.prices && service.price) {
+  if (service.price) {
     parts.push("starting from " + service.price);
-  } else if (D.confirmed && !D.confirmed.prices) {
+  } else {
     parts.push("price ke liye WhatsApp par poochein");
-  } else if (service.price) {
-    parts.push("starting from " + service.price);
   }
-  if (D.confirmed && D.confirmed.durations && service.duration) {
-    parts.push("(" + service.duration + ")");
-  } else if (D.confirmed && !D.confirmed.durations && service.duration) {
-    parts.push("(duration ke liye WhatsApp par poochein)");
-  } else if (service.duration) {
-    parts.push("(" + service.duration + ")");
-  }
+  if (service.duration) parts.push("(" + service.duration + ")");
   return "• " + parts.join(" — ") +
     (includeDesc && service.desc ? "\n  " + service.desc : "");
 }
@@ -545,18 +537,14 @@ function localServiceReply(D, q, services) {
     extra += "\nFacial unisex hai — ladkon aur ladkiyon dono ke liye available.";
   }
 
-  if (D.confirmed && D.confirmed.offers) {
-    const bridalOffer = (D.offers || []).find(function (offer) {
-      return /bridal/i.test(offer.title || "");
-    });
-    if (bridalOffer && hasChatWord(q, "bridal")) {
-      extra += "\n" + bridalOffer.desc + " (" + bridalOffer.highlight + ").";
-    }
+  const bridalOffer = (D.offers || []).find(function (offer) {
+    return /bridal/i.test(offer.title || "");
+  });
+  if (bridalOffer && hasChatWord(q, "bridal")) {
+    extra += "\n" + bridalOffer.desc + " (" + bridalOffer.highlight + ").";
   }
 
-  const priceNote = D.confirmed && !D.confirmed.prices
-    ? "\nPrices ke liye WhatsApp par poochein."
-    : "";
+  const priceNote = "";
 
   return (wantsPrice ? "Ye services available hain, prices data ke according:" : "Yes, ye services available hain:") +
     "\n" + lines + extra + priceNote +
@@ -586,10 +574,10 @@ function localTrialReply(D) {
     return /bridal/i.test(item.title || "");
   });
   const bridal = findServicesByNames(D, ["Bridal Makeup"])[0];
-  const offerText = D.confirmed && D.confirmed.offers && offer
+  const offerText = offer
     ? offer.desc + " (" + offer.highlight + ")."
     : "Bridal Package me pre-bridal trial included hai.";
-  const priceText = D.confirmed && D.confirmed.prices && bridal && bridal.price
+  const priceText = bridal && bridal.price
     ? "\nBridal Makeup starting from " + bridal.price + "."
     : "";
   return offerText +
@@ -801,6 +789,79 @@ function localGenderServicesReply(D, intent) {
   return "Exotic Salon me " + label + " ke liye ye services available hain:\n" +
     lines.join("\n") +
     "\n\nAap kis service ke baare mein jaanna chahenge? Main price ya booking mein madad kar sakta hoon.";
+}
+
+function localBroadOverviewReply(D, q) {
+  const intent = localServiceIntent(D, q);
+  if (intent.asksMen || intent.asksWomen || intent.asksKids) {
+    return localGenderServicesReply(D, intent);
+  }
+  return localServicesOverviewReply(D);
+}
+
+function isBroadServiceQuestion(D, q) {
+  if (!localBroadServicesIntent(q)) return false;
+  if (localServiceIntent(D, q).services.length) return false;
+
+  const blocking = [].concat(
+    LOCAL_PRICE_WORDS,
+    LOCAL_DISCOUNT_WORDS,
+    LOCAL_OFFER_WORDS,
+    LOCAL_BOOKING_WORDS,
+    LOCAL_AVAILABILITY_WORDS,
+    LOCAL_TIMING_WORDS,
+    LOCAL_CONTACT_WORDS,
+    LOCAL_HOME_WORDS
+  );
+
+  return !hasChatAny(q, blocking);
+}
+
+function replyHasServiceOverview(D, reply) {
+  const text = normalizeChatText(reply);
+  if (!text) return false;
+
+  let score = 0;
+
+  localGroupOrder(D).forEach(function (group) {
+    if (text.indexOf(normalizeChatText(group)) !== -1) score += 1;
+  });
+
+  (D.services || []).forEach(function (service) {
+    const name = normalizeChatText(service.name);
+    if (name && text.indexOf(name) !== -1) score += 1;
+  });
+
+  return score >= 3;
+}
+
+function replyHasOppositeGenderService(D, q, reply) {
+  const gender = localGenderAsks(q);
+  if (gender.men === gender.women) return false;
+
+  const text = normalizeChatText(reply);
+
+  return (D.services || []).some(function (service) {
+    const name = normalizeChatText(service.name);
+    if (!name || text.indexOf(name) === -1) return false;
+
+    const categories = service.categories || [];
+    if (gender.men) {
+      return categories.indexOf("women") !== -1 && categories.indexOf("men") === -1;
+    }
+    return categories.indexOf("men") !== -1 && categories.indexOf("women") === -1;
+  });
+}
+
+function isGenderOverviewQuestion(D, q) {
+  const gender = localGenderAsks(q);
+  if (gender.men === gender.women) return false;
+  if (localServiceIntent(D, q).services.length) return false;
+
+  return hasChatAny(q, [
+    "service", "services", "kya hai", "kya kya", "available",
+    "options", "batao", "list"
+  ]);
 }
 
 function localPriceReply(D) {
@@ -1241,7 +1302,6 @@ function localGreetingReply(D) {
 
 function localServicePrice(D, name) {
   const service = findServicesByNames(D, [name])[0];
-  if (D.confirmed && !D.confirmed.prices) return "price ke liye WhatsApp par poochein";
   return service && service.price ? service.price : "price WhatsApp/call par";
 }
 
@@ -1525,32 +1585,19 @@ function buildSystemPrompt(D) {
   });
   const hairSpaPrice = hairSpa && hairSpa.price ? " — starting from " + hairSpa.price : "";
 
-  const serviceBlocks = groupOrder
-    .map(function (group) {
-      const items = (D.services || []).filter(function (s) { return s.group === group; });
-      if (!items.length) return "";
+  const priceRows = allServices.filter(function (service) {
+    return !!service.price;
+  }).map(function (service) {
+    return [service.name, service.price, service.duration].filter(Boolean).join(" | ");
+  });
 
-      const rows = items.map(function (s) {
-        const cats =
-          Array.isArray(s.categories) && s.categories.length
-            ? s.categories.join("/")
-            : "unisex";
-        const priceText = D.confirmed && D.confirmed.prices && s.price ? s.price : "price ke liye WhatsApp par poochein";
-        const durationText = D.confirmed && D.confirmed.durations && s.duration ? " | " + s.duration : "";
-        return (s.name || "Service") + " | " + cats + " | " + priceText + durationText;
-      });
-
-      return group + ":\n" + rows.join("\n");
-    })
-    .filter(Boolean);
-
-  const offers = D.confirmed && D.confirmed.offers ? (D.offers || []).map(function (o) {
+  const offers = (D.offers || []).map(function (o) {
     return [o.title, o.tag, o.desc, o.highlight].filter(Boolean).join(" | ");
-  }) : [];
+  });
 
-  const team = D.confirmed && D.confirmed.team ? (D.team || []).map(function (m) {
+  const team = (D.team || []).map(function (m) {
     return [m.name, m.role, m.speciality].filter(Boolean).join(" | ");
-  }) : [];
+  });
 
   const features = (D.features || []).map(function (feature) {
     return feature.title + ": " + feature.text;
@@ -1571,18 +1618,18 @@ function buildSystemPrompt(D) {
     .filter(Boolean)
     .join(", ");
 
-  const ratingLine = D.confirmed && D.confirmed.testimonials ? [
+  const ratingLine = [
     rating.value != null ? rating.value + "★" : "",
     rating.count != null ? rating.count + "+ Google reviews" : "",
     rating.text
   ]
     .filter(Boolean)
-    .join(" | ") : "";
+    .join(" | ");
 
   const menCut = (D.services || []).find(function (s) {
     return /men'?s haircut/i.test(String(s.name || ""));
   });
-  const menCutPrice = D.confirmed && D.confirmed.prices && menCut && menCut.price
+  const menCutPrice = menCut && menCut.price
     ? "starting from " + menCut.price
     : "price ke liye WhatsApp par poochein";
 
@@ -1592,6 +1639,13 @@ function buildSystemPrompt(D) {
     "IDENTITY",
     "- Tum salon ke AI assistant ho. Services, prices, timings, offers aur booking help ke baare mein bata sakte ho.",
     '- Jab user poochhe "aap kaun ho", "who are you" ya "tum kaun ho", to bolo: "Main ' + name + ', Kaithal ka AI assistant hoon. Main services, prices, timings, offers aur booking mein madad kar sakta hoon."',
+    "",
+    "TOP-PRIORITY ROUTING (apply before everything else):",
+    "- Normalise typos and short Hinglish: palour / parlour / parlor = salon; prm = please. Short or misspelled questions still mean the same.",
+    "- BROAD SERVICE QUESTION (kya available hai, kya kya milta hai, kaun si services hai, services batao, menu, what do you offer, palour mein kya hai, parlour me kya kya hota hai, is palour prm kya available hai): ALWAYS answer from SERVICES AT A GLANCE. Use 4-6 category lines, 3-5 example services per line, then ask ONE follow-up question. This is NEVER a missing fact. Never use the not-sure phrase and do not ask for the price list unless requested.",
+    "- PRICE LIST / RATE / kitne ka WITHOUT a service name: give 5 popular starting prices from STARTING PRICES, say prices can change, and use WhatsApp for the rest.",
+    "- OFFERS / DISCOUNT: use OFFERS. TEAM / STYLIST: use TEAM. GREETING: short welcome + one question.",
+    "- ONE specific service, product, brand or fact that is genuinely absent after checking similar names: only then say the not-sure phrase and give WhatsApp/call.",
     "",
     "SALON DATA (sirf yahi use karo):",
     "SERVICES AT A GLANCE:",
@@ -1613,12 +1667,11 @@ function buildSystemPrompt(D) {
     "FEATURES:",
     features.length ? features.join("\n") : "Not listed.",
     "",
-    "SERVICES (Name | category | price):",
-    serviceBlocks.length ? serviceBlocks.join("\n\n") : "No services listed.",
+    "STARTING PRICES (Name | price | duration):",
+    priceRows.length ? priceRows.join("\n") : "No prices listed.",
+    "Services without a listed price: exact price data me listed nahi hai; salon team confirm karegi.",
     "",
     "INTENT RULES (follow these before answering):",
-    '- Broad service questions such as "kya available hai", "kya kya milta hai", "kaun si services hai", "services batao", "menu", "what do you offer", "palour mein kya hai", "parlour me kya kya hota hai" mean "tell me about the salon\'s services". Answer with 4-6 short category lines from SERVICES AT A GLANCE, using 3-5 example services per line, then ask ONE question: "Aap kis service ke baare mein jaanna chahenge? Main price ya booking mein madad kar sakta hoon." Never use the not-sure reply for these.',
-    '- If the user asks for a price list, rate or "kitne ka" WITHOUT naming a service, give the 5 most popular priced services as "starting from" and say prices can change. Do not give the full menu unless they ask for services. For unpriced services, say the exact price is not listed in data and the salon team will confirm it.',
     "- Offer/discount questions: use only OFFERS. Team/stylist/who-is-there questions: use only TEAM.",
     "- Greetings such as hi, hello or namaste: give a short welcome and ask what they want to know.",
     '- Say "Is baare mein mere paas confirmed info nahi hai" ONLY for ONE specific service, product, brand or fact that is truly absent after checking similar names (for example keratin / Pro Keratin Shine Straight Fringe; threading / Threading - Eyebrows). Never use it for broad or general questions.',
@@ -2023,6 +2076,8 @@ async function handleHealth(req, res) {
     hasKey: !!apiKey,
     model: model,
     salonDataLoaded: promptState.loaded,
+    promptChars: promptState.loaded ? promptState.prompt.length : 0,
+    promptApproxTokens: promptState.loaded ? Math.ceil(promptState.prompt.length / 4) : 0,
     groqReachable: false,
     groqStatus: 0
   };
@@ -2202,6 +2257,44 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ reply: localReply, local: true });
     }
     return fallback(res, D);
+  }
+
+  /* Broad service questions must never become "confirmed info nahi".
+     If the model misses the overview or drifts to the wrong gender,
+     replace only that answer with the deterministic live-data reply. */
+  const lastUser = messages.slice().reverse().find(function (message) {
+    return message.role === "user";
+  });
+
+  if (D && lastUser) {
+    const q = normalizeChatText(lastUser.content);
+    const broad = isBroadServiceQuestion(D, q);
+    const genderOverview = isGenderOverviewQuestion(D, q);
+    const missingOverview = !replyHasServiceOverview(D, reply);
+    const genericNotSure = /confirmed info mere paas nahi/i.test(reply);
+    const wrongGender = genderOverview && replyHasOppositeGenderService(D, q, reply);
+
+    if (broad && (missingOverview || genericNotSure) ||
+        genderOverview && (missingOverview || genericNotSure || wrongGender)) {
+      const localReply = safeLocalSalonReply(messages);
+      if (localReply) {
+        console.warn("service overview guard: local salon reply used");
+        return res.status(200).json({ reply: localReply, local: true });
+      }
+    }
+
+    const unsupported = LOCAL_UNSUPPORTED_SERVICES.find(function (word) {
+      return hasChatWord(q, word);
+    });
+
+    if (unsupported &&
+        !/(list me nahi|listed nahi|not listed|nahi hai|not available|available nahi)/i.test(reply)) {
+      const localReply = safeLocalSalonReply(messages);
+      if (localReply) {
+        console.warn("unsupported service guard: local salon reply used");
+        return res.status(200).json({ reply: localReply, local: true });
+      }
+    }
   }
 
   return res.status(200).json({ reply: reply });

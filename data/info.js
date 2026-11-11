@@ -77,7 +77,7 @@ const SALON_INFO = {
     {
       image: "images/bridal-makeup-kaithal-01-720.webp",
       webp: "images/bridal-makeup-kaithal-01-480.webp",
-      fallback: "images/bridal-makeup-kaithal-01.jpg",
+      fallback: "images/bridal-makeup-kaithal-01-720.webp",
       width: 1600,
       height: 900,
       position: "center top",
@@ -96,7 +96,7 @@ const SALON_INFO = {
     {
       image: "images/salon-interior-kaithal-1200.webp",
       webp: "images/salon-interior-kaithal-1200.webp",
-      fallback: "images/salon-interior-kaithal.jpg",
+      fallback: "images/salon-interior-kaithal-1200.webp",
       width: 1600,
       height: 900,
       position: "center",
@@ -400,10 +400,10 @@ const SALON_INFO = {
 
   /* ---------- 13. GALLERY ---------- */
   gallery: [
-    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in maroon lehenga with bridal makeup at Exotic Salon Kaithal", caption: "Bridal Makeup" },
+    { src: "images/bridal-makeup-kaithal-01-720.webp",          width: 720, height: 900, category: "bridal", alt: "Bride in maroon lehenga with bridal makeup at Exotic Salon Kaithal", caption: "Bridal Makeup" },
     { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "bridal", alt: "Bride in pink bridal lehenga with dupatta at Exotic Salon Kaithal",              caption: "Bridal Look" },
     { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "bridal", alt: "Close-up of bridal makeup with gold jewellery at Exotic Salon Kaithal",                                        caption: "Bridal Jewellery" },
-    { src: "images/bridal-makeup-kaithal-01.jpg",          width: 720, height: 900, category: "bridal", alt: "Bride in red bridal lehenga with jewellery at Exotic Salon Kaithal",                   caption: "HD Bridal Makeup" },
+    { src: "images/bridal-makeup-kaithal-01-720.webp",          width: 720, height: 900, category: "bridal", alt: "Bride in red bridal lehenga with jewellery at Exotic Salon Kaithal",                   caption: "HD Bridal Makeup" },
     { src: "images/services/airbrush-makeup-kaithal.jpg",   width: 480, height: 854, category: "salon",  alt: "Client in cream printed saree with party makeup at Exotic Salon Kaithal",                                        caption: "Party Makeup" },
     { src: "images/services/bridal-makeup-kaithal.jpg",     width: 480, height: 854, category: "salon",  alt: "Client in saree with party makeup beside gold panel at Exotic Salon Kaithal",                                    caption: "Party Look" }
   ],
@@ -443,9 +443,108 @@ const SALON_INFO = {
          after:  { src: "images/after.jpg",  alt: "After — ..."  }
        },
      ---------------------------------------------------------- */
-  beforeAfter: null,
+  beforeAfter: [
+    {
+      id: "bridal",
+      title: "Bridal Makeup",
+      category: "bridal",
+      before: { src: "images/bridal-makeup-kaithal-01-720.webp", width: 720, height: 900, alt: "Bride before bridal makeup at Exotic Salon Kaithal" },
+      after:  { src: "images/bridal-makeup-kaithal-01-720.webp", width: 720, height: 900, alt: "Bride after bridal makeup at Exotic Salon Kaithal" }
+    },
+    {
+      id: "haircut",
+      title: "Men's Haircut",
+      category: "hair",
+      before: { src: "images/mens-haircut-kaithal.jpg", width: 720, height: 900, alt: "Client before men's haircut at Exotic Salon Kaithal" },
+      after:  { src: "images/mens-haircut-kaithal.jpg", width: 720, height: 900, alt: "Client after men's haircut at Exotic Salon Kaithal" }
+    },
+    {
+      id: "haircolour",
+      title: "Hair Colour",
+      category: "hair",
+      before: { src: "images/hair-styling-kaithal.jpg", width: 720, height: 900, alt: "Client before hair colour at Exotic Salon Kaithal" },
+      after:  { src: "images/hair-styling-kaithal.jpg", width: 720, height: 900, alt: "Client after hair colour at Exotic Salon Kaithal" }
+    }
+  ],
 
-  /* ---------- 15. CONTACT PAGE HIGHLIGHTS ----------
+  /* ---------- 15. OFFER COUNTDOWN ----------
+     Offers section mein countdown timer dikhane ke liye.
+     endDate format YYYY-MM-DD. Agar khaali ("") hai to timer
+     bilkul nahi dikhta. Date nikal jane par timer apne aap
+     chhup jayega.
+     ---------------------------------------------------------- */
+  offerEndDate: "",
+
+  /* ---------- 16. SPIN & WIN PRIZES ----------
+     "Spin & Win" wheel ke prizes yahan se aate hain.
+     Har prize mein: label (dikhai dene wala text), value (discount/free),
+     color (wheel segment ka background), weight (kitne baar aaye, default 1).
+     ---------------------------------------------------------- */
+  spinPrizes: [
+    { label: "10% OFF", value: "10% discount", color: "#C9A66B", weight: 3 },
+    { label: "Free Eyebrow Threading", value: "Free eyebrow threading", color: "#B38F52", weight: 2 },
+    { label: "5% OFF", value: "5% discount", color: "#8A6A2F", weight: 3 },
+    { label: "Free Hair Spa Add-on", value: "Free hair spa add-on", color: "#C9A66B", weight: 2 },
+    { label: "Better luck next time", value: "No prize today", color: "#595959", weight: 4 },
+    { label: "15% OFF", value: "15% discount", color: "#B38F52", weight: 1 }
+  ],
+
+  /* ---------- 17. QUIZ RULES ----------
+     "Find your hairstyle" quiz ke rules yahan se aate hain.
+     Har sawal mein: id, question, options (har option mein: label, value, match).
+     resultRules: agar kisi option ka match kisi result se match ho toh wo service suggest hoti hai.
+     ---------------------------------------------------------- */
+  quizRules: {
+    questions: [
+      {
+        id: "gender",
+        question: "Aap kaun hain?",
+        options: [
+          { label: "Ladies", value: "women", match: "women" },
+          { label: "Gents", value: "men", match: "men" },
+          { label: "Kids", value: "kids", match: "kids" }
+        ]
+      },
+      {
+        id: "length",
+        question: "Baal kitne lambe hain?",
+        options: [
+          { label: "Short", value: "short", match: "short" },
+          { label: "Medium", value: "medium", match: "medium" },
+          { label: "Long", value: "long", match: "long" }
+        ]
+      },
+      {
+        id: "occasion",
+        question: "Kiske liye look chahiye?",
+        options: [
+          { label: "Daily wear", value: "daily", match: "daily" },
+          { label: "Party / Event", value: "party", match: "party" },
+          { label: "Wedding / Bridal", value: "bridal", match: "bridal" }
+        ]
+      },
+      {
+        id: "maintenance",
+        question: "Maintenance kitni pasand hai?",
+        options: [
+          { label: "Low", value: "low", match: "low" },
+          { label: "Medium", value: "medium", match: "medium" },
+          { label: "High", value: "high", match: "high" }
+        ]
+      }
+    ],
+    results: {
+      "women_long_bridal_high": ["Bridal Makeup", "Hair Styling", "Hair Colour"],
+      "women_long_party_high": ["Hair Styling", "Air Brush Makeup", "Hair Colour"],
+      "women_long_daily_medium": ["Hair Cut", "Hair Spa", "Facial"],
+      "men_short_daily_low": ["Men's Haircut", "Beard Trim & Styling"],
+      "men_medium_party_medium": ["Hair Styling", "Hair Colour"],
+      "kids_short_daily_low": ["Kids Hair Cut"]
+    },
+    defaultResult: ["Hair Cut", "Facial", "Beard Trim & Styling"]
+  },
+
+  /* ---------- 18. CONTACT PAGE HIGHLIGHTS ----------
      Contact page par banner ke neeche 3 chhote items.
      icon: home | facial | bridal   (SVG script.js se aata hai)
      link: "whatsapp" ya koi page/URL (services.html#women, services.html#bridal)

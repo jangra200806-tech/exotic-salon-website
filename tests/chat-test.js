@@ -381,6 +381,14 @@ const tests = [
     }
   },
   {
+    q: "what do you offer",
+    check: "must list at least 3 service categories",
+    run: function (reply) {
+      const pass = categoryCount(reply) >= 3;
+      return { pass: pass, reason: "needs 3+ category names" };
+    }
+  },
+  {
     q: "ladies ke liye kya hai",
     check: "must not list men-only services",
     run: function (reply) {
